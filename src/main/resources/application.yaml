@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: one-percent-better
+  threads:
+    virtual:
+      enabled: true
+github:
+  token: ""
+  username: ""
+app:
+  check-in-cron: "0 0 */1 * * *"

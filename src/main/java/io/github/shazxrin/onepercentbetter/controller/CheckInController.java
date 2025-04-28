@@ -1,0 +1,21 @@
+package io.github.shazxrin.onepercentbetter.controller;
+
+import io.github.shazxrin.onepercentbetter.service.CheckInService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequestMapping("/check-ins")
+@RestController
+public class CheckInController {
+    private final CheckInService checkInService;
+
+    public CheckInController(CheckInService checkInService) {
+        this.checkInService = checkInService;
+    }
+
+    @PostMapping("/today")
+    public void checkInToday() {
+        checkInService.checkInToday();
+    }
+}
