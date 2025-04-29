@@ -28,4 +28,7 @@ public class CheckIn {
 
     @Column(nullable = false)
     private int count;
+
+    @Column(nullable = false)
+    private int streak;
 }

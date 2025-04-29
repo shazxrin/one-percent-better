@@ -27,11 +27,25 @@ public class CheckInService {
         }
         log.info("Total commit count is {}", count);
 
+        int streak = 0;
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        CheckIn yesterdayCheckIn = checkInRepository.findByDate(yesterday);
+        if (yesterdayCheckIn == null) {
+            if (count > 0) {
+                streak = 1;
+            }
+        } else {
+            if (count > 0) {
+                streak = yesterdayCheckIn.getStreak() + 1;
+            }
+        }
+
         CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
         if (todaysCheckIn == null) {
-            checkInRepository.save(new CheckIn(null, LocalDate.now(), count));
+            checkInRepository.save(new CheckIn(null, LocalDate.now(), count, streak));
         } else {
             todaysCheckIn.setCount(count);
+            todaysCheckIn.setStreak(streak);
             checkInRepository.save(todaysCheckIn);
         }
     }
