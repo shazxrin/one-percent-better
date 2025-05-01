@@ -1,15 +1,14 @@
 package io.github.shazxrin.onepercentbetter.service;
 
-import io.github.shazxrin.onepercentbetter.configuration.GitHubProperties;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GitHub;
-import org.kohsuke.github.PagedIterable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -29,7 +28,10 @@ public class GitHubService {
     public int getCommitCountTodayForRepository(String username, String repository) {
         int count = 0;
         try {
-            PagedIterable<GHCommit> commits = gitHub.getRepository(createRepositoryName(username, repository)).listCommits();
+            List<GHCommit> commits = gitHub.getRepository(createRepositoryName(username, repository))
+                .listCommits()
+                .toList();
+
             for (GHCommit commit : commits) {
                 LocalDate commitDate = convertToLocalDate(commit.getCommitDate());
                 if (commitDate.isEqual(LocalDate.now())) {
