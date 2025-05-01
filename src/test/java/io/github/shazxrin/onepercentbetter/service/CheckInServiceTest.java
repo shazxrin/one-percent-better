@@ -47,7 +47,7 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldCreateNewCheckInWithOneStreakWhenCommitsExistAndNoYesterdayCheckIn() {
+    void testCheckInToday_whenTodayHasCommitsNoCheckInAndYesterdayNoCheckIn_shouldCreateNewCheckInWithOneStreak() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -67,7 +67,7 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldContinueStreakWhenCommitsExistAndYesterdayCheckInExists() {
+    void testCheckInToday_whenTodayHasCommitsNoCheckInAndYesterdayHasCheckIn_shouldCreateNewCheckInContinueStreak() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -89,7 +89,7 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldNotContinueStreakWhenNoCommitsExistToday() {
+    void testCheckInToday_whenTodayHasCommitsNoCheckInAndYesterdayNoCheckIn_shouldCreateNewCheckInResetStreak() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -111,7 +111,7 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldCreateZeroStreakWhenNoCommitsAndNoYesterdayCheckIn() {
+    void testCheckInToday_whenTodayNoCommitsNoCheckInAndYesterdayNoCheckIn_shouldCreateNewCheckInZeroStreak() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -131,16 +131,16 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldUpdateExistingCheckInWhenTodaysCheckInExists() {
+    void testCheckInToday_whenTodayHasCommitsHasCheckInAndYesterdayHasCheckIn_shouldUpdateExistingCheckInAndContinueStreak() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(7);
 
+        CheckIn yesterdayCheckIn = new CheckIn("check-in-id", yesterday, 3, 1);
         CheckIn existingCheckIn = new CheckIn("check-in-id", today, 3, 2);
-        CheckIn yesterdayCheckIn = new CheckIn("check-in-id", today, 3, 1);
-        when(checkInRepository.findByDate(today)).thenReturn(existingCheckIn);
         when(checkInRepository.findByDate(yesterday)).thenReturn(yesterdayCheckIn);
+        when(checkInRepository.findByDate(today)).thenReturn(existingCheckIn);
 
         // When
         checkInService.checkInToday();
@@ -155,7 +155,7 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldHandleMultipleProjectsAndSumCommitCounts() {
+    void testCheckInToday_whenMultipleProjectsExistWithCommits_shouldCreateNewCheckInWithSumAllCommitCounts() {
         // Given
         Project project1 = new Project(null, "shazxrin", "project1");
         Project project2 = new Project(null, "shazxrin", "project2");
@@ -179,7 +179,7 @@ public class CheckInServiceTest {
     }
 
     @Test
-    void shouldHandleNoProjectsCase() {
+    void testCheckInToday_whenNoProjectsExist_shouldCreateNewCheckInWithZeroCommitCount() {
         // Given
         when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
         when(checkInRepository.findByDate(yesterday)).thenReturn(null);
