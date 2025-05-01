@@ -4,6 +4,10 @@ spring:
   threads:
     virtual:
       enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/one-percent-better
+    username: user
+    password: password
 github:
   token: ""
   username: ""
