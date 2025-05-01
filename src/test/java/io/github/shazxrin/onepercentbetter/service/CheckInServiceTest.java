@@ -3,7 +3,9 @@ package io.github.shazxrin.onepercentbetter.service;
 import io.github.shazxrin.onepercentbetter.model.CheckIn;
 import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.CheckInRepository;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -12,12 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CheckInServiceTest {
@@ -37,14 +36,8 @@ public class CheckInServiceTest {
     @Captor
     private ArgumentCaptor<CheckIn> checkInCaptor;
 
-    private LocalDate today;
-    private LocalDate yesterday;
-
-    @BeforeEach
-    void setUp() {
-        today = LocalDate.now();
-        yesterday = today.minusDays(1);
-    }
+    private static final LocalDate TODAY = LocalDate.now();
+    private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
 
     @Test
     void testCheckInToday_whenTodayHasCommitsNoCheckInAndYesterdayNoCheckIn_shouldCreateNewCheckInWithOneStreak() {
@@ -52,8 +45,8 @@ public class CheckInServiceTest {
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(3);
-        when(checkInRepository.findByDate(yesterday)).thenReturn(null);
-        when(checkInRepository.findByDate(today)).thenReturn(null);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
         // When
         checkInService.checkInToday();
@@ -61,7 +54,7 @@ public class CheckInServiceTest {
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(3, savedCheckIn.getCount());
         assertEquals(1, savedCheckIn.getStreak());
     }
@@ -73,9 +66,9 @@ public class CheckInServiceTest {
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(5);
 
-        CheckIn yesterdayCheckIn = new CheckIn(null, yesterday, 2, 3);
-        when(checkInRepository.findByDate(yesterday)).thenReturn(yesterdayCheckIn);
-        when(checkInRepository.findByDate(today)).thenReturn(null);
+        CheckIn yesterdayCheckIn = new CheckIn(null, YESTERDAY, 2, 3);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
         // When
         checkInService.checkInToday();
@@ -83,7 +76,7 @@ public class CheckInServiceTest {
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(5, savedCheckIn.getCount());
         assertEquals(4, savedCheckIn.getStreak());
     }
@@ -95,9 +88,9 @@ public class CheckInServiceTest {
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(0);
 
-        CheckIn yesterdayCheckIn = new CheckIn(null, yesterday, 2, 3);
-        when(checkInRepository.findByDate(yesterday)).thenReturn(yesterdayCheckIn);
-        when(checkInRepository.findByDate(today)).thenReturn(null);
+        CheckIn yesterdayCheckIn = new CheckIn(null, YESTERDAY, 2, 3);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
         // When
         checkInService.checkInToday();
@@ -105,7 +98,7 @@ public class CheckInServiceTest {
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
     }
@@ -116,8 +109,8 @@ public class CheckInServiceTest {
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(0);
-        when(checkInRepository.findByDate(yesterday)).thenReturn(null);
-        when(checkInRepository.findByDate(today)).thenReturn(null);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
         // When
         checkInService.checkInToday();
@@ -125,7 +118,7 @@ public class CheckInServiceTest {
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
     }
@@ -137,10 +130,10 @@ public class CheckInServiceTest {
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(7);
 
-        CheckIn yesterdayCheckIn = new CheckIn("check-in-id", yesterday, 3, 1);
-        CheckIn existingCheckIn = new CheckIn("check-in-id", today, 3, 2);
-        when(checkInRepository.findByDate(yesterday)).thenReturn(yesterdayCheckIn);
-        when(checkInRepository.findByDate(today)).thenReturn(existingCheckIn);
+        CheckIn yesterdayCheckIn = new CheckIn("check-in-id", YESTERDAY, 3, 1);
+        CheckIn existingCheckIn = new CheckIn("check-in-id", TODAY, 3, 2);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(existingCheckIn);
 
         // When
         checkInService.checkInToday();
@@ -149,7 +142,7 @@ public class CheckInServiceTest {
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
         assertEquals(existingCheckIn.getId(), savedCheckIn.getId());
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(7, savedCheckIn.getCount());
         assertEquals(2, savedCheckIn.getStreak());
     }
@@ -164,8 +157,8 @@ public class CheckInServiceTest {
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "project1")).thenReturn(3);
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "project2")).thenReturn(4);
 
-        when(checkInRepository.findByDate(yesterday)).thenReturn(null);
-        when(checkInRepository.findByDate(today)).thenReturn(null);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
         // When
         checkInService.checkInToday();
@@ -173,7 +166,7 @@ public class CheckInServiceTest {
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(7, savedCheckIn.getCount());
         assertEquals(1, savedCheckIn.getStreak());
     }
@@ -182,8 +175,8 @@ public class CheckInServiceTest {
     void testCheckInToday_whenNoProjectsExist_shouldCreateNewCheckInWithZeroCommitCount() {
         // Given
         when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
-        when(checkInRepository.findByDate(yesterday)).thenReturn(null);
-        when(checkInRepository.findByDate(today)).thenReturn(null);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
         // When
         checkInService.checkInToday();
@@ -191,7 +184,7 @@ public class CheckInServiceTest {
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
         CheckIn savedCheckIn = checkInCaptor.getValue();
-        assertEquals(today, savedCheckIn.getDate());
+        assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
     }
