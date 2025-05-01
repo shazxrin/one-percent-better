@@ -3,6 +3,8 @@ package io.github.shazxrin.onepercentbetter.service;
 import io.github.shazxrin.onepercentbetter.exception.BadRequestException;
 import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.ProjectRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,11 @@ public class ProjectService {
         projectRepository.deleteByOwnerAndName(owner, name);
     }
 
-    public Iterable<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List<Project> getAllProjects() {
+        List<Project> projects = new ArrayList<>();
+        projectRepository.findAll()
+            .forEach(projects::add);
+
+        return projects;
     }
 }
