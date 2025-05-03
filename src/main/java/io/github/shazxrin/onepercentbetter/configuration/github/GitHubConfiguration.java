@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.configuration;
+package io.github.shazxrin.onepercentbetter.configuration.github;
 
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;

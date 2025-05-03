@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.configuration;
+package io.github.shazxrin.onepercentbetter.configuration.github;
 
 import lombok.Getter;
 import lombok.Setter;
