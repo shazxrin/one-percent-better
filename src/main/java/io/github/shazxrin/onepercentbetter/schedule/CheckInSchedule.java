@@ -1,16 +1,22 @@
 package io.github.shazxrin.onepercentbetter.schedule;
 
 import io.github.shazxrin.onepercentbetter.service.CheckInService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Slf4j
-@RequiredArgsConstructor
 @Component
 public class CheckInSchedule {
+    private static final Logger log = LoggerFactory.getLogger(CheckInSchedule.class);
+
     private final CheckInService checkInService;
+
+    @Autowired
+    public CheckInSchedule(CheckInService checkInService) {
+        this.checkInService = checkInService;
+    }
 
     @Scheduled(cron = "${app.check-in-cron}")
     public void checkIn() {

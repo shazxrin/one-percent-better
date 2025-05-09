@@ -4,18 +4,30 @@ import io.github.shazxrin.onepercentbetter.model.CheckIn;
 import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.CheckInRepository;
 import java.time.LocalDate;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
 public class CheckInService {
+    private static final Logger log = LoggerFactory.getLogger(CheckInService.class);
+
     private final CheckInRepository checkInRepository;
 
     private final ProjectService projectService;
     private final GitHubService gitHubService;
+
+    @Autowired
+    public CheckInService(
+        CheckInRepository checkInRepository,
+        ProjectService projectService,
+        GitHubService gitHubService
+    ) {
+        this.checkInRepository = checkInRepository;
+        this.projectService = projectService;
+        this.gitHubService = gitHubService;
+    }
 
     public void checkInToday() {
         int count = 0;

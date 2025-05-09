@@ -5,14 +5,18 @@ import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.ProjectRepository;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
+
+    @Autowired
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
     public void addProject(String owner, String name) {
         if (projectRepository.existsByOwnerAndName(owner, name)) {
