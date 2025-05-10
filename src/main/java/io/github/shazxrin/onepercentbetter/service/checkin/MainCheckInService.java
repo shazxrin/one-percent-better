@@ -1,8 +1,10 @@
-package io.github.shazxrin.onepercentbetter.service;
+package io.github.shazxrin.onepercentbetter.service.checkin;
 
 import io.github.shazxrin.onepercentbetter.model.CheckIn;
 import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.CheckInRepository;
+import io.github.shazxrin.onepercentbetter.service.github.GitHubService;
+import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CheckInService {
-    private static final Logger log = LoggerFactory.getLogger(CheckInService.class);
+public class MainCheckInService implements CheckInService {
+    private static final Logger log = LoggerFactory.getLogger(MainCheckInService.class);
 
     private final CheckInRepository checkInRepository;
 
@@ -19,7 +21,7 @@ public class CheckInService {
     private final GitHubService gitHubService;
 
     @Autowired
-    public CheckInService(
+    public MainCheckInService(
         CheckInRepository checkInRepository,
         ProjectService projectService,
         GitHubService gitHubService
@@ -29,6 +31,7 @@ public class CheckInService {
         this.gitHubService = gitHubService;
     }
 
+    @Override
     public void checkInToday() {
         int count = 0;
 

@@ -1,8 +1,10 @@
-package io.github.shazxrin.onepercentbetter.service;
+package io.github.shazxrin.onepercentbetter.service.checkin;
 
 import io.github.shazxrin.onepercentbetter.model.CheckIn;
 import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.CheckInRepository;
+import io.github.shazxrin.onepercentbetter.service.github.GitHubService;
+import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +33,7 @@ public class CheckInServiceTest {
     private GitHubService gitHubService;
 
     @InjectMocks
-    private CheckInService checkInService;
+    private MainCheckInService checkInService;
 
     @Captor
     private ArgumentCaptor<CheckIn> checkInCaptor;

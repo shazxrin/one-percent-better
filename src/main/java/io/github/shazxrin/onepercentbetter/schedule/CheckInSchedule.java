@@ -1,6 +1,6 @@
 package io.github.shazxrin.onepercentbetter.schedule;
 
-import io.github.shazxrin.onepercentbetter.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.service.checkin.CheckInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

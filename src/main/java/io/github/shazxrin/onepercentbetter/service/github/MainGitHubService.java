@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.service;
+package io.github.shazxrin.onepercentbetter.service.github;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GitHubService {
-    private static final Logger log = LoggerFactory.getLogger(GitHubService.class);
+public class MainGitHubService implements GitHubService {
+    private static final Logger log = LoggerFactory.getLogger(MainGitHubService.class);
 
     private final GitHub gitHub;
 
     @Autowired
-    private GitHubService(GitHub gitHub) {
+    private MainGitHubService(GitHub gitHub) {
         this.gitHub = gitHub;
     }
 
@@ -31,6 +31,7 @@ public class GitHubService {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
+    @Override
     public int getCommitCountTodayForRepository(String username, String repository) {
         int count = 0;
         try {

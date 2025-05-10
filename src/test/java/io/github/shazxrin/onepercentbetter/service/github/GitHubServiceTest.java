@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.service;
+package io.github.shazxrin.onepercentbetter.service.github;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -34,7 +34,7 @@ public class GitHubServiceTest {
     private PagedIterable<GHCommit> mockCommitsIterable;
 
     @InjectMocks
-    private GitHubService gitHubService;
+    private MainGitHubService gitHubService;
 
     private static final String USERNAME = "testuser";
     private static final String REPOSITORY = "testrepo";

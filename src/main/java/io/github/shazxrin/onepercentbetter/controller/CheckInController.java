@@ -1,6 +1,6 @@
 package io.github.shazxrin.onepercentbetter.controller;
 
-import io.github.shazxrin.onepercentbetter.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.service.checkin.CheckInService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

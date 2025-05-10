@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.service;
+package io.github.shazxrin.onepercentbetter.service.project;
 
 import io.github.shazxrin.onepercentbetter.exception.BadRequestException;
 import io.github.shazxrin.onepercentbetter.model.Project;
@@ -10,14 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ProjectService {
+public class MainProjectService implements ProjectService {
     private final ProjectRepository projectRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository) {
+    public MainProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
 
+    @Override
     public void addProject(String owner, String name) {
         if (projectRepository.existsByOwnerAndName(owner, name)) {
             return;
@@ -27,6 +28,7 @@ public class ProjectService {
     }
 
     @Transactional
+    @Override
     public void removeProject(String owner, String name) {
         if (!projectRepository.existsByOwnerAndName(owner, name)) {
             throw new BadRequestException("Project not found");
@@ -35,6 +37,7 @@ public class ProjectService {
         projectRepository.deleteByOwnerAndName(owner, name);
     }
 
+    @Override
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
         projectRepository.findAll()

@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.controller;
 
 import io.github.shazxrin.onepercentbetter.model.Project;
-import io.github.shazxrin.onepercentbetter.service.ProjectService;
+import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

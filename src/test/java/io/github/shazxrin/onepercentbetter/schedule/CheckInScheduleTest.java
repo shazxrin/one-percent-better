@@ -1,6 +1,6 @@
 package io.github.shazxrin.onepercentbetter.schedule;
 
-import io.github.shazxrin.onepercentbetter.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.service.checkin.CheckInService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

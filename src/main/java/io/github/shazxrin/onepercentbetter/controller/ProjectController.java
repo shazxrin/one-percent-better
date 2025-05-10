@@ -3,7 +3,7 @@ package io.github.shazxrin.onepercentbetter.controller;
 import io.github.shazxrin.onepercentbetter.dto.AddProjectDto;
 import io.github.shazxrin.onepercentbetter.dto.DeleteProjectDto;
 import io.github.shazxrin.onepercentbetter.dto.ListItemProjectDto;
-import io.github.shazxrin.onepercentbetter.service.ProjectService;
+import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

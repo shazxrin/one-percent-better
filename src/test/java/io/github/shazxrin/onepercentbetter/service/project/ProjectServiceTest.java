@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.service;
+package io.github.shazxrin.onepercentbetter.service.project;
 
 import io.github.shazxrin.onepercentbetter.exception.BadRequestException;
 import io.github.shazxrin.onepercentbetter.model.Project;
@@ -26,7 +26,7 @@ public class ProjectServiceTest {
     private ProjectRepository projectRepository;
 
     @InjectMocks
-    private ProjectService projectService;
+    private MainProjectService projectService;
 
     @Captor
     private ArgumentCaptor<Project> projectCaptor;
