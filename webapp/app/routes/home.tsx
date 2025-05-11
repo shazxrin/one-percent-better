@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
-import { AppShell, Burger, Button, Center, Group, Skeleton, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Center, Title } from "@mantine/core";
+import { type ClientLoaderFunction, type ClientLoaderFunctionArgs, useLoaderData } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -9,7 +9,19 @@ export function meta({}: Route.MetaArgs) {
     ];
 }
 
+type LoaderData = {
+    value: string
+}
+
+const clientLoader: ClientLoaderFunction = ({}: ClientLoaderFunctionArgs): LoaderData => {
+    return {
+        value: ""
+    }
+}
+
 export default function Home() {
+    const { value } = useLoaderData<LoaderData>()
+
     return (
         <Center w={ "100dvw" } h={ "100dvh" }>
             <Title order={ 1 }>One Percent Better</Title>
