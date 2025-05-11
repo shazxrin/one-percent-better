@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
 group = "io.github.shazxrin"
@@ -23,6 +24,12 @@ repositories {
     mavenCentral()
 }
 
+openApi {
+    customBootRun {
+        systemProperties = mapOf("spring.docker.compose.file" to "${projectDir}/compose.yaml")
+    }
+}
+
 dependencies {
     implementation("org.kohsuke:github-api:2.0-rc.1")
 
@@ -40,6 +47,9 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.8")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }

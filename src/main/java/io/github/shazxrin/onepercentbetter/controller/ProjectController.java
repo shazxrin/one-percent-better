@@ -4,6 +4,10 @@ import io.github.shazxrin.onepercentbetter.dto.AddProjectDto;
 import io.github.shazxrin.onepercentbetter.dto.DeleteProjectDto;
 import io.github.shazxrin.onepercentbetter.dto.ListItemProjectDto;
 import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(
+    name = "Projects",
+    description = "API for managing projects"
+)
 @RequestMapping("/projects")
 @RestController
 public class ProjectController {
@@ -26,6 +34,8 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @Operation(summary = "Get all projects")
+    @ApiResponse(responseCode = "200", description = "Get all projects successfully")
     @GetMapping("/all")
     public List<ListItemProjectDto> getAllProjects() {
         ArrayList<ListItemProjectDto> projects = new ArrayList<>();
@@ -34,12 +44,24 @@ public class ProjectController {
         return projects;
     }
 
+    @Operation(summary = "Add a new project")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Add a new project successfully"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void postAddProject(@RequestBody AddProjectDto addProjectDto) {
         projectService.addProject(addProjectDto.owner(), addProjectDto.name());
     }
 
+    @Operation(summary = "Delete a project")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Delete a project successfully"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "404", description = "Project not found")
+    })
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
     public void deleteProject(@RequestBody DeleteProjectDto deleteProjectDto) {
         projectService.removeProject(deleteProjectDto.owner(), deleteProjectDto.name());
