@@ -6,8 +6,8 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "genapi": "openapi-typescript ../build/openapi.json -o ./app/api/schema.d.ts",
-    "typecheck": "react-router typegen && tsc"
+    "genApi": "openapi-typescript ../build/openapi.json -o ./app/api/schema.d.ts",
+    "typeCheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@mantine/charts": "^8.0.0",

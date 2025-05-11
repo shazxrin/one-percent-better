@@ -1,8 +1,11 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+
 plugins {
     java
     id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
+    id("com.github.node-gradle.node") version "7.1.0"
 }
 
 group = "io.github.shazxrin"
@@ -28,6 +31,10 @@ openApi {
     customBootRun {
         systemProperties = mapOf("spring.docker.compose.file" to "${projectDir}/compose.yaml")
     }
+}
+
+node {
+    nodeProjectDir.set(file("${projectDir}/webapp"))
 }
 
 dependencies {
@@ -56,4 +63,10 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.register<PnpmTask>("genApi") {
+    dependsOn("generateOpenApiDocs")
+
+    args.set(listOf("run", "genApi"))
 }
