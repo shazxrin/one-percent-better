@@ -1,40 +1,32 @@
 import "@mantine/core/styles.css";
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
-
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, } from "react-router";
 import type { Route } from "./+types/root";
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
+import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from "@mantine/core";
+import React from "react";
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  return (
-      <html lang="en" {...mantineHtmlProps}>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <ColorSchemeScript />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-      <MantineProvider>{children}</MantineProvider>
-      <ScrollRestoration />
-      <Scripts />
-      </body>
-      </html>
-  );
-}
+export const Layout = ({ children }: { children: React.ReactNode }) => (
+    <html lang="en" { ...mantineHtmlProps }>
+        <head>
+            <meta charSet="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <ColorSchemeScript/>
+            <Meta/>
+            <Links/>
+        </head>
+        <body>
+            <MantineProvider>{ children }</MantineProvider>
+            <ScrollRestoration/>
+            <Scripts/>
+        </body>
+    </html>
+);
 
-export default function App() {
-  return <Outlet />;
-}
+const App: React.FC = () => {
+    return <Outlet/>;
+};
+export default App;
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
@@ -61,4 +53,4 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       )}
     </main>
   );
-}
+};

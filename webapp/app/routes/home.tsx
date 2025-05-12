@@ -1,30 +1,33 @@
 import type { Route } from "./+types/home";
 import { Center, Title } from "@mantine/core";
 import { type ClientLoaderFunction, type ClientLoaderFunctionArgs, useLoaderData } from "react-router";
+import React from "react";
+import apiClient from "~/api/api-client"
 
-export function meta({}: Route.MetaArgs) {
+export const meta = ({}: Route.MetaArgs) => {
     return [
         { title: "One Percent Better" },
         { name: "description", content: "One Percent Better" },
     ];
-}
+};
 
 type LoaderData = {
     value: string
-}
+};
 
-const clientLoader: ClientLoaderFunction = ({}: ClientLoaderFunctionArgs): LoaderData => {
+export const clientLoader: ClientLoaderFunction = async ({}: ClientLoaderFunctionArgs): Promise<LoaderData> => {
     return {
         value: ""
-    }
-}
+    };
+};
 
-export default function Home() {
-    const { value } = useLoaderData<LoaderData>()
+const page: React.FC = () => {
+    const { value } = useLoaderData<LoaderData>();
 
     return (
         <Center w={ "100dvw" } h={ "100dvh" }>
             <Title order={ 1 }>One Percent Better</Title>
         </Center>
     );
-}
+};
+export default page;
