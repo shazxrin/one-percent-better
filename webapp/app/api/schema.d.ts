@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/projects": {
+    "/api/projects": {
         parameters: {
             query?: never;
             header?: never;
@@ -22,7 +22,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/check-ins/today": {
+    "/api/check-ins/today": {
         parameters: {
             query?: never;
             header?: never;
@@ -39,7 +39,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/projects/all": {
+    "/api/projects/all": {
         parameters: {
             query?: never;
             header?: never;

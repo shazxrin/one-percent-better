@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "Projects",
     description = "API for managing projects"
 )
-@RequestMapping("/projects")
+@RequestMapping("/api/projects")
 @RestController
 public class ProjectController {
     private final ProjectService projectService;

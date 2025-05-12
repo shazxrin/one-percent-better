@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "Check Ins",
     description = "API for managing check ins"
 )
-@RequestMapping("/check-ins")
+@RequestMapping("/api/check-ins")
 @RestController
 public class CheckInController {
     private final CheckInService checkInService;
