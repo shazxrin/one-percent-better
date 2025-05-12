@@ -5,7 +5,6 @@ import io.github.shazxrin.onepercentbetter.model.Project;
 import io.github.shazxrin.onepercentbetter.repository.ProjectRepository;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MainProjectService implements ProjectService {
     private final ProjectRepository projectRepository;
 
-    @Autowired
     public MainProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }

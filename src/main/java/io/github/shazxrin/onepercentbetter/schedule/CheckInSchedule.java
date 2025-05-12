@@ -3,7 +3,6 @@ package io.github.shazxrin.onepercentbetter.schedule;
 import io.github.shazxrin.onepercentbetter.service.checkin.CheckInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ public class CheckInSchedule {
 
     private final CheckInService checkInService;
 
-    @Autowired
     public CheckInSchedule(CheckInService checkInService) {
         this.checkInService = checkInService;
     }

@@ -8,7 +8,6 @@ import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +19,6 @@ public class MainCheckInService implements CheckInService {
     private final ProjectService projectService;
     private final GitHubService gitHubService;
 
-    @Autowired
     public MainCheckInService(
         CheckInRepository checkInRepository,
         ProjectService projectService,
