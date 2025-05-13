@@ -17,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +51,10 @@ public class CheckInServiceTest {
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(3);
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
         when(checkInRepository.findByDate(TODAY)).thenReturn(null);
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -59,6 +62,7 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(3, savedCheckIn.getCount());
         assertEquals(1, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -72,8 +76,10 @@ public class CheckInServiceTest {
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
         when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -81,6 +87,7 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(5, savedCheckIn.getCount());
         assertEquals(4, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -94,8 +101,10 @@ public class CheckInServiceTest {
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
         when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -103,6 +112,7 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -113,9 +123,10 @@ public class CheckInServiceTest {
         when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(0);
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
         when(checkInRepository.findByDate(TODAY)).thenReturn(null);
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -123,6 +134,7 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -137,8 +149,10 @@ public class CheckInServiceTest {
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
         when(checkInRepository.findByDate(TODAY)).thenReturn(existingCheckIn);
 
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -147,6 +161,7 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(7, savedCheckIn.getCount());
         assertEquals(2, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -162,8 +177,10 @@ public class CheckInServiceTest {
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
         when(checkInRepository.findByDate(TODAY)).thenReturn(null);
 
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -171,6 +188,7 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(7, savedCheckIn.getCount());
         assertEquals(1, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -179,9 +197,10 @@ public class CheckInServiceTest {
         when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
         when(checkInRepository.findByDate(TODAY)).thenReturn(null);
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        checkInService.checkInToday();
+        CheckIn resultCheckIn = checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -189,5 +208,67 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
+        assertEquals(resultCheckIn, savedCheckIn);
+    }
+
+    @Test
+    void testGetTodaysCheckIn_whenTodaysCheckInExists_shouldReturnExistingCheckIn() {
+        // Given
+        CheckIn existingCheckIn = new CheckIn("check-in-id", TODAY, 5, 3);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(existingCheckIn);
+
+        // When
+        CheckIn todaysCheckIn = checkInService.getTodaysCheckIn();
+    
+        // Then
+        // Verify no new check-in was saved
+        verify(checkInRepository, never()).save(any());
+
+        assertEquals(existingCheckIn, todaysCheckIn);
+        assertEquals("check-in-id", todaysCheckIn.getId());
+        assertEquals(TODAY, todaysCheckIn.getDate());
+        assertEquals(5, todaysCheckIn.getCount());
+        assertEquals(3, todaysCheckIn.getStreak());
+    }
+    
+    @Test
+    void testGetTodaysCheckIn_whenTodaysCheckInDoesNotExist_shouldCreateNewCheckInUsingCheckInToday() {
+        // Given
+        Project project = new Project(null, "shazxrin", "one-percent-better");
+        when(projectService.getAllProjects()).thenReturn(List.of(project));
+        when(gitHubService.getCommitCountTodayForRepository("shazxrin", "one-percent-better")).thenReturn(4);
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        CheckIn todaysCheckIn = checkInService.getTodaysCheckIn();
+    
+        // Then
+        // Verify a new check-in was saved
+        verify(checkInRepository).save(any());
+
+        assertEquals(TODAY, todaysCheckIn.getDate());
+        assertEquals(4, todaysCheckIn.getCount());
+        assertEquals(1, todaysCheckIn.getStreak());
+    }
+    
+    @Test
+    void testGetTodaysCheckIn_whenTodaysCheckInDoesNotExistAndNoCommits_shouldReturnNewCheckInWithZeroStreak() {
+        // Given
+        when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
+        when(checkInRepository.findByDate(TODAY)).thenReturn(null);
+        when(checkInRepository.findByDate(YESTERDAY)).thenReturn(null);
+        when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        CheckIn todaysCheckIn = checkInService.getTodaysCheckIn();
+    
+        // Then
+        // Verify a new check-in was saved
+        verify(checkInRepository).save(any());
+        assertEquals(TODAY, todaysCheckIn.getDate());
+        assertEquals(0, todaysCheckIn.getCount());
+        assertEquals(0, todaysCheckIn.getStreak());
     }
 }

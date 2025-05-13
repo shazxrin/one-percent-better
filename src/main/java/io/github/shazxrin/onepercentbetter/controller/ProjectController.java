@@ -1,8 +1,8 @@
 package io.github.shazxrin.onepercentbetter.controller;
 
-import io.github.shazxrin.onepercentbetter.dto.AddProjectDto;
-import io.github.shazxrin.onepercentbetter.dto.DeleteProjectDto;
-import io.github.shazxrin.onepercentbetter.dto.ListItemProjectDto;
+import io.github.shazxrin.onepercentbetter.dto.project.AddProjectDto;
+import io.github.shazxrin.onepercentbetter.dto.project.DeleteProjectDto;
+import io.github.shazxrin.onepercentbetter.dto.project.ListItemProjectDto;
 import io.github.shazxrin.onepercentbetter.service.project.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

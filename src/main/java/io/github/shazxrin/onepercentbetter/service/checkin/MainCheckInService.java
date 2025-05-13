@@ -30,7 +30,7 @@ public class MainCheckInService implements CheckInService {
     }
 
     @Override
-    public void checkInToday() {
+    public CheckIn checkInToday() {
         int count = 0;
 
         Iterable<Project> projects = projectService.getAllProjects();
@@ -55,11 +55,22 @@ public class MainCheckInService implements CheckInService {
 
         CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
         if (todaysCheckIn == null) {
-            checkInRepository.save(new CheckIn(null, LocalDate.now(), count, streak));
+            todaysCheckIn = checkInRepository.save(new CheckIn(null, LocalDate.now(), count, streak));
         } else {
             todaysCheckIn.setCount(count);
             todaysCheckIn.setStreak(streak);
             checkInRepository.save(todaysCheckIn);
+        }
+        return todaysCheckIn;
+    }
+
+    @Override
+    public CheckIn getTodaysCheckIn() {
+        CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
+        if (todaysCheckIn == null) {
+            return checkInToday();
+        } else {
+            return todaysCheckIn;
         }
     }
 }
