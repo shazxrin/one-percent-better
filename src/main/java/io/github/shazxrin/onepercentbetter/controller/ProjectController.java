@@ -34,7 +34,7 @@ public class ProjectController {
 
     @Operation(summary = "Get all projects")
     @ApiResponse(responseCode = "200", description = "Get all projects successfully")
-    @GetMapping("/all")
+    @GetMapping
     public List<ListItemProjectDto> getAllProjects() {
         ArrayList<ListItemProjectDto> projects = new ArrayList<>();
         projectService.getAllProjects()
