@@ -24,7 +24,7 @@ public class CheckInControllerTest {
     @Test
     void testCheckInToday_shouldCallServiceAndReturnOk() throws Exception {
         // When
-        mockMvc.perform(post("/check-ins/today"))
+        mockMvc.perform(post("/api/check-ins/today"))
             .andExpect(status().isOk());
 
         // Then

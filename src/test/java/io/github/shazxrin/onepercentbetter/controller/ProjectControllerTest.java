@@ -40,7 +40,7 @@ public class ProjectControllerTest {
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
 
         // When & Then
-        mockMvc.perform(get("/projects/all"))
+        mockMvc.perform(get("/api/projects"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -58,7 +58,7 @@ public class ProjectControllerTest {
         when(projectService.getAllProjects()).thenReturn(List.of());
 
         // When & Then
-        mockMvc.perform(get("/projects/all"))
+        mockMvc.perform(get("/api/projects"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -69,7 +69,7 @@ public class ProjectControllerTest {
     @Test
     void testPostAddProject_shouldCallServiceAndReturnCreated() throws Exception {
         // When & Then
-        mockMvc.perform(post("/projects")
+        mockMvc.perform(post("/api/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
                 {"owner": "testOwner","name": "testRepo"}
@@ -87,7 +87,7 @@ public class ProjectControllerTest {
     @Test
     void testDeleteProject_shouldCallServiceAndReturnOk() throws Exception {
         // When & Then
-        mockMvc.perform(delete("/projects")
+        mockMvc.perform(delete("/api/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
                 {"owner": "testOwner","name": "testRepo"}
