@@ -54,7 +54,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -62,7 +62,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(3, savedCheckIn.getCount());
         assertEquals(1, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -87,7 +86,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(5, savedCheckIn.getCount());
         assertEquals(4, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -104,7 +102,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -112,7 +110,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -126,7 +123,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -134,7 +131,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -152,7 +148,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -161,7 +157,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(7, savedCheckIn.getCount());
         assertEquals(2, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -180,7 +175,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -188,7 +183,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(7, savedCheckIn.getCount());
         assertEquals(1, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test
@@ -200,7 +194,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        CheckIn resultCheckIn = checkInService.checkInToday();
+        checkInService.checkInToday();
 
         // Then
         verify(checkInRepository).save(checkInCaptor.capture());
@@ -208,7 +202,6 @@ public class CheckInServiceTest {
         assertEquals(TODAY, savedCheckIn.getDate());
         assertEquals(0, savedCheckIn.getCount());
         assertEquals(0, savedCheckIn.getStreak());
-        assertEquals(resultCheckIn, savedCheckIn);
     }
 
     @Test

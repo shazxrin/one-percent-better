@@ -29,8 +29,10 @@ public class MainCheckInService implements CheckInService {
         this.gitHubService = gitHubService;
     }
 
-    @Override
-    public CheckIn checkInToday() {
+    private record CountStreak(int count, int streak) {
+    }
+
+    private CountStreak calculateTodaysCountStreak() {
         int count = 0;
 
         Iterable<Project> projects = projectService.getAllProjects();
@@ -53,24 +55,48 @@ public class MainCheckInService implements CheckInService {
             }
         }
 
+        return new CountStreak(count, streak);
+    }
+
+    @Override
+    public void checkInToday() {
+        CountStreak todaysCountStreak = calculateTodaysCountStreak();
+
         CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
+
         if (todaysCheckIn == null) {
-            todaysCheckIn = checkInRepository.save(new CheckIn(null, LocalDate.now(), count, streak));
+            checkInRepository.save(
+                new CheckIn(
+                    null,
+                    LocalDate.now(),
+                    todaysCountStreak.count(),
+                    todaysCountStreak.streak()
+                )
+            );
         } else {
-            todaysCheckIn.setCount(count);
-            todaysCheckIn.setStreak(streak);
+            todaysCheckIn.setCount(todaysCountStreak.count());
+            todaysCheckIn.setStreak(todaysCountStreak.streak());
             checkInRepository.save(todaysCheckIn);
         }
-        return todaysCheckIn;
     }
 
     @Override
     public CheckIn getTodaysCheckIn() {
         CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
+
         if (todaysCheckIn == null) {
-            return checkInToday();
-        } else {
-            return todaysCheckIn;
+            CountStreak todaysCountStreak = calculateTodaysCountStreak();
+            todaysCheckIn = checkInRepository.save(
+                new CheckIn(
+                    null,
+                    LocalDate.now(),
+                    todaysCountStreak.count(),
+                    todaysCountStreak.streak()
+                )
+            );
+
         }
+
+        return todaysCheckIn;
     }
 }
