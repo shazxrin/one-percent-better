@@ -30,10 +30,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get info about today's check in */
+        get: operations["getCheckInToday"];
         put?: never;
         /** Check in today */
-        post: operations["checkInToday"];
+        post: operations["postCheckInToday"];
         delete?: never;
         options?: never;
         head?: never;
@@ -64,6 +65,12 @@ export interface components {
         ListItemProjectDto: {
             owner?: string;
             name?: string;
+        };
+        TodaysCheckInDto: {
+            /** Format: int32 */
+            count?: number;
+            /** Format: int32 */
+            streak?: number;
         };
         DeleteProjectDto: {
             owner?: string;
@@ -176,7 +183,36 @@ export interface operations {
             };
         };
     };
-    checkInToday: {
+    getCheckInToday: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get info about today's check in successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TodaysCheckInDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCheckInToday: {
         parameters: {
             query?: never;
             header?: never;

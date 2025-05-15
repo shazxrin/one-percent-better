@@ -14,7 +14,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
             <Links/>
         </head>
         <body>
-            <MantineProvider>{ children }</MantineProvider>
+            <MantineProvider defaultColorScheme={ "dark" }>{ children }</MantineProvider>
             <ScrollRestoration/>
             <Scripts/>
         </body>
