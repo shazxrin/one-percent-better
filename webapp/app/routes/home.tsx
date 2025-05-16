@@ -36,11 +36,12 @@ const page: React.FC = () => {
 
     return (
         <Center w={ "100dvw" } h={ "100dvh" }>
-            <Stack align={ "center" } justify="center" gap={ "lg" }>
-                <Group align="center">
+            <Stack align={ "center" } justify="center" gap={ "xl" }>
+                <Stack align={ "center" } gap={ "xs" }>
                     <IconFlame size={ "8rem" } color={ count > 0 ? theme.colors.orange[6] : theme.colors.dark[1] } />
-                    <Text fw={ "bold" } size={ "12rem" } c={ count > 0 ? "orange.6" : "dark.1" }>{ streak }</Text>
-                </Group>
+                    <Text fw={ "bold" } size={ "4rem" } c={ count > 0 ? "orange.6" : "dark.1" }>{ streak }</Text>
+                    <Text fw={ "bold" } size={ "2rem" } c={ count > 0 ? "orange.6" : "dark.1" }>days</Text>
+                </Stack>
 
                 <Text c={ count > 0 ? "orange.4" : "dark.2" }>You have commited { count } times today</Text>
             </Stack>
