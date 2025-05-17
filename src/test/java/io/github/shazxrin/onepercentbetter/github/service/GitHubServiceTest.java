@@ -1,22 +1,22 @@
 package io.github.shazxrin.onepercentbetter.github.service;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
+import io.github.shazxrin.onepercentbetter.github.client.GitHubClient;
+import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
+import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.PagedIterable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.RestClientException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,53 +25,43 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class GitHubServiceTest {
     @Mock
-    private GitHub gitHub;
-
-    @Mock
-    private GHRepository mockRepo;
-
-    @Mock
-    private PagedIterable<GHCommit> mockCommitsIterable;
+    private GitHubClient gitHubClient;
 
     @InjectMocks
     private MainGitHubService gitHubService;
 
     private static final String USERNAME = "testuser";
     private static final String REPOSITORY = "testrepo";
-    private static final String FULL_REPOSITORY_NAME = String.format("%s/%s", USERNAME, REPOSITORY);
-    private static final Date TODAY = Date.from(Instant.now());
-    private static final Date YESTERDAY = Date.from(Instant.now().minus(Duration.ofDays(1)));
+    private static final OffsetDateTime START_OF_DAY = LocalDate.now()
+            .atStartOfDay()
+            .atOffset(ZoneOffset.UTC);
+    private static final OffsetDateTime END_OF_DAY = LocalDate.now()
+            .plusDays(1)
+            .atStartOfDay()
+            .atOffset(ZoneOffset.UTC);
 
     @Test
-    void testGetCommitCountTodayForRepository_whenRepositoryNameIsFormatted_shouldUseCorrectFormat() throws IOException {
+    void testGetCommitCountTodayForRepository_whenRepositoryNameIsFormatted_shouldUseCorrectFormat() {
         // Given
-        when(gitHub.getRepository(eq(FULL_REPOSITORY_NAME))).thenReturn(mockRepo);
-        when(mockRepo.listCommits()).thenReturn(mockCommitsIterable);
-        when(mockCommitsIterable.toList()).thenReturn(List.of());
+        when(gitHubClient.getCommits(eq(USERNAME), eq(REPOSITORY), any(), any()))
+            .thenReturn(Collections.emptyList());
 
         // When
         gitHubService.getCommitCountTodayForRepository(USERNAME, REPOSITORY);
 
         // Then
-        verify(gitHub).getRepository(eq(FULL_REPOSITORY_NAME));
+        verify(gitHubClient).getCommits(eq(USERNAME), eq(REPOSITORY), any(), any());
     }
 
     @Test
-    void testGetCommitCountTodayForRepository_whenCommitsExistToday_shouldReturnCorrectCount() throws IOException {
+    void testGetCommitCountTodayForRepository_whenCommitsExistToday_shouldReturnCorrectCount() {
         // Given
-        LocalDate today = LocalDate.now();
+        Commit commit1 = mock(Commit.class);
+        Commit commit2 = mock(Commit.class);
+        List<Commit> commits = List.of(commit1, commit2);
 
-        GHCommit todayCommit1 = mock(GHCommit.class);
-        GHCommit todayCommit2 = mock(GHCommit.class);
-        GHCommit yesterdayCommit = mock(GHCommit.class);
-
-        when(todayCommit1.getCommitDate()).thenReturn(TODAY);
-        when(todayCommit2.getCommitDate()).thenReturn(TODAY);
-        when(yesterdayCommit.getCommitDate()).thenReturn(YESTERDAY);
-
-        when(gitHub.getRepository(eq(FULL_REPOSITORY_NAME))).thenReturn(mockRepo);
-        when(mockRepo.listCommits()).thenReturn(mockCommitsIterable);
-        when(mockCommitsIterable.toList()).thenReturn(List.of(todayCommit1, todayCommit2, yesterdayCommit));
+        when(gitHubClient.getCommits(eq(USERNAME), eq(REPOSITORY), any(), any()))
+            .thenReturn(commits);
 
         // When
         int count = gitHubService.getCommitCountTodayForRepository(USERNAME, REPOSITORY);
@@ -81,17 +71,10 @@ public class GitHubServiceTest {
     }
 
     @Test
-    void testGetCommitCountTodayForRepository_whenNoCommitsToday_shouldReturnZero() throws IOException {
+    void testGetCommitCountTodayForRepository_whenNoCommits_shouldReturnZero() {
         // Given
-        GHCommit yesterdayCommit1 = mock(GHCommit.class);
-        GHCommit yesterdayCommit2 = mock(GHCommit.class);
-
-        when(yesterdayCommit1.getCommitDate()).thenReturn(YESTERDAY);
-        when(yesterdayCommit2.getCommitDate()).thenReturn(YESTERDAY);
-
-        when(gitHub.getRepository(eq(FULL_REPOSITORY_NAME))).thenReturn(mockRepo);
-        when(mockRepo.listCommits()).thenReturn(mockCommitsIterable);
-        when(mockCommitsIterable.toList()).thenReturn(List.of(yesterdayCommit1, yesterdayCommit2));
+        when(gitHubClient.getCommits(eq(USERNAME), eq(REPOSITORY), any(), any()))
+            .thenReturn(Collections.emptyList());
 
         // When
         int count = gitHubService.getCommitCountTodayForRepository(USERNAME, REPOSITORY);
@@ -101,11 +84,10 @@ public class GitHubServiceTest {
     }
 
     @Test
-    void testGetCommitCountTodayForRepository_whenNoCommits_shouldReturnZero() throws IOException {
+    void testGetCommitCountTodayForRepository_whenExceptionOccurs_shouldHandleExceptionAndReturnZero() {
         // Given
-        when(gitHub.getRepository(eq(FULL_REPOSITORY_NAME))).thenReturn(mockRepo);
-        when(mockRepo.listCommits()).thenReturn(mockCommitsIterable);
-        when(mockCommitsIterable.toList()).thenReturn(List.of());
+        when(gitHubClient.getCommits(eq(USERNAME), eq(REPOSITORY), any(), any()))
+            .thenThrow(new GitHubException("Repository not found"));
 
         // When
         int count = gitHubService.getCommitCountTodayForRepository(USERNAME, REPOSITORY);
@@ -113,16 +95,22 @@ public class GitHubServiceTest {
         // Then
         assertEquals(0, count);
     }
-
+    
     @Test
-    void testGetCommitCountTodayForRepository_whenIOExceptionOccurs_shouldHandleExceptionAndReturnZero() throws IOException {
+    void testGetCommitCountTodayForRepository_shouldUseCorrectDateRange() {
         // Given
-        when(gitHub.getRepository(FULL_REPOSITORY_NAME)).thenThrow(new IOException("Repository not found"));
+        when(gitHubClient.getCommits(eq(USERNAME), eq(REPOSITORY), any(), any()))
+            .thenReturn(Collections.emptyList());
 
         // When
-        int count = gitHubService.getCommitCountTodayForRepository(USERNAME, REPOSITORY);
+        gitHubService.getCommitCountTodayForRepository(USERNAME, REPOSITORY);
 
         // Then
-        assertEquals(0, count);
+        verify(gitHubClient).getCommits(
+            eq(USERNAME),
+            eq(REPOSITORY),
+            any(OffsetDateTime.class),
+            any(OffsetDateTime.class)
+        );
     }
 }

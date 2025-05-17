@@ -38,8 +38,6 @@ node {
 }
 
 dependencies {
-    implementation("org.kohsuke:github-api:2.0-rc.1")
-
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")

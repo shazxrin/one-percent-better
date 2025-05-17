@@ -1,12 +1,13 @@
 package io.github.shazxrin.onepercentbetter.github.service;
 
-import java.io.IOException;
+import io.github.shazxrin.onepercentbetter.github.client.GitHubClient;
+import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
+import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
-import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,38 +16,37 @@ import org.springframework.stereotype.Service;
 public class MainGitHubService implements GitHubService {
     private static final Logger log = LoggerFactory.getLogger(MainGitHubService.class);
 
-    private final GitHub gitHub;
+    private final GitHubClient gitHubClient;
 
-    private MainGitHubService(GitHub gitHub) {
-        this.gitHub = gitHub;
+    private MainGitHubService(GitHubClient gitHubClient) {
+        this.gitHubClient = gitHubClient;
     }
 
-    private String createRepositoryName(String username, String repository) {
-        return String.format("%s/%s", username, repository);
+    private OffsetDateTime getStartOfDay() {
+        return LocalDate.now()
+            .atStartOfDay()
+            .atOffset(ZoneOffset.UTC);
     }
 
-    private LocalDate convertToLocalDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    private OffsetDateTime getEndOfDay() {
+        return LocalDate.now()
+            .atTime(23, 59, 59)
+            .atOffset(ZoneOffset.UTC);
     }
 
     @Override
     public int getCommitCountTodayForRepository(String username, String repository) {
-        int count = 0;
         try {
-            List<GHCommit> commits = gitHub.getRepository(createRepositoryName(username, repository))
-                .listCommits()
-                .toList();
-
-            for (GHCommit commit : commits) {
-                LocalDate commitDate = convertToLocalDate(commit.getCommitDate());
-                if (commitDate.isEqual(LocalDate.now())) {
-                    count++;
-                }
-            }
-        } catch (IOException ex) {
-            log.error("Failed to get commit count for {}/{}", username, repository, ex);
+            List<Commit> commits = gitHubClient.getCommits(
+                username,
+                repository,
+                getStartOfDay(),
+                getEndOfDay()
+            );
+            return commits.size();
+        } catch (GitHubException ex) {
+            log.error("Error getting commit count today.", ex);
+            return 0;
         }
-        log.info("Commit count for {}/{} is {}", username, repository, count);
-        return count;
     }
 }
