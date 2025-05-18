@@ -16,7 +16,7 @@ public class CheckInSchedule {
         this.checkInService = checkInService;
     }
 
-    @Scheduled(cron = "${app.check-in-cron}")
+    @Scheduled(cron = "${app.check-in.schedule-cron}")
     public void checkIn() {
         log.info("Running check-in schedule.");
 

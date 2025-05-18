@@ -1,5 +1,7 @@
 package io.github.shazxrin.onepercentbetter.github.service;
 
+import java.time.LocalDate;
+
 public interface GitHubService {
-    int getCommitCountTodayForRepository(String username, String repository);
+    int getCommitCountForRepositoryOnDate(String username, String repository, LocalDate date);
 }

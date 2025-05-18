@@ -32,60 +32,65 @@ public class MainCheckInService implements CheckInService {
     private record CountStreak(int count, int streak) {
     }
 
-    private CountStreak calculateTodaysCountStreak() {
+    private CountStreak calculateCountStreakForDate(LocalDate date) {
         int count = 0;
 
         Iterable<Project> projects = projectService.getAllProjects();
         for (Project project : projects) {
             log.info("Checking {}/{}", project.getOwner(), project.getName());
-            count += gitHubService.getCommitCountTodayForRepository(project.getOwner(), project.getName());
+            count += gitHubService.getCommitCountForRepositoryOnDate(project.getOwner(), project.getName(), date);
         }
         log.info("Total commit count is {}", count);
 
         int streak = 0;
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        CheckIn yesterdayCheckIn = checkInRepository.findByDate(yesterday);
-        if (yesterdayCheckIn == null) {
+        LocalDate prevDate = date.minusDays(1);
+        CheckIn prevDateCheckIn = checkInRepository.findByDate(prevDate);
+        if (prevDateCheckIn == null) {
             if (count > 0) {
                 streak = 1;
             }
         } else {
             if (count > 0) {
-                streak = yesterdayCheckIn.getStreak() + 1;
+                streak = prevDateCheckIn.getStreak() + 1;
             }
         }
 
         return new CountStreak(count, streak);
     }
 
-    @Override
-    public void checkInToday() {
-        CountStreak todaysCountStreak = calculateTodaysCountStreak();
+    private void checkInForDate(LocalDate date) {
+        CountStreak todaysCountStreak = calculateCountStreakForDate(date);
 
-        CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
+        CheckIn checkIn = checkInRepository.findByDate(date);
 
-        if (todaysCheckIn == null) {
+        if (checkIn == null) {
             checkInRepository.save(
                 new CheckIn(
                     null,
-                    LocalDate.now(),
+                    date,
                     todaysCountStreak.count(),
                     todaysCountStreak.streak()
                 )
             );
         } else {
-            todaysCheckIn.setCount(todaysCountStreak.count());
-            todaysCheckIn.setStreak(todaysCountStreak.streak());
-            checkInRepository.save(todaysCheckIn);
+            checkIn.setCount(todaysCountStreak.count());
+            checkIn.setStreak(todaysCountStreak.streak());
+            checkInRepository.save(checkIn);
         }
+    }
+
+    @Override
+    public void checkInToday() {
+        checkInForDate(LocalDate.now());
     }
 
     @Override
     public CheckIn getTodaysCheckIn() {
         CheckIn todaysCheckIn = checkInRepository.findByDate(LocalDate.now());
 
+        // Check in for today if not found.
         if (todaysCheckIn == null) {
-            CountStreak todaysCountStreak = calculateTodaysCountStreak();
+            CountStreak todaysCountStreak = calculateCountStreakForDate(LocalDate.now());
             todaysCheckIn = checkInRepository.save(
                 new CheckIn(
                     null,
@@ -94,9 +99,21 @@ public class MainCheckInService implements CheckInService {
                     todaysCountStreak.streak()
                 )
             );
-
         }
 
         return todaysCheckIn;
+    }
+
+    @Override
+    public void checkInBootstrap(LocalDate bootstrapDate) {
+        if (bootstrapDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Bootstrap date must be before today.");
+        }
+
+        var currentDate = bootstrapDate;
+        while (!currentDate.isAfter(LocalDate.now())) {
+            checkInForDate(currentDate);
+            currentDate = currentDate.plusDays(1);
+        }
     }
 }

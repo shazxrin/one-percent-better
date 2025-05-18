@@ -12,4 +12,6 @@ github:
   token: ""
   username: ""
 app:
-  check-in-cron: "0 0 */1 * * *"
+  check-in:
+    schedule-cron: "0 0 */1 * * *"
+    bootstrap-date: 2025-05-01
