@@ -8,5 +8,5 @@ public interface CheckInService {
 
     CheckIn getTodaysCheckIn();
 
-    void checkInBootstrap(LocalDate bootstrapDate);
+    void checkInInterval(LocalDate from, LocalDate to);
 }

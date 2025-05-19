@@ -8,7 +8,6 @@ import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -269,22 +268,22 @@ public class CheckInServiceTest {
     }
     
     @Test
-    void testCheckInBootstrap_whenBootstrapDateIsInFuture_shouldThrowException() {
+    void testCheckInInterval_whenBootstrapDateIsInFuture_shouldThrowException() {
         // Given
         LocalDate futureDate = LocalDate.now().plusDays(1);
         
         // When/Then
         Exception exception = assertThrows(
             IllegalArgumentException.class,
-            () -> checkInService.checkInBootstrap(futureDate)
+            () -> checkInService.checkInInterval(futureDate, TODAY)
         );
         
-        assertEquals("Bootstrap date must be before today.", exception.getMessage());
+        assertEquals("From date must be before to date.", exception.getMessage());
         verify(checkInRepository, never()).save(any());
     }
     
     @Test
-    void testCheckInBootstrap_whenBootstrapDateIsYesterday_shouldCreateCheckInsForYesterdayAndToday() {
+    void testCheckInInterval_whenBootstrapDateIsYesterday_shouldCreateCheckInsForYesterdayAndToday() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -307,7 +306,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         
         // When
-        checkInService.checkInBootstrap(YESTERDAY);
+        checkInService.checkInInterval(YESTERDAY, TODAY);
         
         // Then
         ArgumentCaptor<CheckIn> checkInCaptor = ArgumentCaptor.forClass(CheckIn.class);
@@ -330,7 +329,7 @@ public class CheckInServiceTest {
     }
     
     @Test
-    void testCheckInBootstrap_whenBootstrapDateIsThreeDaysAgo_shouldCreateCheckInsForAllDays() {
+    void testCheckInInterval_whenBootstrapDateIsThreeDaysAgo_shouldCreateCheckInsForAllDays() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -363,7 +362,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         
         // When
-        checkInService.checkInBootstrap(threeDaysAgo);
+        checkInService.checkInInterval(threeDaysAgo, TODAY);
         
         // Then
         ArgumentCaptor<CheckIn> checkInCaptor = ArgumentCaptor.forClass(CheckIn.class);
@@ -398,7 +397,7 @@ public class CheckInServiceTest {
     }
     
     @Test
-    void testCheckInBootstrap_whenSomeCheckInsAlreadyExist_shouldUpdateExistingAndCreateMissing() {
+    void testCheckInInterval_whenSomeCheckInsAlreadyExist_shouldUpdateExistingAndCreateMissing() {
         // Given
         Project project = new Project(null, "shazxrin", "one-percent-better");
         when(projectService.getAllProjects()).thenReturn(List.of(project));
@@ -427,7 +426,7 @@ public class CheckInServiceTest {
         when(checkInRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         
         // When
-        checkInService.checkInBootstrap(twoDaysAgo);
+        checkInService.checkInInterval(twoDaysAgo, TODAY);
         
         // Then
         ArgumentCaptor<CheckIn> checkInCaptor = ArgumentCaptor.forClass(CheckIn.class);

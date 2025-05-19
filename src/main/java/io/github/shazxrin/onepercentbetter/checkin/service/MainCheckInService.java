@@ -33,14 +33,15 @@ public class MainCheckInService implements CheckInService {
     }
 
     private CountStreak calculateCountStreakForDate(LocalDate date) {
+        log.info("Calculating count streak for date {}.", date);
         int count = 0;
 
         Iterable<Project> projects = projectService.getAllProjects();
         for (Project project : projects) {
-            log.info("Checking {}/{}", project.getOwner(), project.getName());
+            log.info("Checking {}/{}.", project.getOwner(), project.getName());
             count += gitHubService.getCommitCountForRepositoryOnDate(project.getOwner(), project.getName(), date);
         }
-        log.info("Total commit count is {}", count);
+        log.info("Total commit count is {}.", count);
 
         int streak = 0;
         LocalDate prevDate = date.minusDays(1);
@@ -105,13 +106,13 @@ public class MainCheckInService implements CheckInService {
     }
 
     @Override
-    public void checkInBootstrap(LocalDate bootstrapDate) {
-        if (bootstrapDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Bootstrap date must be before today.");
+    public void checkInInterval(LocalDate from, LocalDate to) {
+        if (from.isAfter(to)) {
+            throw new IllegalArgumentException("From date must be before to date.");
         }
 
-        var currentDate = bootstrapDate;
-        while (!currentDate.isAfter(LocalDate.now())) {
+        var currentDate = from;
+        while (!currentDate.isAfter(to)) {
             checkInForDate(currentDate);
             currentDate = currentDate.plusDays(1);
         }

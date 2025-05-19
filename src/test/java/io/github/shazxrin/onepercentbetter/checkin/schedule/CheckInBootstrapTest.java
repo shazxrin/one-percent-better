@@ -1,0 +1,88 @@
+package io.github.shazxrin.onepercentbetter.checkin.schedule;
+
+import io.github.shazxrin.onepercentbetter.checkin.configuration.CheckInProperties;
+import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class CheckInBootstrapTest {
+
+    @Mock
+    private CheckInProperties checkInProperties;
+
+    @Mock
+    private CheckInService checkInService;
+
+    @Mock
+    private ProjectService projectService;
+
+    @InjectMocks
+    private CheckInBootstrap checkInBootstrap;
+
+    private static final LocalDate TODAY = LocalDate.now();
+    private static final String BOOTSTRAP_DATE = "2023-01-01";
+    private static final LocalDate PARSED_BOOTSTRAP_DATE = LocalDate.parse(BOOTSTRAP_DATE);
+
+    @BeforeEach
+    void setUp() {
+        when(checkInProperties.getBootstrapDate()).thenReturn(BOOTSTRAP_DATE);
+    }
+
+    @Test
+    void testCheckInBootstrap_withValidProjects_shouldAddProjectsAndCheckIn() {
+        // Given
+        String validProject1 = "owner1/project1";
+        String validProject2 = "owner2/project2";
+        when(checkInProperties.getBootstrapProjects())
+                .thenReturn(Arrays.asList(validProject1, validProject2));
+
+        // When
+        checkInBootstrap.checkInBootstrap();
+
+        // Then
+        verify(projectService).addProject("owner1", "project1");
+        verify(projectService).addProject("owner2", "project2");
+        verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+    }
+
+    @Test
+    void testCheckInBootstrap_withInvalidProject_shouldSkipInvalidAndProcessValid() {
+        // Given
+        String validProject = "owner/project";
+        String invalidProject = "invalid-format";
+        when(checkInProperties.getBootstrapProjects())
+                .thenReturn(Arrays.asList(validProject, invalidProject));
+
+        // When
+        checkInBootstrap.checkInBootstrap();
+
+        // Then
+        verify(projectService).addProject("owner", "project");
+        verify(projectService, never()).addProject(eq("invalid-format"), any());
+        verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+    }
+
+    @Test
+    void testCheckInBootstrap_checksCorrectDateInterval() {
+        // Given
+        when(checkInProperties.getBootstrapProjects()).thenReturn(Collections.emptyList());
+        
+        // When
+        checkInBootstrap.checkInBootstrap();
+
+        // Then
+        verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+    }
+}
