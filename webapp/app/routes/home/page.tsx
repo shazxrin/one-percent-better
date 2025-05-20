@@ -35,7 +35,7 @@ const page: React.FC = () => {
     const theme = useMantineTheme()
 
     return (
-        <Center w={ "100dvw" } h={ "100dvh" }>
+        <Center h={ "100%" }>
             <Stack align={ "center" } justify="center" gap={ "xl" }>
                 <Stack align={ "center" } gap={ "xs" }>
                     <IconFlame size={ "8rem" } color={ count > 0 ? theme.colors.orange[6] : theme.colors.dark[1] } />
