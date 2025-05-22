@@ -20,7 +20,7 @@
     "@mantine/nprogress": "^8.0.0",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
-    "@tabler/icons-react": "^3.31.0",
+    "@tabler/icons-react": "^3.33.0",
     "dayjs": "^1.11.13",
     "isbot": "^5.1.27",
     "openapi-fetch": "^0.14.0",
