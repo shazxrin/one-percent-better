@@ -7,10 +7,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/build
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Build
+        uses: ./.github/actions/build
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/test
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Test
+        uses: ./.github/actions/test
