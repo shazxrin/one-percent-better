@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
 
@@ -16,13 +17,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("Requires an actual GitHub token. Used for local verification.")
 public class GitHubClientTest {
     private static GitHubClient gitHubClient;
     
     private static final String WELL_KNOWN_OWNER = "shazxrin";
     private static final String WELL_KNOWN_REPOSITORY = "website";
     private static final String NONEXISTENT_REPOSITORY = "this-repo-does-not-exist";
-
 
     @BeforeAll
     static void setUp() {
