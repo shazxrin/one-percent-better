@@ -22,9 +22,9 @@ public class ExceptionControllerAdviceTest {
     private MockMvc mockMvc;
 
     @Test
-    void testHandleBadRequestException_shouldReturnBadRequestStatus() throws Exception {
+    void testHandleProjectNotFoundException_shouldReturnBadRequestStatus() throws Exception {
         // When & Then
-        mockMvc.perform(get("/test/bad-request"))
+        mockMvc.perform(get("/test/project-not-found"))
             .andExpect(status().isBadRequest())
             .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andExpect(jsonPath("$.status").value(400))
@@ -42,7 +42,7 @@ public class ExceptionControllerAdviceTest {
 
     @RestController
     static class ExceptionController {
-        @GetMapping("/test/bad-request")
+        @GetMapping("/test/project-not-found")
         public String badRequest() {
             throw new ProjectNotFoundException("Bad request.");
         }
