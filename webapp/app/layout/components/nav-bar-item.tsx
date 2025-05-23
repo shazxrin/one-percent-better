@@ -13,9 +13,9 @@ const NavBarItem: React.FC<NavBarItemProps> = ({ text, path, icon }) => {
 
     return (
         <NavLink
-            color={"gray"}
+            color={ "gray" }
             label={ text }
-            leftSection={ icon } 
+            leftSection={ icon }
             active={ path === location.pathname }
             component={ Link }
             to={ path }
