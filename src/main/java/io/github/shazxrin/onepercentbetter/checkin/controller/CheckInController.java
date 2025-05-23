@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.controller;
 
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
-import io.github.shazxrin.onepercentbetter.checkin.dto.TodaysCheckInDto;
+import io.github.shazxrin.onepercentbetter.checkin.dto.TodaysCheckIn;
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckIn;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,9 +39,9 @@ public class CheckInController {
         @ApiResponse(responseCode = "200", description = "Get info about today's check in successfully"),
     })
     @GetMapping("/today")
-    public TodaysCheckInDto getCheckInToday() {
+    public TodaysCheckIn getCheckInToday() {
         CheckIn todaysCheckIn = checkInService.getTodaysCheckIn();
 
-        return TodaysCheckInDto.fromCheckIn(todaysCheckIn);
+        return TodaysCheckIn.fromCheckIn(todaysCheckIn);
     }
 }

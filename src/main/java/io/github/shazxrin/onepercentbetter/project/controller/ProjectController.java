@@ -1,8 +1,8 @@
 package io.github.shazxrin.onepercentbetter.project.controller;
 
-import io.github.shazxrin.onepercentbetter.project.dto.AddProjectDto;
-import io.github.shazxrin.onepercentbetter.project.dto.DeleteProjectDto;
-import io.github.shazxrin.onepercentbetter.project.dto.ListItemProjectDto;
+import io.github.shazxrin.onepercentbetter.project.dto.AddProject;
+import io.github.shazxrin.onepercentbetter.project.dto.DeleteProject;
+import io.github.shazxrin.onepercentbetter.project.dto.ListItemProject;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,10 +35,10 @@ public class ProjectController {
     @Operation(summary = "Get all projects")
     @ApiResponse(responseCode = "200", description = "Get all projects successfully")
     @GetMapping
-    public List<ListItemProjectDto> getAllProjects() {
-        ArrayList<ListItemProjectDto> projects = new ArrayList<>();
+    public List<ListItemProject> getAllProjects() {
+        ArrayList<ListItemProject> projects = new ArrayList<>();
         projectService.getAllProjects()
-            .forEach(project -> projects.add(new ListItemProjectDto(project.getOwner(), project.getName())));
+            .forEach(project -> projects.add(new ListItemProject(project.getOwner(), project.getName())));
         return projects;
     }
 
@@ -49,8 +49,8 @@ public class ProjectController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void postAddProject(@RequestBody AddProjectDto addProjectDto) {
-        projectService.addProject(addProjectDto.owner(), addProjectDto.name());
+    public void postAddProject(@RequestBody AddProject addProject) {
+        projectService.addProject(addProject.owner(), addProject.name());
     }
 
     @Operation(summary = "Delete a project")
@@ -61,7 +61,7 @@ public class ProjectController {
     })
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
-    public void deleteProject(@RequestBody DeleteProjectDto deleteProjectDto) {
-        projectService.removeProject(deleteProjectDto.owner(), deleteProjectDto.name());
+    public void deleteProject(@RequestBody DeleteProject deleteProject) {
+        projectService.removeProject(deleteProject.owner(), deleteProject.name());
     }
 }
