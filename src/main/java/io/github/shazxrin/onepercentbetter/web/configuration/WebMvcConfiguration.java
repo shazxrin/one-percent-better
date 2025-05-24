@@ -13,7 +13,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // The resource resolver handles routes used for frontend SPA.
         registry
             .addResourceHandler("/**")
-            .addResourceLocations("classpath:/public/**")
+            .addResourceLocations("classpath:/public/")
             .resourceChain(true)
             .addResolver(new WebAppPathResourceResolver());
     }
