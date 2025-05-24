@@ -68,3 +68,23 @@ tasks.register<PnpmTask>("genApi") {
 
     args.set(listOf("run", "genApi"))
 }
+
+tasks.register<Delete>("cleanWebApp") {
+    delete(file("${projectDir}/build/resources/main/public"))
+    delete(file("${projectDir}/webapp/build"))
+}
+
+tasks.register<PnpmTask>("buildWebApp") {
+    dependsOn(tasks.named("cleanWebApp"))
+    pnpmCommand.set(listOf("run", "build"))
+}
+
+tasks.register<Copy>("bundleWebApp") {
+    dependsOn(tasks.named("buildWebApp"))
+    from(file("${projectDir}/webapp/build/client"))
+    into(file("${projectDir}/build/resources/main/public"))
+}
+
+tasks.named("resolveMainClassName") {
+    dependsOn(tasks.named("bundleWebApp"))
+}
