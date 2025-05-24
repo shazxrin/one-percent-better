@@ -4,6 +4,6 @@ services:
     environment:
       - "POSTGRES_DB=one-percent-better"
       - "POSTGRES_PASSWORD=password"
-      - "POSTGRES_USER=postgres"
+      - "POSTGRES_USER=user"
     ports:
       - "5432:5432"
