@@ -1,11 +1,8 @@
-import com.github.gradle.node.pnpm.task.PnpmTask
-
 plugins {
     java
     id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
-    id("com.github.node-gradle.node") version "7.1.0"
 }
 
 group = "io.github.shazxrin"
@@ -31,10 +28,6 @@ openApi {
     customBootRun {
         systemProperties = mapOf("spring.docker.compose.file" to "${projectDir}/compose.yaml")
     }
-}
-
-node {
-    nodeProjectDir.set(file("${projectDir}/webapp"))
 }
 
 dependencies {
@@ -63,28 +56,16 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.register<PnpmTask>("genApi") {
-    dependsOn("generateOpenApiDocs")
-
-    args.set(listOf("run", "genApi"))
-}
-
 tasks.register<Delete>("cleanWebApp") {
     delete(file("${projectDir}/build/resources/main/public"))
     delete(file("${projectDir}/webapp/build"))
 }
 
-tasks.register<PnpmTask>("buildWebApp") {
-    dependsOn(tasks.named("cleanWebApp"))
-    pnpmCommand.set(listOf("run", "build"))
-}
-
 tasks.register<Copy>("bundleWebApp") {
-    dependsOn(tasks.named("buildWebApp"))
     from(file("${projectDir}/webapp/build/client"))
     into(file("${projectDir}/build/resources/main/public"))
 }
 
-tasks.named("resolveMainClassName") {
+tasks.named("compileJava") {
     dependsOn(tasks.named("bundleWebApp"))
 }
