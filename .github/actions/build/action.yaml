@@ -12,6 +12,7 @@ runs:
       uses: gradle/actions/setup-gradle@v4
 
     - name: Setup Node
+      working-directory: "./webapp"
       uses: actions/setup-node@v4
       with:
         node-version: "latest"
