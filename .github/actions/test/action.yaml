@@ -21,6 +21,11 @@ runs:
       shell: "bash"
       run: npm install
 
+    - name: Run NPM Build
+      working-directory: "./webapp"
+      shell: "bash"
+      run: npm run build
+
     - name: Run Gradle Tests
       shell: bash
       run: ./gradlew test
