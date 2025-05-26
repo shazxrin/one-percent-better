@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: never
+  liquibase:
+    enabled: false
+  rabbitmq:
+    listener:
+      direct:
+        auto-startup: false
+      simple:
+        auto-startup: false
