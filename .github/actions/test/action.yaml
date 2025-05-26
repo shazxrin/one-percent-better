@@ -11,21 +11,6 @@ runs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: "latest"
-
-    - name: Run NPM Install
-      working-directory: "./webapp"
-      shell: "bash"
-      run: npm install
-
-    - name: Run NPM Build
-      working-directory: "./webapp"
-      shell: "bash"
-      run: npm run build
-
-    - name: Run Gradle Tests
+    - name: Run Tests
       shell: bash
       run: ./gradlew test
