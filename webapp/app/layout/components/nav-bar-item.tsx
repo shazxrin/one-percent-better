@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core"
+import { NavLink } from "@mantine/core"
 import { IconHome } from "@tabler/icons-react"
 import { Link, useLocation } from "react-router";
 
@@ -12,16 +12,15 @@ const NavBarItem: React.FC<NavBarItemProps> = ({ text, path, icon }) => {
     const location = useLocation();
 
     return (
-        <Button 
+        <NavLink
             color={"gray"}
+            label={ text }
             leftSection={ icon } 
-            justify={ "flex-start" }
-            variant={ path === location.pathname ? "light" : "subtle" }
+            active={ path === location.pathname }
             component={ Link }
             to={ path }
         >
-            { text }
-        </Button>
+        </NavLink>
     )
 }
 export default NavBarItem;
