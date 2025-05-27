@@ -1,6 +1,12 @@
 name: Publish 
 inputs:
-  version_name:
+  github-token:
+    description: "GitHub token for authentication"
+    required: true
+  github-username:
+    description: "GitHub username for authentication"
+    required: true
+  version-name:
     description: "Version name to be used for the build"
     required: true
     default: "latest"
@@ -35,10 +41,14 @@ runs:
       shell: bash
       run: ./gradlew clean build --exclude-task=test
 
-    - name: Build Docker Image
+    - name: Authenticate Container Registry
       shell: bash
-      run: docker build . -t ghcr.io/shazxrin/one-percent-better:${{ inputs.version_name }}
+      run: echo "${{ inputs.github-token }}" | docker login ghcr.io -u ${{ inputs.github-username }} --password-stdin
 
-    - name: Push Docker Image
+    - name: Build Container Image
       shell: bash
-      run: docker push ghcr.io/shazxrin/one-percent-better:${{ inputs.version_name }}
+      run: docker build . -t ghcr.io/shazxrin/one-percent-better:${{ inputs.version-name }}
+
+    - name: Push Container Image
+      shell: bash
+      run: docker push ghcr.io/shazxrin/one-percent-better:${{ inputs.version-name }}
