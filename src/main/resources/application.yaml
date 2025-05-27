@@ -16,8 +16,8 @@ app:
     schedule-cron: "0 0 */1 * * *"
     bootstrap:
       enabled: true
-date: 2025-05-01
-    projects:
-      - "shazxrin/one-percent-better"
-- "shazxrin/notifier"
-      - "shazxrin/backbone"
+      date: 2025-05-01
+      projects:
+        - "shazxrin/one-percent-better"
+        - "shazxrin/notifier"
+        - "shazxrin/backbone"
