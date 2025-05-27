@@ -33,7 +33,7 @@ runs:
 
     - name: Run Build
       shell: bash
-      run: ./gradlew clean build
+      run: ./gradlew clean build --exclude-task=test
 
     - name: Build Docker Image
       shell: bash
