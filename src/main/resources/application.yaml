@@ -14,7 +14,10 @@ github:
 app:
   check-in:
     schedule-cron: "0 0 */1 * * *"
-    bootstrap-date: 2025-05-01
-    bootstrap-projects:
-      - "shazxrin/app-one-percent-better"
-      - "shazxrin/infra-backbone"
+    bootstrap:
+      enabled: true
+date: 2025-05-01
+    projects:
+      - "shazxrin/one-percent-better"
+- "shazxrin/notifier"
+      - "shazxrin/backbone"

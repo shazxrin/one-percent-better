@@ -7,23 +7,52 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "app.check-in")
 public class CheckInProperties {
-    private String bootstrapDate;
+    public static class Bootstrap {
+        private boolean enabled;
+        private String date;
+        private List<String> projects;
 
-    private List<String> bootstrapProjects;
+        public boolean isEnabled() {
+            return enabled;
+        }
 
-    public String getBootstrapDate() {
-        return bootstrapDate;
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public List<String> getProjects() {
+            return projects;
+        }
+
+        public void setProjects(List<String> projects) {
+            this.projects = projects;
+        }
     }
 
-    public void setBootstrapDate(String bootstrapDate) {
-        this.bootstrapDate = bootstrapDate;
+    private String scheduleCron;
+    private Bootstrap bootstrap;
+
+    public String getScheduleCron() {
+        return scheduleCron;
     }
 
-    public List<String> getBootstrapProjects() {
-        return bootstrapProjects;
+    public void setScheduleCron(String scheduleCron) {
+        this.scheduleCron = scheduleCron;
     }
 
-    public void setBootstrapProjects(List<String> bootstrapProjects) {
-        this.bootstrapProjects = bootstrapProjects;
+    public Bootstrap getBootstrap() {
+        return bootstrap;
+    }
+
+    public void setBootstrap(Bootstrap bootstrap) {
+        this.bootstrap = bootstrap;
     }
 }

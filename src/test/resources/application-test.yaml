@@ -1,3 +1,8 @@
 spring:
   datasource:
     url: jdbc:h2:mem:one-percent-better;DB_CLOSE_DELAY=-1
+
+app:
+  check-in:
+    bootstrap:
+      enabled: false
