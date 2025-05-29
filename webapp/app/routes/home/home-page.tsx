@@ -1,4 +1,4 @@
-import { Center, Stack, Text, useMantineTheme } from "@mantine/core"
+import { Center, Image, Stack, Text, useMantineTheme } from "@mantine/core"
 import { type ClientLoaderFunction, type ClientLoaderFunctionArgs, useLoaderData } from "react-router"
 import React from "react"
 import { IconFlame } from "@tabler/icons-react"
@@ -24,13 +24,12 @@ export const clientLoader: ClientLoaderFunction = async ({ }: ClientLoaderFuncti
 
 const Home: React.FC = () => {
     const { count, streak } = useLoaderData<LoaderData>()
-    const theme = useMantineTheme()
 
     return (
         <Center h={"100%"}>
             <Stack align={"center"} justify="center" gap={"xl"}>
                 <Stack align={"center"} gap={"xs"}>
-                    <IconFlame size={"8rem"} color={count > 0 ? theme.colors.orange[6] : theme.colors.dark[1]} />
+                    <Image src={count > 0 ? "/assets/streak.png" : "/assets/streak_empty.png"} h={"128px"} w={"128px"} />
                     <Text fw={"bold"} size={"4rem"} c={count > 0 ? "orange.6" : "dark.1"}>{streak}</Text>
                     <Text fw={"bold"} size={"2rem"} c={count > 0 ? "orange.6" : "dark.1"}>days</Text>
                 </Stack>
