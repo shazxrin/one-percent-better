@@ -33,4 +33,4 @@ jobs:
       - name: Publish
         uses: ./.github/actions/publish
         with:
-          version_name: ${{ github.ref_name }}
+          version-name: ${{ github.ref_name }}
