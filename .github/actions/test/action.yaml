@@ -1,4 +1,11 @@
 name: Test
+inputs:
+  github-token:
+    description: "GitHub token for authentication"
+    required: true
+  github-username:
+    description: "GitHub username for authentication"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -13,4 +20,4 @@ runs:
 
     - name: Run Tests
       shell: bash
-      run: ./gradlew test
+      run: ./gradlew test -Pgpr.username=${{ inputs.github-username }} -Pgpr.token=${{ inputs.github-token }}

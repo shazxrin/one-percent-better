@@ -1,4 +1,11 @@
 name: Build
+inputs:
+  github-token:
+    description: "GitHub token for authentication"
+    required: true
+  github-username:
+    description: "GitHub username for authentication"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -13,4 +20,4 @@ runs:
 
     - name: Run Build
       shell: bash
-      run: ./gradlew clean assemble
+      run: ./gradlew clean assemble -Pgpr.username=${{ inputs.github-username }} -Pgpr.token=${{ inputs.github-token }}

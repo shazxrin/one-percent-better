@@ -12,6 +12,9 @@ jobs:
 
       - name: Build
         uses: ./.github/actions/build
+        with:
+          github-username: ${{ github.actor }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     needs: build
@@ -22,6 +25,9 @@ jobs:
 
       - name: Test
         uses: ./.github/actions/test
+        with:
+          github-username: ${{ github.actor }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   
   publish:
     needs: test
@@ -33,4 +39,6 @@ jobs:
       - name: Publish
         uses: ./.github/actions/publish
         with:
+          github-username: ${{ github.actor }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           version-name: ${{ github.ref_name }}

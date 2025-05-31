@@ -39,7 +39,7 @@ runs:
 
     - name: Run Build
       shell: bash
-      run: ./gradlew clean build --exclude-task=test
+      run: ./gradlew clean build --exclude-task=test -Pgpr.username=${{ inputs.github-username }} -Pgpr.token=${{ inputs.github-token }}
 
     - name: Authenticate Container Registry
       shell: bash
