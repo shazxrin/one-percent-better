@@ -17,7 +17,7 @@ public class CheckInSchedule {
     }
 
     @Scheduled(cron = "${app.check-in.schedule-cron}")
-    public void checkIn() {
+    public void runScheduledCheckIn() {
         log.info("Running check-in schedule.");
 
         checkInService.checkInToday();

@@ -8,6 +8,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/one-percent-better
     username: user
     password: password
+  rabbitmq:
+    host: localhost
+    username: user
+    password: password
 github:
   token: ""
   username: ""
@@ -19,5 +23,5 @@ app:
       date: 2025-05-01
       projects:
         - "shazxrin/one-percent-better"
-        - "shazxrin/notifier"
-        - "shazxrin/backbone"
+  reminder:
+    schedule-cron: "0 0 */1 * * *"
