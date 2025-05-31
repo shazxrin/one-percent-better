@@ -1,6 +1,5 @@
-package io.github.shazxrin.onepercentbetter.checkin.schedule;
+package io.github.shazxrin.onepercentbetter.checkin.trigger;
 
-import io.github.shazxrin.onepercentbetter.checkin.schedule.CheckInSchedule;
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

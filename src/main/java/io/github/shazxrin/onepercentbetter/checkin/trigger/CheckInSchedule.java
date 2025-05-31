@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.checkin.schedule;
+package io.github.shazxrin.onepercentbetter.checkin.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
 import org.slf4j.Logger;
