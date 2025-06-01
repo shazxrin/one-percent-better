@@ -20,9 +20,9 @@ public class CheckInScheduleTest {
     private CheckInSchedule checkInSchedule;
 
     @Test
-    void testCheckIn_shouldCallCheckInServiceCheckInToday() {
+    void testRunScheduledCheckIn_shouldCallCheckInServiceCheckInToday() {
         // When
-        checkInSchedule.checkIn();
+        checkInSchedule.runScheduledCheckIn();
 
         // Then
         verify(checkInService, times(1)).checkInToday();
