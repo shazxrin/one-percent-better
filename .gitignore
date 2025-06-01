@@ -38,3 +38,6 @@ out/
 
 ### GitHub Actions ###
 !.github/actions/build
+
+### Development Environment Variables ###
+application-dev.yaml
