@@ -12,7 +12,7 @@ jobs:
         uses: ./.github/actions/build
         with:
           github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GPR_TOKEN }}
 
   test:
     needs: build
@@ -25,4 +25,4 @@ jobs:
         uses: ./.github/actions/test
         with:
           github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GPR_TOKEN }}

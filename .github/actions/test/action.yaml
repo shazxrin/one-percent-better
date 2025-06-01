@@ -20,4 +20,7 @@ runs:
 
     - name: Run Tests
       shell: bash
-      run: ./gradlew test -Pgpr.username=${{ inputs.github-username }} -Pgpr.token=${{ inputs.github-token }}
+      env:
+        GITHUB_USERNAME: ${{ inputs.github-username }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: ./gradlew test
