@@ -142,8 +142,8 @@ public class CheckInServiceTest {
         when(projectService.getAllProjects()).thenReturn(List.of(project));
         when(gitHubService.getCommitCountForRepositoryOnDate("shazxrin", "one-percent-better", LocalDate.now())).thenReturn(7);
 
-        CheckIn yesterdayCheckIn = new CheckIn("check-in-id", YESTERDAY, 3, 1);
-        CheckIn existingCheckIn = new CheckIn("check-in-id", TODAY, 3, 2);
+        CheckIn yesterdayCheckIn = new CheckIn(1L, YESTERDAY, 3, 1);
+        CheckIn existingCheckIn = new CheckIn(2L, TODAY, 3, 2);
         when(checkInRepository.findByDate(YESTERDAY)).thenReturn(yesterdayCheckIn);
         when(checkInRepository.findByDate(TODAY)).thenReturn(existingCheckIn);
 
@@ -209,7 +209,7 @@ public class CheckInServiceTest {
     @Test
     void testGetTodaysCheckIn_whenTodaysCheckInExists_shouldReturnExistingCheckIn() {
         // Given
-        CheckIn existingCheckIn = new CheckIn("check-in-id", TODAY, 5, 3);
+        CheckIn existingCheckIn = new CheckIn(1L, TODAY, 5, 3);
         when(checkInRepository.findByDate(TODAY)).thenReturn(existingCheckIn);
 
         // When
@@ -220,7 +220,7 @@ public class CheckInServiceTest {
         verify(checkInRepository, never()).save(any());
 
         assertEquals(existingCheckIn, todaysCheckIn);
-        assertEquals("check-in-id", todaysCheckIn.getId());
+        assertEquals(1L, todaysCheckIn.getId());
         assertEquals(TODAY, todaysCheckIn.getDate());
         assertEquals(5, todaysCheckIn.getCount());
         assertEquals(3, todaysCheckIn.getStreak());
@@ -299,7 +299,7 @@ public class CheckInServiceTest {
             .thenReturn(null);
         when(checkInRepository.findByDate(YESTERDAY))
             .thenReturn(null)
-            .thenReturn(new CheckIn("yesterday", YESTERDAY, 3, 1));
+            .thenReturn(new CheckIn(1L, YESTERDAY, 3, 1));
         when(checkInRepository.findByDate(TODAY))
             .thenReturn(null);
 
@@ -349,13 +349,13 @@ public class CheckInServiceTest {
             .thenReturn(null);
         when(checkInRepository.findByDate(threeDaysAgo))
             .thenReturn(null)
-            .thenReturn(new CheckIn("three-days-ago", threeDaysAgo, 2, 1));
+            .thenReturn(new CheckIn(1L, threeDaysAgo, 2, 1));
         when(checkInRepository.findByDate(twoDaysAgo))
             .thenReturn(null)
-            .thenReturn(new CheckIn("two-days-ago", twoDaysAgo, 0, 0));
+            .thenReturn(new CheckIn(2L, twoDaysAgo, 0, 0));
         when(checkInRepository.findByDate(YESTERDAY))
             .thenReturn(null)
-            .thenReturn(new CheckIn("yesterday", YESTERDAY, 3, 1));
+            .thenReturn(new CheckIn(3L, YESTERDAY, 3, 1));
         when(checkInRepository.findByDate(TODAY))
             .thenReturn(null);
         
@@ -411,15 +411,15 @@ public class CheckInServiceTest {
         when(gitHubService.getCommitCountForRepositoryOnDate("shazxrin", "one-percent-better", TODAY)).thenReturn(5);
         
         // Yesterday already has a check-in with outdated data
-        CheckIn existingYesterdayCheckIn = new CheckIn("yesterday-id", YESTERDAY, 1, 1);
+        CheckIn existingYesterdayCheckIn = new CheckIn(1L, YESTERDAY, 1, 1);
         when(checkInRepository.findByDate(threeDaysAgo))
             .thenReturn(null);
         when(checkInRepository.findByDate(twoDaysAgo))
             .thenReturn(null)
-            .thenReturn(new CheckIn("two-days-ago", twoDaysAgo, 2, 1));
+            .thenReturn(new CheckIn(2L, twoDaysAgo, 2, 1));
         when(checkInRepository.findByDate(YESTERDAY))
             .thenReturn(existingYesterdayCheckIn)
-            .thenReturn(new CheckIn("yesterday", YESTERDAY, 3, 2));
+            .thenReturn(new CheckIn(3L, YESTERDAY, 3, 2));
         when(checkInRepository.findByDate(TODAY))
             .thenReturn(null);
         
@@ -444,7 +444,6 @@ public class CheckInServiceTest {
         // Verify yesterday's check-in was updated
         CheckIn yesterdayCheckIn = savedCheckIns.get(1);
         assertEquals(YESTERDAY, yesterdayCheckIn.getDate());
-        assertEquals("yesterday-id", yesterdayCheckIn.getId()); // Should preserve ID
         assertEquals(3, yesterdayCheckIn.getCount()); // Updated count
         assertEquals(2, yesterdayCheckIn.getStreak()); // Updated streak
         

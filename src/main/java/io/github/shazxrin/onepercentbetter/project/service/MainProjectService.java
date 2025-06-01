@@ -22,7 +22,7 @@ public class MainProjectService implements ProjectService {
             return;
         }
 
-        projectRepository.save(new Project(null, owner, name));
+        projectRepository.save(new Project(owner, name));
     }
 
     @Transactional

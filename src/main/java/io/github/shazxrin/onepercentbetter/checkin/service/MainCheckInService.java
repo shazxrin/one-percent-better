@@ -67,7 +67,6 @@ public class MainCheckInService implements CheckInService {
         if (checkIn == null) {
             checkInRepository.save(
                 new CheckIn(
-                    null,
                     date,
                     todaysCountStreak.count(),
                     todaysCountStreak.streak()
@@ -94,7 +93,6 @@ public class MainCheckInService implements CheckInService {
             CountStreak todaysCountStreak = calculateCountStreakForDate(LocalDate.now());
             todaysCheckIn = checkInRepository.save(
                 new CheckIn(
-                    null,
                     LocalDate.now(),
                     todaysCountStreak.count(),
                     todaysCountStreak.streak()

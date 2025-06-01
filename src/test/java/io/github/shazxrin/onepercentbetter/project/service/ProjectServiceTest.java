@@ -96,8 +96,8 @@ public class ProjectServiceTest {
     void testGetAllProjects_whenProjectsExist_shouldReturnAllProjects() {
         // Given
         List<Project> projects = List.of(
-            new Project("1", "shazxrin", "project1"),
-            new Project("2", "shazxrin", "project2")
+            new Project(1L, "shazxrin", "project1"),
+            new Project(2L, "shazxrin", "project2")
         );
 
         when(projectRepository.findAll()).thenReturn(projects);
