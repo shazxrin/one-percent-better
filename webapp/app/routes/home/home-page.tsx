@@ -22,7 +22,7 @@ export const clientLoader: ClientLoaderFunction = async ({ }: ClientLoaderFuncti
     }
 
     return {
-        lastUpdatedDate: format(currentDate, "dd/MM HH:mm:ss"),
+        lastUpdatedDate: format(getCheckInsTodayResponse.data.updatedAt!!, "dd/MM HH:mm:ss"),
         count: getCheckInsTodayResponse.data.count!!,
         streak: getCheckInsTodayResponse.data.streak!!
     }

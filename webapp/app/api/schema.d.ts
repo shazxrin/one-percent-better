@@ -42,9 +42,7 @@ export interface paths {
         trace?: never;
     };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
     schemas: {
         ProblemDetail: {
@@ -60,21 +58,23 @@ export interface components {
                 [key: string]: unknown;
             };
         };
-        AddProjectDto: {
+        AddProject: {
             owner?: string;
             name?: string;
         };
-        ListItemProjectDto: {
+        ListItemProject: {
             owner?: string;
             name?: string;
         };
-        TodaysCheckInDto: {
+        TodaysCheckIn: {
             /** Format: int32 */
             count?: number;
             /** Format: int32 */
             streak?: number;
+            /** Format: date-time */
+            updatedAt?: string;
         };
-        DeleteProjectDto: {
+        DeleteProject: {
             owner?: string;
             name?: string;
         };
@@ -85,9 +85,7 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
 export interface operations {
     getAllProjects: {
         parameters: {
@@ -104,7 +102,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ListItemProjectDto"][];
+                    "*/*": components["schemas"]["ListItemProject"][];
                 };
             };
             /** @description Bad Request */
@@ -127,7 +125,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AddProjectDto"];
+                "application/json": components["schemas"]["AddProject"];
             };
         };
         responses: {
@@ -158,7 +156,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DeleteProjectDto"];
+                "application/json": components["schemas"]["DeleteProject"];
             };
         };
         responses: {
@@ -202,7 +200,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["TodaysCheckInDto"];
+                    "*/*": components["schemas"]["TodaysCheckIn"];
                 };
             };
             /** @description Bad Request */
