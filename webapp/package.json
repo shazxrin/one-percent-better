@@ -15,7 +15,7 @@
     "@mantine/dates": "^8.0.0",
     "@mantine/form": "^8.0.0",
     "@mantine/hooks": "^8.0.0",
-    "@mantine/modals": "^8.0.0",
+    "@mantine/modals": "^8.0.2",
     "@mantine/notifications": "^8.0.0",
     "@mantine/nprogress": "^8.0.0",
     "@react-router/node": "^7.5.3",
