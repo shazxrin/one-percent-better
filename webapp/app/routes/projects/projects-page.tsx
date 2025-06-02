@@ -90,7 +90,7 @@ export const clientAction: ClientActionFunction = async ({ request }): Promise<v
         })
     }
 
-    throw new Response("Invalid intent", { status: 400 })
+    return
 }
 
 const ProjectsPage: React.FC = () => {
