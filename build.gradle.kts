@@ -50,7 +50,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    implementation("io.github.shazxrin.backbone:notification:1.0-SNAPSHOT")
+    implementation("io.github.shazxrin.backbone:notification:1.0.0")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
 
