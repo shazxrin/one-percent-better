@@ -12,8 +12,8 @@ COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
 # Execute the AOT training run and create the AOT cache
-RUN java -Dspring.aot.enabled=true -XX:AOTMode=record -XX:AOTConfiguration=app.aotconf -Dspring.context.exit=onRefresh -Dspring.profiles.active=build -jar application.jar
-RUN java -Dspring.aot.enabled=true -XX:AOTMode=create -XX:AOTConfiguration=app.aotconf -XX:AOTCache=app.aot -jar application.jar
+RUN java -XX:AOTMode=record -XX:AOTConfiguration=app.aotconf -Dspring.context.exit=onRefresh -Dspring.profiles.active=build -jar application.jar
+RUN java -XX:AOTMode=create -XX:AOTConfiguration=app.aotconf -XX:AOTCache=app.aot -jar application.jar
 RUN rm -f app.aotconf
 
 # Runtime container
@@ -30,6 +30,5 @@ ENTRYPOINT [ \
     "java", \
     "-XX:AOTCache=app.aot", \
     "-XX:MaxRAMPercentage=0.8", \
-    "-Dspring.aot.enabled=true", \
     "-jar", "application.jar" \
 ]
