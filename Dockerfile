@@ -26,7 +26,7 @@ RUN jlink \
     --strip-debug \
     --no-header-files \
     --no-man-pages \
-    --compress=2
+    --compress=zip-9
 
 # Runtime container
 FROM alpine
