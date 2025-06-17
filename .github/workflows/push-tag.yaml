@@ -40,5 +40,6 @@ jobs:
         uses: ./.github/actions/publish
         with:
           github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GPR_TOKEN }}
+          github-token-maven: ${{ secrets.GPR_TOKEN }}
+          github-token-container: ${{ secrets.GITHUB_TOKEN }}
           version-name: ${{ github.ref_name }}

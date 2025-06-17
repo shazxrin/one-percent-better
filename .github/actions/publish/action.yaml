@@ -1,10 +1,13 @@
 name: Publish 
 inputs:
-  github-token:
-    description: "GitHub token for authentication"
-    required: true
   github-username:
     description: "GitHub username for authentication"
+    required: true
+  github-token-maven:
+    description: "GitHub token to be used for Maven registry for authentication"
+    required: true
+  github-token-container:
+    description: "GitHub token to be used for container registry for authentication"
     required: true
   version-name:
     description: "Version name to be used for the build"
@@ -41,12 +44,12 @@ runs:
       shell: bash
       env:
         GITHUB_USERNAME: ${{ inputs.github-username }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_TOKEN: ${{ inputs.github-token-maven }}
       run: ./gradlew clean build --exclude-task=test
 
     - name: Authenticate Container Registry
       shell: bash
-      run: echo "${{ inputs.github-token }}" | docker login ghcr.io -u ${{ inputs.github-username }} --password-stdin
+      run: echo "${{ inputs.github-token-container }}" | docker login ghcr.io -u ${{ inputs.github-username }} --password-stdin
 
     - name: Build Container Image
       shell: bash
