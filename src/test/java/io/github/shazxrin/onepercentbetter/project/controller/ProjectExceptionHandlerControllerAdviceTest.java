@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.web.controller;
+package io.github.shazxrin.onepercentbetter.project.controller;
 
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -15,9 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ExceptionControllerAdviceTest.ExceptionController.class)
-@Import(ExceptionControllerAdviceTest.ExceptionController.class)
-public class ExceptionControllerAdviceTest {
+@WebMvcTest(ProjectExceptionHandlerControllerAdviceTest.ExceptionController.class)
+@Import(ProjectExceptionHandlerControllerAdviceTest.ExceptionController.class)
+public class ProjectExceptionHandlerControllerAdviceTest {
     @Autowired
     private MockMvc mockMvc;
 

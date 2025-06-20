@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.web.controller;
+package io.github.shazxrin.onepercentbetter.project.controller;
 
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ExceptionControllerAdvice {
+public class ProjectExceptionHandlerControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ProjectNotFoundException.class)
     public ProblemDetail handleBadRequestException(ProjectNotFoundException ex) {
