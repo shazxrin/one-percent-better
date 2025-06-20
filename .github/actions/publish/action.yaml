@@ -30,16 +30,6 @@ runs:
       with:
         node-version: "latest" 
 
-    - name: Install Dependencies
-      working-directory: "./webapp"
-      shell: bash
-      run: npm install
-
-    - name: Run Build Web App
-      working-directory: "./webapp"
-      shell: bash
-      run: npm run build
-
     - name: Run Build
       shell: bash
       env:

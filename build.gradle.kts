@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
-
 plugins {
     java
     id("org.springframework.boot") version "3.5.0"
@@ -72,18 +70,4 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.register<Delete>("cleanWebApp") {
-    delete(file("${projectDir}/build/resources/main/public"))
-    delete(file("${projectDir}/webapp/build"))
-}
-
-tasks.register<Copy>("bundleWebApp") {
-    from(file("${projectDir}/webapp/build/client"))
-    into(file("${projectDir}/build/resources/main/public"))
-}
-
-tasks.named("compileJava") {
-    dependsOn(tasks.named("bundleWebApp"))
 }
