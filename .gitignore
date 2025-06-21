@@ -40,4 +40,5 @@ out/
 !.github/actions/build
 
 ### Development Environment Variables ###
+gradle.properties
 application-dev.yaml
