@@ -2,6 +2,9 @@ package io.github.shazxrin.onepercentbetter.reminder.service;
 
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckIn;
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
+import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
+import io.github.shazxrin.onepercentbetter.coach.service.CoachService;
 import io.github.shazxrin.onepercentbetter.notification.service.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,16 +26,40 @@ public class ReminderServiceTest {
     @Mock
     private NotificationService notificationService;
 
+    @Mock
+    private CoachService coachService;
+
     @InjectMocks
     private MainReminderService reminderService;
 
     @Test
-    void testRemind_whenTodaysCheckInHasCountGreaterThanZero_shouldSendKeepItUpNotification() {
+    void testRemind_shouldPromptCoachForReminder() {
         // Given
         CheckIn checkIn = new CheckIn();
         checkIn.setCount(5);
         checkIn.setStreak(3);
         when(checkInService.getTodaysCheckIn()).thenReturn(checkIn);
+
+        CoachReminder coachReminder = new CoachReminder("Title", "Message");
+        when(coachService.promptReminder(anyInt(), anyInt())).thenReturn(coachReminder);
+
+        // When
+        reminderService.remind();
+
+        // Then
+        verify(coachService, times(1)).promptReminder(checkIn.getCount(), checkIn.getStreak());
+        verify(notificationService, times(1)).sendNotification(coachReminder.title(), coachReminder.body());
+    }
+
+    @Test
+    void testRemind_whenCoachServiceIsDownAndTodaysCheckInHasCountGreaterThanZero_shouldSendKeepItUpNotification() {
+        // Given
+        CheckIn checkIn = new CheckIn();
+        checkIn.setCount(5);
+        checkIn.setStreak(3);
+        when(checkInService.getTodaysCheckIn()).thenReturn(checkIn);
+
+        when(coachService.promptReminder(anyInt(), anyInt())).thenThrow(new CoachException("Error occurred."));
 
         // When
         reminderService.remind();
@@ -41,12 +69,14 @@ public class ReminderServiceTest {
     }
 
     @Test
-    void testRemind_whenTodaysCheckInHasCountZeroAndStreakGreaterThanZero_shouldSendExtendStreakNotification() {
+    void testRemind_whenCoachServiceThrowsTodaysCheckInHasCountZeroAndStreakGreaterThanZero_shouldSendExtendStreakNotification() {
         // Given
         CheckIn checkIn = new CheckIn();
         checkIn.setCount(0);
         checkIn.setStreak(3);
         when(checkInService.getTodaysCheckIn()).thenReturn(checkIn);
+
+        when(coachService.promptReminder(anyInt(), anyInt())).thenThrow(new CoachException("Error occurred."));
 
         // When
         reminderService.remind();
@@ -56,12 +86,14 @@ public class ReminderServiceTest {
     }
 
     @Test
-    void testRemind_whenTodaysCheckInHasCountZeroAndStreakZero_shouldSendStartStreakNotification() {
+    void testRemind_whenCoachServiceThrowsTodaysCheckInHasCountZeroAndStreakZero_shouldSendStartStreakNotification() {
         // Given
         CheckIn checkIn = new CheckIn();
         checkIn.setCount(0);
         checkIn.setStreak(0);
         when(checkInService.getTodaysCheckIn()).thenReturn(checkIn);
+
+        when(coachService.promptReminder(anyInt(), anyInt())).thenThrow(new CoachException("Error occurred."));
 
         // When
         reminderService.remind();

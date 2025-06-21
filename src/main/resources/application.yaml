@@ -14,15 +14,15 @@ spring:
     password: password
   ai:
     openai:
-      api-key: ""
+      api-key: "api-key"
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         completions-path: /chat/completions
         options:
           model: gemini-2.0-flash-lite
 github:
-  token: ""
-  username: ""
+  username: "username"
+  token: "token"
 app:
   check-in:
     schedule-cron: "0 0 */1 * * *"
