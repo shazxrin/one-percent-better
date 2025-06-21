@@ -1,13 +1,15 @@
 package io.github.shazxrin.onepercentbetter.notification.service;
 
-import io.github.shazxrin.backbone.notification.NotificationMessage;
-import io.github.shazxrin.backbone.notification.NotificationMessageQueue;
+import io.github.shazxrin.notifier.common.NotificationMessage;
+import io.github.shazxrin.notifier.common.NotificationMessageQueue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MainNotificationService implements NotificationService {
+    private final static String APP_NAME = "one-percent-better";
     private final static String ROUTING_KEY = "";
+
     private final RabbitTemplate rabbitTemplate;
 
     public MainNotificationService(RabbitTemplate rabbitTemplate) {
@@ -17,7 +19,7 @@ public class MainNotificationService implements NotificationService {
     @Override
     public void sendNotification(String title, String message) {
         NotificationMessage notificationMessage = new NotificationMessage(
-            "one-percent-better",
+            APP_NAME,
             title,
             message
         );
