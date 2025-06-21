@@ -12,6 +12,14 @@ spring:
     host: localhost
     username: user
     password: password
+  ai:
+    openai:
+      api-key: ""
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        completions-path: /chat/completions
+        options:
+          model: gemini-2.0-flash-lite
 github:
   token: ""
   username: ""

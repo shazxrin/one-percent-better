@@ -20,10 +20,6 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 openApi {
     customBootRun {
         systemProperties = mapOf("spring.docker.compose.file" to "${projectDir}/compose.yaml")
@@ -42,6 +38,12 @@ repositories {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.ai:spring-ai-bom:1.0.0")
+    }
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
@@ -49,6 +51,7 @@ dependencies {
 
     implementation("io.github.shazxrin.backbone:notification:1.0.0")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
