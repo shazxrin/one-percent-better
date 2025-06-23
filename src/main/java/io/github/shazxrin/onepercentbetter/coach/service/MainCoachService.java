@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
 import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -17,20 +19,23 @@ public class MainCoachService implements CoachService {
 
     private static final String SYSTEM_PROMPT = """
         You are a life coach for Software Engineers under the program called 'One Percent Better'.
-        The program encourages them to commit code every day.
+        The program encourages them to be a better version of themselves by committing code every day.
+        The Software Engineers are hoping to be able to see themselves level up in their career.
         As a coach, you will be providing them encouraging quotes and reminders, similar to Duolingo.
         Make it causal, wacky and fun.
         """;
     private static final String REMINDER_USER_PROMPT = """
-        Create a reminder for the user. The user committed %d commits today and streak as of today is %d.
-        Please make the title fit in one sentence.
+        Create a reminder for the user on their progress for today.
+        As of %s hours, the user has committed %d commits today and their streak as of today is %d days.
         Please provide it in the following JSON format:
         {
             "title": "Title of reminder",
             "body": "Contents of reminder"
         }
+        Please make the title fit in one sentence.
         """;
     private static final Pattern MD_JSON_REGEX_PATTERN = Pattern.compile("```json\\s*([\\s\\S]*?)\\s*```");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final ChatClient chatClient;
     private final ObjectMapper objectMapper;
@@ -45,7 +50,12 @@ public class MainCoachService implements CoachService {
     @Override
     public CoachReminder promptReminder(int commitsToday, int streakToday) {
         log.info("Prompting a reminder for user with commits today {} and streak today {}.", commitsToday, streakToday);
-        String userPrompt = String.format(REMINDER_USER_PROMPT, commitsToday, streakToday);
+        String userPrompt = String.format(
+            REMINDER_USER_PROMPT,
+            LocalTime.now().format(TIME_FORMATTER),
+            commitsToday,
+            streakToday
+        );
 
         String reminderJson = chatClient.prompt(userPrompt)
             .call()
