@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CheckInRepository extends CrudRepository<CheckIn, String> {
+public interface CheckInRepository extends CrudRepository<CheckIn, Long> {
     CheckIn findByDate(LocalDate date);
 }
