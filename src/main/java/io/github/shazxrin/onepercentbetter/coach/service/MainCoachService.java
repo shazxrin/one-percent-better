@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 @Service
 public class MainCoachService implements CoachService {
@@ -21,13 +23,14 @@ public class MainCoachService implements CoachService {
         """;
     private static final String REMINDER_USER_PROMPT = """
         Create a reminder for the user. The user committed %d commits today and streak as of today is %d.
+        Please make the title fit in one sentence.
         Please provide it in the following JSON format:
         {
-            "title": string,
-            "body": string
+            "title": "Title of reminder",
+            "body": "Contents of reminder"
         }
-        Please make the title and body of reminder fit in one sentence.
         """;
+    private static final Pattern MD_JSON_REGEX_PATTERN = Pattern.compile("```json\\s*([\\s\\S]*?)\\s*```");
 
     private final ChatClient chatClient;
     private final ObjectMapper objectMapper;
@@ -48,9 +51,23 @@ public class MainCoachService implements CoachService {
             .call()
             .content();
 
+        if (reminderJson == null) {
+            log.error("No response from coach.");
+            throw new CoachException("No response from coach.");
+        }
+        
+        // We need to cleanse the response because Gemini wraps it in a Markdown code block
+        String cleanReminderJson;
+        Matcher matcher = MD_JSON_REGEX_PATTERN.matcher(reminderJson);
+        if (matcher.find()) {
+            cleanReminderJson = matcher.group(1).trim();
+        } else {
+            throw new CoachException("Cannot find reminder from coach.");
+        }
+
         CoachReminder reminder;
         try {
-            reminder = objectMapper.readValue(reminderJson, CoachReminder.class);
+            reminder = objectMapper.readValue(cleanReminderJson, CoachReminder.class);
         } catch (JsonProcessingException ex) {
             log.error("Error parsing reminder json.", ex);
 
