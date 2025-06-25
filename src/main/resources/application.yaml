@@ -20,6 +20,10 @@ spring:
         completions-path: /chat/completions
         options:
           model: gemini-2.0-flash-lite
+server:
+  error:
+    whitelabel:
+      enabled: false
 github:
   username: "username"
   token: "token"
