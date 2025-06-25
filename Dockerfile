@@ -50,6 +50,5 @@ COPY --from=builder /builder/extracted/application/ ./
 
 ENTRYPOINT [ \
     "java", \
-    "-XX:MaxRAMPercentage=0.8", \
     "-jar", "application.jar" \
 ]
