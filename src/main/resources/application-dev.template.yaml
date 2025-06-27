@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: one-percent-better
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/one-percent-better
+    username: user
+    password: password
+  rabbitmq:
+    host: localhost
+    username: user
+    password: password
+  ai:
+    openai:
+      api-key: "api-key"
+  docker:
+    compose:
+      file:
+        - "./deploy/compose/dev.compose.yaml"
+github:
+  username: "username"
+  token: "token"
+app:
+  check-in:
+    schedule-cron: "0 0 */1 * * *"
+    bootstrap:
+      enabled: true
+      projects:
+        - "shazxrin/one-percent-better"
+  reminder:
+    schedule-cron: "0 0 */1 * * *"
