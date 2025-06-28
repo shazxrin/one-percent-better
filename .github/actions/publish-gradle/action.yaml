@@ -1,9 +1,8 @@
 name: Publish (Gradle)
 inputs:
-  working-directory:
-    description: "Working directory of Gradle project"
-    required: false
-    default: "."
+  module-name:
+    description: "Gradle module to publish"
+    required: true
   gpr-username:
     description: "GitHub Package Registry username for authentication"
     required: true
@@ -34,11 +33,10 @@ runs:
 
     - name: Run Build
       shell: bash
-      working-directory: ${{ inputs.working-directory }}
       env:
         GPR_USERNAME: ${{ inputs.gpr-username }}
         GPR_TOKEN: ${{ inputs.gpr-token-maven }}
-      run: ./gradlew clean build --exclude-task=test
+      run: ./gradlew :${{ inputs.module-name }}:{clean,build} --exclude-task=test
 
     - name: Authenticate Container Registry
       shell: bash
@@ -46,7 +44,7 @@ runs:
 
     - name: Build Container Image
       shell: bash
-      working-directory: ${{ inputs.working-directory }}
+      working-directory: ${{ inputs.module-name }}
       run: docker build . -t ghcr.io/shazxrin/one-percent-better:${{ inputs.version-name }}
 
     - name: Push Container Image

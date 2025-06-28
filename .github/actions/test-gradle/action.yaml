@@ -1,9 +1,8 @@
 name: Test (Gradle)
 inputs:
-  working-directory:
-    description: "Working directory of Gradle project"
-    required: false
-    default: "."
+  module-name:
+    description: "Gradle module to test"
+    required: true
   gpr-username:
     description: "GitHub Package Registry username for authentication"
     required: true
@@ -24,8 +23,7 @@ runs:
 
     - name: Run Tests
       shell: bash
-      working-directory: ${{ inputs.working-directory }}
       env:
         GPR_USERNAME: ${{ inputs.gpr-username }}
         GPR_TOKEN: ${{ inputs.gpr-token-maven }}
-      run: ./gradlew test
+      run: ./gradlew :${{ inputs.module-name }}:test
