@@ -30,7 +30,7 @@ repositories {
     mavenCentral()
 
     maven {
-        url = uri("https://maven.pkg.github.com/shazxrin")
+        url = uri("https://maven.pkg.github.com/shazxrin/notifier")
         credentials {
             username = project.findProperty("gpr.username") as String? ?: System.getenv("GPR_USERNAME")
             password = project.findProperty("gpr.token") as String? ?: System.getenv("GPR_TOKEN")
