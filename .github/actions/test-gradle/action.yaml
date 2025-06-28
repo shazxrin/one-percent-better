@@ -1,0 +1,31 @@
+name: Test (Gradle)
+inputs:
+  working-directory:
+    description: "Working directory of Gradle project"
+    required: false
+    default: "."
+  gpr-username:
+    description: "GitHub Package Registry username for authentication"
+    required: true
+  gpr-token-maven:
+    description: "GitHub Package Registry token to authenticate with Maven registry"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: "temurin"
+        java-version: 24
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Run Tests
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        GPR_USERNAME: ${{ inputs.gpr-username }}
+        GPR_TOKEN: ${{ inputs.gpr-token-maven }}
+      run: ./gradlew test

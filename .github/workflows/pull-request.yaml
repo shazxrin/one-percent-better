@@ -8,11 +8,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Build
-        uses: ./.github/actions/build
+      - name: Build (App)
+        uses: ./.github/actions/build-gradle
         with:
-          github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GPR_TOKEN }}
+          working-directory: ./one-percent-better-app
+          gpr-username: ${{ github.actor }}
+          gpr-token-maven: ${{ secrets.GPR_TOKEN }}
 
   test:
     needs: build
@@ -21,8 +22,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Test
-        uses: ./.github/actions/test
+      - name: Test (App)
+        uses: ./.github/actions/test-gradle
         with:
-          github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GPR_TOKEN }}
+          working-directory: ./one-percent-better-app
+          gpr-username: ${{ github.actor }}
+          gpr-token-maven: ${{ secrets.GPR_TOKEN }}

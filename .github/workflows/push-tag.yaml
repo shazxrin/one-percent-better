@@ -10,11 +10,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Build
-        uses: ./.github/actions/build
+      - name: Build (App)
+        uses: ./.github/actions/build-gradle
         with:
-          github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GPR_TOKEN }}
+          working-directory: ./one-percent-better-app
+          gpr-username: ${{ github.actor }}
+          gpr-token-maven: ${{ secrets.GPR_TOKEN }}
 
   test:
     needs: build
@@ -23,11 +24,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Test
-        uses: ./.github/actions/test
+      - name: Test (App)
+        uses: ./.github/actions/test-gradle
         with:
-          github-username: ${{ github.actor }}
-          github-token: ${{ secrets.GPR_TOKEN }}
+          working-directory: ./one-percent-better-app
+          gpr-username: ${{ github.actor }}
+          gpr-token-maven: ${{ secrets.GPR_TOKEN }}
   
   publish:
     needs: test
@@ -36,10 +38,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Publish
-        uses: ./.github/actions/publish
+      - name: Publish (App)
+        uses: ./.github/actions/publish-gradle
         with:
-          github-username: ${{ github.actor }}
-          github-token-maven: ${{ secrets.GPR_TOKEN }}
-          github-token-container: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ./one-percent-better-app
+          gpr-username: ${{ github.actor }}
+          gpr-token-maven: ${{ secrets.GPR_TOKEN }}
+          gpr-token-container: ${{ secrets.GITHUB_TOKEN }}
+          image-name: "one-percent-better"
           version-name: ${{ github.ref_name }}
