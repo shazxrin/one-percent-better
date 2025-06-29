@@ -49,7 +49,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    implementation("io.github.shazxrin.notifier:notifier-common:1.1.0")
+    implementation("io.github.shazxrin.notifier:notifier-common:1.1.1")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
