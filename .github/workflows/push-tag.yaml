@@ -13,7 +13,7 @@ jobs:
       - name: Build (App)
         uses: ./.github/actions/build-gradle
         with:
-          module-name: one-percent-better-app
+          module-name: app
           gpr-username: ${{ github.actor }}
           gpr-token-maven: ${{ secrets.GPR_TOKEN }}
 
@@ -27,7 +27,7 @@ jobs:
       - name: Test (App)
         uses: ./.github/actions/test-gradle
         with:
-          module-name: one-percent-better-app
+          module-name: app
           gpr-username: ${{ github.actor }}
           gpr-token-maven: ${{ secrets.GPR_TOKEN }}
   
@@ -41,7 +41,7 @@ jobs:
       - name: Publish (App)
         uses: ./.github/actions/publish-gradle
         with:
-          module-name: one-percent-better-app
+          module-name: app
           gpr-username: ${{ github.actor }}
           gpr-token-maven: ${{ secrets.GPR_TOKEN }}
           gpr-token-container: ${{ secrets.GITHUB_TOKEN }}

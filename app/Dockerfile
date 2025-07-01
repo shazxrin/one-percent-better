@@ -2,8 +2,8 @@
 FROM bellsoft/liberica-runtime-container:jdk-all AS builder
 WORKDIR /builder
 
-# Copy the jar file to the working directory and rename it to application.jar
-COPY build/libs/one-percent-better-*.jar application.jar
+# Copy the jar file to the working directory
+COPY build/libs/app-*.jar app.jar
 
 # Extract the jar file as layers
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted

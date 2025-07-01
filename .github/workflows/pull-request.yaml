@@ -11,7 +11,7 @@ jobs:
       - name: Build (App)
         uses: ./.github/actions/build-gradle
         with:
-          module-name: one-percent-better-app
+          module-name: app
           gpr-username: ${{ github.actor }}
           gpr-token-maven: ${{ secrets.GPR_TOKEN }}
 
@@ -25,6 +25,6 @@ jobs:
       - name: Test (App)
         uses: ./.github/actions/test-gradle
         with:
-          module-name: one-percent-better-app
+          module-name: app
           gpr-username: ${{ github.actor }}
           gpr-token-maven: ${{ secrets.GPR_TOKEN }}
