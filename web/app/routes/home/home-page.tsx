@@ -1,6 +1,13 @@
 import { ActionIcon, Center, Group, Image, Stack, Text } from "@mantine/core"
-import { type ClientActionFunction, type ClientLoaderFunction, type ClientLoaderFunctionArgs, Form, useLoaderData, useNavigation, useRevalidator } from "react-router"
-import React from "react"
+import {
+    type ActionFunction,
+    Form,
+    type LoaderFunction,
+    useActionData,
+    useLoaderData,
+    useNavigation,
+} from "react-router"
+import React, { useEffect } from "react"
 import { IconRefresh } from "@tabler/icons-react"
 import { format } from "date-fns"
 import apiClient from "~/api/api-client"
@@ -13,8 +20,7 @@ type LoaderData = {
     streak: number
 }
 
-export const clientLoader: ClientLoaderFunction = async ({ }: ClientLoaderFunctionArgs): Promise<LoaderData> => {
-    const currentDate = new Date()
+export const loader: LoaderFunction = async ({}): Promise<LoaderData> => {
     const getCheckInsTodayResponse = await apiClient.GET("/api/check-ins/today")
 
     if (getCheckInsTodayResponse.error) {
@@ -31,7 +37,13 @@ export const clientLoader: ClientLoaderFunction = async ({ }: ClientLoaderFuncti
 const actionFormDataSchema = z.object({
     intent: z.enum(["check-in"])
 })
-export const clientAction: ClientActionFunction = async ({ request }): Promise<void> => {
+
+type ActionData = {
+    intent: "check-in"
+    success: boolean
+}
+
+export const action: ActionFunction = async ({ request }): Promise<ActionData> => {
     const formData = await request.formData()
     const parsedFormData = actionFormDataSchema.safeParse(Object.fromEntries(formData))
     if (!parsedFormData.success) {
@@ -43,17 +55,17 @@ export const clientAction: ClientActionFunction = async ({ request }): Promise<v
         const checkInTodayResponse = await apiClient.POST("/api/check-ins/today")
         if (checkInTodayResponse.error) {
             console.error("Failed to check-in today", checkInTodayResponse.error)
-            throw new Response("Failed to check-in today", { status: 500 })
+
+            return {
+                intent: "check-in",
+                success: false
+            }
         }
 
-        notifications.show({
-            icon: <IconRefresh size={16} />,
-            title: "Refresh check-in successful",
-            message: "Check in refreshed successfully.",
-            color: "blue"
-        })
-
-        return
+        return {
+            intent: "check-in",
+            success: true
+        }
     }
 
     throw new Response("Invalid intent", { status: 400 })
@@ -61,7 +73,32 @@ export const clientAction: ClientActionFunction = async ({ request }): Promise<v
 
 const Home: React.FC = () => {
     const { lastUpdatedDate, count, streak } = useLoaderData<LoaderData>()
+    const actionData = useActionData<ActionData>()
     const navigation = useNavigation()
+
+    useEffect(() => {
+        if (!actionData) {
+            return
+        }
+
+        if (actionData.intent === "check-in") {
+            if (actionData.success) {
+                notifications.show({
+                    icon: <IconRefresh size={16} />,
+                    title: "Refresh check-in successful",
+                    message: "Check in refreshed successfully.",
+                    color: "blue"
+                })
+            } else {
+                notifications.show({
+                    icon: <IconRefresh size={16} />,
+                    title: "Failed to refresh check-in",
+                    message: "Check in cannot be refreshed.",
+                    color: "red"
+                })
+            }
+        }
+    }, [actionData])
 
     return (
         <Stack h={"100%"}>

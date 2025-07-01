@@ -3,11 +3,7 @@ import '@mantine/notifications/styles.css'
 
 import { isRouteErrorResponse, Links, Meta, Scripts, ScrollRestoration } from "react-router"
 import type { Route } from "./+types/root"
-import {
-    ColorSchemeScript,
-    mantineHtmlProps,
-    MantineProvider
-} from "@mantine/core"
+import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from "@mantine/core"
 import { Notifications } from "@mantine/notifications"
 import React from "react"
 import AppLayout from "~/layout/app-layout"
@@ -17,12 +13,12 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
         <head>
             <meta charSet="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <ColorSchemeScript />
+            <ColorSchemeScript defaultColorScheme={"auto"} />
             <Meta />
             <Links />
         </head>
         <body>
-            <MantineProvider defaultColorScheme={"dark"}>
+            <MantineProvider defaultColorScheme={"auto"}>
                 <Notifications position={"bottom-center"} />
                 {children}
             </MantineProvider>

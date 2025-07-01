@@ -1,7 +1,7 @@
 import { ActionIcon, Anchor, Button, Divider, Group, Modal, Stack, Table, TextInput, Title } from "@mantine/core"
 import { IconExclamationCircle, IconPlus, IconTrash } from "@tabler/icons-react"
 import { z } from "zod/v4"
-import { Form, useLoaderData, type ClientActionFunction, type ClientLoaderFunction } from "react-router"
+import { type ActionFunction, Form, type LoaderFunction, useLoaderData } from "react-router"
 import apiClient from "~/api/api-client"
 import { notifications } from "@mantine/notifications"
 import { useDisclosure } from "@mantine/hooks"
@@ -13,7 +13,7 @@ type LoaderData = {
     }[]
 }
 
-export const clientLoader: ClientLoaderFunction = async (): Promise<LoaderData> => {
+export const loader: LoaderFunction = async ({ }): Promise<LoaderData> => {
     const getProjectsResponse = await apiClient.GET("/api/projects")
     if (getProjectsResponse.error) {
         throw Response.error()
@@ -31,7 +31,7 @@ const actionFormDataSchema = z.object({
     owner: z.string().min(1, "Owner is required"),
     name: z.string().min(1, "Name is required"),
 })
-export const clientAction: ClientActionFunction = async ({ request }): Promise<void> => {
+export const action: ActionFunction = async ({ request }): Promise<void> => {
     const formData = await request.formData()
     const parsedFormData = actionFormDataSchema.safeParse(Object.fromEntries(formData))
     if (!parsedFormData.success) {

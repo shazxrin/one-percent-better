@@ -22,7 +22,7 @@ configurations {
 
 openApi {
     customBootRun {
-        systemProperties = mapOf("spring.docker.compose.file" to "${projectDir}/compose.yaml")
+        systemProperties = mapOf("spring.docker.compose.file" to "${projectDir}/../deploy/dev.compose.yaml")
     }
 }
 
