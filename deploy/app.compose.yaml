@@ -1,7 +1,7 @@
-name: "full-one-percent-better"
+name: "app-one-percent-better"
 services:
   app:
-    build: ../../.
+    build: ../app
     volumes:
       - "./application.yaml:/application/application.yaml"
     ports:
