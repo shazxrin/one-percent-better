@@ -6,10 +6,10 @@ WORKDIR /builder
 COPY build/libs/app-*.jar app.jar
 
 # Extract the jar file as layers
-RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
+RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
 # Extract the fat JAR, find dependencies, and create a custom JRE.
-RUN jar xf application.jar
+RUN jar xf app.jar
 
 RUN jdeps \
     --print-module-deps \
@@ -18,7 +18,7 @@ RUN jdeps \
     --recursive \
     --multi-release 24 \
     --class-path 'BOOT-INF/lib/*' \
-    application.jar > jre-deps.txt
+    app.jar > jre-deps.txt
 
 RUN jlink \
     --add-modules $(cat jre-deps.txt) \
@@ -45,10 +45,10 @@ COPY --from=builder /builder/extracted/application/ ./
 # Execute the AOT training run and create the AOT cache
 # Enable for faster startup, at the expense of bigger image size
 # Add "-XX:AOTCache=app.aot" to entry point
-#RUN java -XX:AOTMode=record -XX:AOTConfiguration=app.aotconf -Dspring.context.exit=onRefresh -Dspring.profiles.active=build -jar application.jar
-#RUN java -XX:AOTMode=create -XX:AOTConfiguration=app.aotconf -XX:AOTCache=app.aot -jar application.jar && rm app.aotconf
+#RUN java -XX:AOTMode=record -XX:AOTConfiguration=app.aotconf -Dspring.context.exit=onRefresh -Dspring.profiles.active=build -jar app.jar
+#RUN java -XX:AOTMode=create -XX:AOTConfiguration=app.aotconf -XX:AOTCache=app.aot -jar app.jar && rm app.aotconf
 
 ENTRYPOINT [ \
     "java", \
-    "-jar", "application.jar" \
+    "-jar", "app.jar" \
 ]
