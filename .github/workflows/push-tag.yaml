@@ -47,3 +47,18 @@ jobs:
           gpr-token-container: ${{ secrets.GITHUB_TOKEN }}
           image-name: "one-percent-better"
           version-name: ${{ github.ref_name }}
+
+  publish-web:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Publish (Web)
+        uses: ./.github/actions/publish-web
+        with:
+          gpr-username: ${{ github.actor }}
+          gpr-token-container: ${{ secrets.GITHUB_TOKEN }}
+          image-name: "one-percent-better"
+          image-tag: "${{ github.ref_name }}-web"
