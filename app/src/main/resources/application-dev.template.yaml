@@ -18,7 +18,7 @@ spring:
   docker:
     compose:
       file:
-        - "./deploy/compose/dev.compose.yaml"
+        - "../deploy/compose/dev.compose.yaml"
 github:
   username: "username"
   token: "token"
