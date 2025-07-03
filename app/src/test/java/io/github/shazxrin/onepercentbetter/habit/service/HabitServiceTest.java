@@ -28,7 +28,7 @@ public class HabitServiceTest {
     private HabitRepository habitRepository;
 
     @InjectMocks
-    private MainHabitService mainHabitService;
+    private HabitService mainHabitService;
 
     @Test
     void testAddHabit_shouldSaveHabit() {
