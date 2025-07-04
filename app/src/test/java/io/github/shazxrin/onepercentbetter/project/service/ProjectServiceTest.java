@@ -26,7 +26,7 @@ public class ProjectServiceTest {
     private ProjectRepository projectRepository;
 
     @InjectMocks
-    private MainProjectService projectService;
+    private ProjectService projectService;
 
     @Captor
     private ArgumentCaptor<Project> projectCaptor;
