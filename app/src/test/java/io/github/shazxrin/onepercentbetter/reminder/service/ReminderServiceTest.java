@@ -30,7 +30,7 @@ public class ReminderServiceTest {
     private CoachService coachService;
 
     @InjectMocks
-    private MainReminderService reminderService;
+    private ReminderService reminderService;
 
     @Test
     void testRemind_shouldPromptCoachForReminder() {
