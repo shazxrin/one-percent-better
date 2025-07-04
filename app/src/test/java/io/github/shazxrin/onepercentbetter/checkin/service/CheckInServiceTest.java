@@ -37,7 +37,7 @@ public class CheckInServiceTest {
     private GitHubService gitHubService;
 
     @InjectMocks
-    private MainCheckInService checkInService;
+    private CheckInService checkInService;
 
     @Captor
     private ArgumentCaptor<CheckIn> checkInCaptor;
