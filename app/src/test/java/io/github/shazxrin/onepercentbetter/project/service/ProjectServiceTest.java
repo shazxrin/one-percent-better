@@ -34,29 +34,26 @@ public class ProjectServiceTest {
     @Test
     void testAddProject_whenProjectDoesNotExist_shouldSaveProject() {
         // Given
-        String owner = "shazxrin";
-        String name = "test-project";
-        when(projectRepository.existsByOwnerAndName(owner, name)).thenReturn(false);
+        String name = "shazxrin/test-project";
+        when(projectRepository.existsByName(name)).thenReturn(false);
 
         // When
-        projectService.addProject(owner, name);
+        projectService.addProject(name);
 
         // Then
         verify(projectRepository).save(projectCaptor.capture());
         Project savedProject = projectCaptor.getValue();
-        assertEquals(owner, savedProject.getOwner());
         assertEquals(name, savedProject.getName());
     }
 
     @Test
     void testAddProject_whenProjectAlreadyExists_shouldNotSaveProject() {
         // Given
-        String owner = "shazxrin";
-        String name = "existing-project";
-        when(projectRepository.existsByOwnerAndName(owner, name)).thenReturn(true);
+        String name = "shazxrin/existing-project";
+        when(projectRepository.existsByName(name)).thenReturn(true);
 
         // When
-        projectService.addProject(owner, name);
+        projectService.addProject(name);
 
         // Then
         verify(projectRepository, never()).save(any());
@@ -65,39 +62,37 @@ public class ProjectServiceTest {
     @Test
     void testRemoveProject_whenProjectExists_shouldDeleteProject() {
         // Given
-        String owner = "shazxrin";
-        String name = "project-to-delete";
-        when(projectRepository.existsByOwnerAndName(owner, name)).thenReturn(true);
+        long id = 1L;
+        when(projectRepository.existsById(id)).thenReturn(true);
 
         // When
-        projectService.removeProject(owner, name);
+        projectService.removeProject(id);
 
         // Then
-        verify(projectRepository).deleteByOwnerAndName(owner, name);
+        verify(projectRepository).deleteById(id);
     }
 
     @Test
     void testRemoveProject_whenProjectDoesNotExist_shouldThrowBadRequestException() {
         // Given
-        String owner = "shazxrin";
-        String name = "non-existent-project";
-        when(projectRepository.existsByOwnerAndName(owner, name)).thenReturn(false);
+        long id = 1L;
+        when(projectRepository.existsById(id)).thenReturn(false);
 
         // When & Then
         ProjectNotFoundException exception = assertThrows(
             ProjectNotFoundException.class, () -> {
-            projectService.removeProject(owner, name);
+            projectService.removeProject(id);
         });
         assertEquals("Project not found", exception.getMessage());
-        verify(projectRepository, never()).deleteByOwnerAndName(any(), any());
+        verify(projectRepository, never()).deleteById(any());
     }
 
     @Test
     void testGetAllProjects_whenProjectsExist_shouldReturnAllProjects() {
         // Given
         List<Project> projects = List.of(
-            new Project(1L, "shazxrin", "project1"),
-            new Project(2L, "shazxrin", "project2")
+            new Project(1L, "shazxrin/project1"),
+            new Project(2L, "shazxrin/project2")
         );
 
         when(projectRepository.findAll()).thenReturn(projects);
@@ -107,8 +102,8 @@ public class ProjectServiceTest {
 
         // Then
         assertEquals(2, result.size());
-        assertEquals("project1", result.get(0).getName());
-        assertEquals("project2", result.get(1).getName());
+        assertEquals("shazxrin/project1", result.get(0).getName());
+        assertEquals("shazxrin/project2", result.get(1).getName());
     }
 
     @Test

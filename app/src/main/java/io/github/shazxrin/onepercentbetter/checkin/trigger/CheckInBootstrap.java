@@ -36,13 +36,7 @@ public class CheckInBootstrap {
     public void checkInBootstrap() {
         log.info("Running check-in bootstrap.");
         for (String project : checkInProperties.getBootstrap().getProjects()) {
-            String[] projectSplit = project.split("/");
-            if (projectSplit.length != 2) {
-                log.error("Invalid project format: {}.", project);
-                continue;
-            }
-
-            projectService.addProject(projectSplit[0], projectSplit[1]);
+            projectService.addProject(project);
         }
 
         var bootstrapDate = LocalDate.parse(checkInProperties.getBootstrap().getDate());

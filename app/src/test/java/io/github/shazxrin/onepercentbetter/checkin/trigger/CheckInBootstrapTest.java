@@ -49,8 +49,8 @@ public class CheckInBootstrapTest {
         checkInBootstrap.checkInBootstrap();
 
         // Then
-        verify(projectService).addProject("owner1", "project1");
-        verify(projectService).addProject("owner2", "project2");
+        verify(projectService).addProject("owner1/project1");
+        verify(projectService).addProject("owner2/project2");
         verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
     }
 
@@ -69,8 +69,8 @@ public class CheckInBootstrapTest {
         checkInBootstrap.checkInBootstrap();
 
         // Then
-        verify(projectService).addProject("owner", "project");
-        verify(projectService, never()).addProject(eq("invalid-format"), any());
+        verify(projectService).addProject("owner/project");
+        verify(projectService, never()).addProject(eq("invalid-format"));
         verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
     }
 

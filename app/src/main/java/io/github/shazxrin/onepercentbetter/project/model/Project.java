@@ -21,9 +21,6 @@ public class Project {
     private Long id;
 
     @Column(nullable = false)
-    private String owner;
-
-    @Column(nullable = false)
     private String name;
 
     @CreatedDate
@@ -32,14 +29,13 @@ public class Project {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Project(Long id, String owner, String name) {
+    public Project(Long id, String name) {
         this.id = id;
-        this.owner = owner;
         this.name = name;
     }
 
-    public Project(String owner, String name) {
-        this(null, owner, name);
+    public Project(String name) {
+        this(null, name);
     }
 
     public Project() { }
@@ -50,14 +46,6 @@ public class Project {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 
     public String getName() {

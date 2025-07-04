@@ -6,6 +6,9 @@ import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import java.time.LocalDate;
+
+import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
+import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,8 +32,7 @@ public class CheckInService {
         this.gitHubService = gitHubService;
     }
 
-    private record CountStreak(int count, int streak) {
-    }
+    private record CountStreak(int count, int streak) { }
 
     private CountStreak calculateCountStreakForDate(LocalDate date) {
         log.info("Calculating count streak for date {}.", date);
@@ -38,8 +40,17 @@ public class CheckInService {
 
         Iterable<Project> projects = projectService.getAllProjects();
         for (Project project : projects) {
-            log.info("Checking {}/{}.", project.getOwner(), project.getName());
-            count += gitHubService.getCommitCountForRepositoryOnDate(project.getOwner(), project.getName(), date);
+            log.info("Checking {}.", project.getName());
+
+            ProjectOwnerName projectOwnerName;
+            try {
+                projectOwnerName = ProjectUtil.parseProjectRepoOwnerName(project.getName());
+            } catch (IllegalArgumentException ex) {
+                log.error("Invalid project name {}.", project.getName(), ex);
+                continue;
+            }
+
+            count += gitHubService.getCommitCountForRepositoryOnDate(projectOwnerName.owner(), projectOwnerName.name(), date);
         }
         log.info("Total commit count is {}.", count);
 

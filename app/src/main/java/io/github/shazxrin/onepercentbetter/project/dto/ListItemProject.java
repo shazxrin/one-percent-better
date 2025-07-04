@@ -1,4 +1,3 @@
 package io.github.shazxrin.onepercentbetter.project.dto;
 
-public record ListItemProject(String owner, String name) {
-}
+public record ListItemProject(long id, String name) { }

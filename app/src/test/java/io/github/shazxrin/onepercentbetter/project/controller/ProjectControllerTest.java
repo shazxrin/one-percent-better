@@ -35,8 +35,8 @@ public class ProjectControllerTest {
     @Test
     void testGetAllProjects_shouldReturnAllProjects() throws Exception {
         // Given
-        Project project1 = new Project(null, "owner1", "repo1");
-        Project project2 = new Project(null, "owner2", "repo2");
+        Project project1 = new Project(null, "owner1/repo1");
+        Project project2 = new Project(null, "owner2/repo2");
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
 
         // When & Then
@@ -44,10 +44,8 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].owner").value("owner1"))
-                .andExpect(jsonPath("$[0].name").value("repo1"))
-                .andExpect(jsonPath("$[1].owner").value("owner2"))
-                .andExpect(jsonPath("$[1].name").value("repo2"));
+                .andExpect(jsonPath("$[0].name").value("owner1/repo1"))
+                .andExpect(jsonPath("$[1].name").value("owner2/repo2"));
 
         verify(projectService, times(1)).getAllProjects();
     }
@@ -72,33 +70,28 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/api/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
-                {"owner": "testOwner","name": "testRepo"}
+                {"name": "testOwner/testRepo"}
             """))
             .andExpect(status().isCreated());
 
-        ArgumentCaptor<String> ownerCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         
-        verify(projectService, times(1)).addProject(ownerCaptor.capture(), nameCaptor.capture());
-        assertEquals("testOwner", ownerCaptor.getValue());
+        verify(projectService, times(1)).addProject(nameCaptor.capture());
         assertEquals("testRepo", nameCaptor.getValue());
     }
 
     @Test
     void testDeleteProject_shouldCallServiceAndReturnOk() throws Exception {
         // When & Then
-        mockMvc.perform(delete("/api/projects")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {"owner": "testOwner","name": "testRepo"}
-            """))
+        mockMvc.perform(
+                delete("/api/projects/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
             .andExpect(status().isOk());
 
-        ArgumentCaptor<String> ownerCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
         
-        verify(projectService, times(1)).removeProject(ownerCaptor.capture(), nameCaptor.capture());
-        assertEquals("testOwner", ownerCaptor.getValue());
-        assertEquals("testRepo", nameCaptor.getValue());
+        verify(projectService, times(1)).removeProject(idCaptor.capture());
+        assertEquals(1L, idCaptor.getValue());
     }
 }
