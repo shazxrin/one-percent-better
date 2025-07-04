@@ -24,7 +24,7 @@ public class GitHubServiceTest {
     private GitHubClient gitHubClient;
 
     @InjectMocks
-    private MainGitHubService gitHubService;
+    private GitHubService gitHubService;
 
     private static final String USERNAME = "testuser";
     private static final String REPOSITORY = "testrepo";
