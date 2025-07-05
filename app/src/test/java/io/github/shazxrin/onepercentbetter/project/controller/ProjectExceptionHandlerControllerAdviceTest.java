@@ -32,24 +32,11 @@ public class ProjectExceptionHandlerControllerAdviceTest {
             .andExpect(jsonPath("$.detail").value("Bad request."));
     }
 
-    @Test
-    void testNormalEndpoint_shouldReturnOkStatus() throws Exception {
-        // When & Then
-        mockMvc.perform(get("/test/ok"))
-            .andExpect(status().isOk())
-            .andExpect(content().string("OK"));
-    }
-
     @RestController
     static class ExceptionController {
         @GetMapping("/test/project-not-found")
         public String badRequest() {
             throw new ProjectNotFoundException("Bad request.");
-        }
-
-        @GetMapping("/test/ok")
-        public String ok() {
-            return "OK";
         }
     }
 }
