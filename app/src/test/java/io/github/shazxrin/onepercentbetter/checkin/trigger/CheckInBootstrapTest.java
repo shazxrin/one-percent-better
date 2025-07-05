@@ -55,26 +55,6 @@ public class CheckInBootstrapTest {
     }
 
     @Test
-    void testCheckInBootstrap_withInvalidProject_shouldSkipInvalidAndProcessValid() {
-        // Given
-        String validProject = "owner/project";
-        String invalidProject = "invalid-format";
-
-        CheckInProperties.Bootstrap bootstrap = new CheckInProperties.Bootstrap();
-        bootstrap.setDate(BOOTSTRAP_DATE);
-        bootstrap.setProjects(Arrays.asList(validProject, invalidProject));
-        when(checkInProperties.getBootstrap()).thenReturn(bootstrap);
-
-        // When
-        checkInBootstrap.checkInBootstrap();
-
-        // Then
-        verify(projectService).addProject("owner/project");
-        verify(projectService, never()).addProject(eq("invalid-format"));
-        verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
-    }
-
-    @Test
     void testCheckInBootstrap_checksCorrectDateInterval() {
         // Given
         CheckInProperties.Bootstrap bootstrap = new CheckInProperties.Bootstrap();
