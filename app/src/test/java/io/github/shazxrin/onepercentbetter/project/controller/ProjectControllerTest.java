@@ -35,8 +35,8 @@ public class ProjectControllerTest {
     @Test
     void testGetAllProjects_shouldReturnAllProjects() throws Exception {
         // Given
-        Project project1 = new Project(null, "owner1/repo1");
-        Project project2 = new Project(null, "owner2/repo2");
+        Project project1 = new Project(1L, "owner1/repo1");
+        Project project2 = new Project(2L, "owner2/repo2");
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
 
         // When & Then
@@ -44,7 +44,9 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].name").value("owner1/repo1"))
+                .andExpect(jsonPath("$[1].id").value("2"))
                 .andExpect(jsonPath("$[1].name").value("owner2/repo2"));
 
         verify(projectService, times(1)).getAllProjects();
@@ -77,7 +79,7 @@ public class ProjectControllerTest {
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         
         verify(projectService, times(1)).addProject(nameCaptor.capture());
-        assertEquals("testRepo", nameCaptor.getValue());
+        assertEquals("testOwner/testRepo", nameCaptor.getValue());
     }
 
     @Test
