@@ -19,7 +19,7 @@ public class ProjectRepositoryTest {
     private ProjectRepository projectRepository;
 
     @Test
-    void testExistsByOwnerAndName_whenProjectExists_shouldReturnTrue() {
+    void testExistsByName_whenProjectExists_shouldReturnTrue() {
         // Given
         Project project = new Project("github-user/awesome-project");
         entityManager.persistAndFlush(project);
@@ -32,7 +32,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
-    void testExistsByOwnerAndName_whenProjectDoesNotExist_shouldReturnFalse() {
+    void testExistsByName_whenProjectDoesNotExist_shouldReturnFalse() {
         // Given
         // No project with this owner and name
 
