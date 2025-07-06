@@ -1,4 +1,4 @@
-name: "full-one-percent-better"
+name: "dev-one-percent-better"
 services:
   rabbitmq:
     image: "rabbitmq:management"
