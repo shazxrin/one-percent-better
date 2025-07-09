@@ -5,8 +5,6 @@ plugins {
     id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
-group = "io.github.shazxrin"
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(24)
