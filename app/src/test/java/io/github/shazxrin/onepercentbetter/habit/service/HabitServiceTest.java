@@ -28,7 +28,7 @@ public class HabitServiceTest {
     private HabitRepository habitRepository;
 
     @InjectMocks
-    private HabitService mainHabitService;
+    private HabitService habitService;
 
     @Test
     void testAddHabit_shouldSaveHabit() {
@@ -39,7 +39,7 @@ public class HabitServiceTest {
         when(habitRepository.save(any(Habit.class))).thenReturn(expectedHabit);
 
         // When
-        mainHabitService.addHabit(name, description);
+        habitService.addHabit(name, description);
 
         // Then
         verify(habitRepository, times(1)).save(any(Habit.class));
@@ -52,7 +52,7 @@ public class HabitServiceTest {
         when(habitRepository.existsById(habitId)).thenReturn(false);
 
         // When
-        mainHabitService.removeHabit(habitId);
+        habitService.removeHabit(habitId);
 
         // Then
         verify(habitRepository, times(1)).existsById(habitId);
@@ -66,7 +66,7 @@ public class HabitServiceTest {
         when(habitRepository.existsById(habitId)).thenReturn(true);
 
         // When & Then
-        assertThrows(HabitNotFoundException.class, () -> mainHabitService.removeHabit(habitId));
+        assertThrows(HabitNotFoundException.class, () -> habitService.removeHabit(habitId));
         verify(habitRepository, times(1)).existsById(habitId);
         verify(habitRepository, never()).deleteById(anyLong());
     }
@@ -80,7 +80,7 @@ public class HabitServiceTest {
         when(habitRepository.findAll()).thenReturn(expectedHabits);
 
         // When
-        List<Habit> actualHabits = mainHabitService.getAllHabits();
+        List<Habit> actualHabits = habitService.getAllHabits();
 
         // Then
         assertEquals(expectedHabits.size(), actualHabits.size());
