@@ -37,3 +37,8 @@ app:
         - "shazxrin/one-percent-better"
   reminder:
     schedule-cron: "0 0 */1 * * *"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

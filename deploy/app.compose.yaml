@@ -3,7 +3,7 @@ services:
   app:
     build: ../app
     volumes:
-      - "./application.yaml:/application/application.yaml"
+      - "./application/application.yaml:/application/application.yaml"
     ports:
       - "8080:8080"
     depends_on:
