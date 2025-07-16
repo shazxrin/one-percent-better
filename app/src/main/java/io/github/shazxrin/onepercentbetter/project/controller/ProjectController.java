@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/projects")
 @RestController
 public class ProjectController {
+    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);
     private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
@@ -30,6 +33,7 @@ public class ProjectController {
     @ApiResponse(responseCode = "200", description = "Get all projects successfully")
     @GetMapping
     public List<ListItemProject> getAllProjects() {
+        log.info("Getting all projects...");
         ArrayList<ListItemProject> projects = new ArrayList<>();
         projectService.getAllProjects()
             .forEach(project -> projects.add(new ListItemProject(project.getId(), project.getName())));

@@ -44,6 +44,21 @@ services:
     depends_on:
       - prometheus
 
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    user: root
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml
+      - tempo-data:/tmp/tempo
+    command:
+      - '--config.file=/etc/tempo/tempo.yaml'
+    depends_on:
+      - prometheus
+
 volumes:
   grafana-storage: {}
   prometheus-data: {}
+  tempo-data: {}

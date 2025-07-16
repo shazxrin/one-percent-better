@@ -46,6 +46,11 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-tracing-bridge-otel")
+    implementation("io.micrometer:micrometer-observation")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 
     implementation("io.github.shazxrin.notifier:common:1.2.2")
     implementation("org.springframework.boot:spring-boot-starter-amqp")

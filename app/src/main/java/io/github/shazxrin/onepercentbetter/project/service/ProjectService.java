@@ -4,6 +4,8 @@ import io.github.shazxrin.onepercentbetter.project.exception.ProjectInvalidForma
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
+import io.micrometer.observation.annotation.Observed;
+import io.micrometer.tracing.annotation.SpanTag;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Observed
 @Service
 public class ProjectService {
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
@@ -22,7 +25,7 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public void addProject(String name) {
+    public void addProject(@SpanTag String name) {
         if (projectRepository.existsByName(name)) {
             log.info("Project {} already exists. Skipping.", name);
             return;
@@ -36,7 +39,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public void removeProject(long id) {
+    public void removeProject(@SpanTag long id) {
         if (!projectRepository.existsById(id)) {
             throw new ProjectNotFoundException("Project not found");
         }
@@ -45,6 +48,7 @@ public class ProjectService {
     }
 
     public List<Project> getAllProjects() {
+        log.info("Getting all projects...");
         List<Project> projects = new ArrayList<>();
         projectRepository.findAll()
             .forEach(projects::add);

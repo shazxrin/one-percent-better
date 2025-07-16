@@ -42,3 +42,19 @@ management:
     web:
       exposure:
         include: health,prometheus
+  otlp:
+    tracing:
+      export:
+        enabled: true
+      endpoint: http://localhost:4318/v1/traces
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  observations:
+    annotations:
+      enabled: true
+logging:
+  pattern:
+    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
+  include-application-name: false
