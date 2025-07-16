@@ -12,6 +12,21 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=14d'
+      - '--web.enable-remote-write-receiver'
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./alloy:/etc/alloy
+    command:
+      - 'run'
+      - '/etc/alloy/config.alloy'
+    depends_on:
+      - prometheus
 
   grafana:
     image: grafana/grafana:latest
