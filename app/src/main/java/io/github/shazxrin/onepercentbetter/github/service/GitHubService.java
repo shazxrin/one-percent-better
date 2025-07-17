@@ -22,7 +22,7 @@ public class GitHubService {
 
     private final GitHubClient gitHubClient;
 
-    private GitHubService(GitHubClient gitHubClient) {
+    public GitHubService(GitHubClient gitHubClient) {
         this.gitHubClient = gitHubClient;
     }
 
