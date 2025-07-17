@@ -3,6 +3,7 @@ package io.github.shazxrin.onepercentbetter.github.service;
 import io.github.shazxrin.onepercentbetter.github.client.GitHubClient;
 import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
 import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
+import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+@Observed
 @Service
 public class GitHubService {
     private static final Logger log = LoggerFactory.getLogger(GitHubService.class);

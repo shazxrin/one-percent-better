@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
 import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
+import io.micrometer.observation.annotation.Observed;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+@Observed
 @Service
 public class CoachService {
     private static final Logger log = LoggerFactory.getLogger(CoachService.class);

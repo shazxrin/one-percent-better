@@ -2,6 +2,7 @@ package io.github.shazxrin.onepercentbetter.github.client;
 
 import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
 import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
+import io.micrometer.observation.annotation.Observed;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.springframework.core.ParameterizedTypeReference;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+@Observed
 @Component
 public class GitHubClient {
     private final RestClient gitHubRestClient;

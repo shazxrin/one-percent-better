@@ -2,9 +2,11 @@ package io.github.shazxrin.onepercentbetter.notification.service;
 
 import io.github.shazxrin.notifier.common.NotificationMessage;
 import io.github.shazxrin.notifier.common.NotificationMessageQueue;
+import io.micrometer.observation.annotation.Observed;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+@Observed
 @Service
 public class NotificationService {
     private final static String APP_NAME = "one-percent-better";

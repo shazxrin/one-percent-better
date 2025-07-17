@@ -48,7 +48,6 @@ public class ProjectService {
     }
 
     public List<Project> getAllProjects() {
-        log.info("Getting all projects...");
         List<Project> projects = new ArrayList<>();
         projectRepository.findAll()
             .forEach(projects::add);

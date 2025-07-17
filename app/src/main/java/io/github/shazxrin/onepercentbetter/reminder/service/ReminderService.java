@@ -6,10 +6,12 @@ import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
 import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
 import io.github.shazxrin.onepercentbetter.coach.service.CoachService;
 import io.github.shazxrin.onepercentbetter.notification.service.NotificationService;
+import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+@Observed
 @Service
 public class ReminderService {
     private static final Logger log = LoggerFactory.getLogger(ReminderService.class);

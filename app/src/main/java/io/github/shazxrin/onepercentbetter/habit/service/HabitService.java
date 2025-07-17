@@ -3,12 +3,14 @@ package io.github.shazxrin.onepercentbetter.habit.service;
 import io.github.shazxrin.onepercentbetter.habit.exception.HabitNotFoundException;
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import io.github.shazxrin.onepercentbetter.habit.repository.HabitRepository;
+import io.micrometer.observation.annotation.Observed;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Observed
 @Service
 public class HabitService {
     private final HabitRepository habitRepository;

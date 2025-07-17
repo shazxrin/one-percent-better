@@ -5,6 +5,7 @@ import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInRepository;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
+import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 
 import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+@Observed
 @Service
 public class CheckInService {
     private static final Logger log = LoggerFactory.getLogger(CheckInService.class);
