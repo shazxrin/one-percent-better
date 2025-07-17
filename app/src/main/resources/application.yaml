@@ -41,12 +41,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus
+        include: health
   otlp:
     tracing:
       export:
         enabled: true
       endpoint: http://localhost:4318/v1/traces
+    metrics:
+      export:
+        enabled: true
+        url: http://localhost:4318/v1/metrics
+        step: 10s
   tracing:
     enabled: true
     sampling:

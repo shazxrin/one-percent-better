@@ -1,16 +1,3 @@
-// Prometheus scraping
-prometheus.scrape "app" {
-  scrape_interval = "15s"
-  targets = [
-    {
-      __address__ = "host.docker.internal:8080",
-      __metrics_path__ = "/actuator/prometheus",
-    },
-  ]
-
-  forward_to = [prometheus.remote_write.default.receiver]
-}
-
 // Prometheus remote write
 prometheus.remote_write "default" {
   endpoint {
