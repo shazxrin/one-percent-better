@@ -25,8 +25,6 @@ services:
     command:
       - 'run'
       - '/etc/alloy/config.alloy'
-    depends_on:
-      - prometheus
 
   grafana:
     image: grafana/grafana:latest
@@ -41,8 +39,6 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana:/etc/grafana/provisioning
-    depends_on:
-      - prometheus
 
   tempo:
     image: grafana/tempo:latest
@@ -55,8 +51,6 @@ services:
       - tempo-data:/tmp/tempo
     command:
       - '--config.file=/etc/tempo/tempo.yaml'
-    depends_on:
-      - prometheus
 
 volumes:
   grafana-storage: {}
