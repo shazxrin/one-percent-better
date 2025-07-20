@@ -6,3 +6,19 @@ app:
   check-in:
     bootstrap:
       enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  otlp:
+    logging:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
