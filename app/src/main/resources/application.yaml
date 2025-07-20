@@ -43,6 +43,10 @@ management:
       exposure:
         include: health
   otlp:
+    logging:
+      export:
+        enabled: true
+      endpoint: http://localhost:4318/v1/logs
     tracing:
       export:
         enabled: true
@@ -59,7 +63,3 @@ management:
   observations:
     annotations:
       enabled: true
-logging:
-  pattern:
-    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
-  include-application-name: false

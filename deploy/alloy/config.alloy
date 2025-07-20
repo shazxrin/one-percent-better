@@ -17,6 +17,7 @@ otelcol.receiver.otlp "default" {
   output {
     traces = [otelcol.exporter.otlp.tempo.input]
     metrics = [otelcol.exporter.prometheus.default.input]
+    logs = [otelcol.exporter.otlphttp.loki.input]
   }
 }
 
@@ -32,5 +33,12 @@ otelcol.exporter.otlp "tempo" {
     tls {
       insecure = true
     }
+  }
+}
+
+// OTLP exporter for Loki
+otelcol.exporter.otlphttp "loki" {
+  client {
+    endpoint = "http://loki:3100/otlp"
   }
 }
