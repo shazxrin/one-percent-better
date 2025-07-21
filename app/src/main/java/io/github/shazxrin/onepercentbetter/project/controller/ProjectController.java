@@ -1,7 +1,6 @@
 package io.github.shazxrin.onepercentbetter.project.controller;
 
 import io.github.shazxrin.onepercentbetter.project.dto.AddProject;
-import io.github.shazxrin.onepercentbetter.project.dto.DeleteProject;
 import io.github.shazxrin.onepercentbetter.project.dto.ListItemProject;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,8 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
