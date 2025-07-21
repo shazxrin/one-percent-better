@@ -6,7 +6,6 @@ import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.micrometer.observation.annotation.Observed;
 import io.micrometer.tracing.annotation.SpanTag;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
@@ -48,10 +47,6 @@ public class ProjectService {
     }
 
     public List<Project> getAllProjects() {
-        List<Project> projects = new ArrayList<>();
-        projectRepository.findAll()
-            .forEach(projects::add);
-
-        return projects;
+        return projectRepository.findAll();
     }
 }

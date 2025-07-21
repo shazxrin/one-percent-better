@@ -7,7 +7,6 @@ import io.micrometer.observation.annotation.Observed;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Observed
@@ -34,10 +33,6 @@ public class HabitService {
     }
 
     public List<Habit> getAllHabits() {
-        List<Habit> habits = new ArrayList<>();
-        habitRepository.findAll()
-                .forEach(habits::add);
-
-        return habits;
+        return habitRepository.findAll();
     }
 }
