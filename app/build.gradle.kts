@@ -41,6 +41,8 @@ dependencyManagement {
     }
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
@@ -76,8 +78,11 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
 }
 
 tasks.withType<Test> {
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
     useJUnitPlatform()
 }
