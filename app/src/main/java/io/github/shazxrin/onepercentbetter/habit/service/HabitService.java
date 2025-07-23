@@ -35,4 +35,9 @@ public class HabitService {
     public List<Habit> getAllHabits() {
         return habitRepository.findAll();
     }
+
+    public Habit getHabitById(long id) {
+        return habitRepository.findById(id)
+            .orElseThrow(() -> new HabitNotFoundException("Habit not found!"));
+    }
 }

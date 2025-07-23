@@ -11,9 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
@@ -86,5 +88,31 @@ public class HabitServiceTest {
         assertEquals(expectedHabits.size(), actualHabits.size());
         assertEquals(expectedHabits, actualHabits);
         verify(habitRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetHabitById_shouldReturnHabit_whenHabitExists() {
+        // Given
+        Long habitId = 1L;
+        Habit expectedHabit = new Habit(habitId, "Read", "Read a book daily");
+        when(habitRepository.findById(habitId)).thenReturn(Optional.of(expectedHabit));
+
+        // When
+        Habit actualHabit = habitService.getHabitById(habitId);
+
+        // Then
+        assertSame(expectedHabit, actualHabit);
+        verify(habitRepository, times(1)).findById(habitId);
+    }
+
+    @Test
+    void testGetHabitById_shouldThrowException_whenHabitDoesNotExist() {
+        // Given
+        Long habitId = 1L;
+        when(habitRepository.findById(habitId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(HabitNotFoundException.class, () -> habitService.getHabitById(habitId));
+        verify(habitRepository, times(1)).findById(habitId);
     }
 }
