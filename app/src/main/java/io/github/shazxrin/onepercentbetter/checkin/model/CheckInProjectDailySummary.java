@@ -1,0 +1,103 @@
+package io.github.shazxrin.onepercentbetter.checkin.model;
+
+import io.github.shazxrin.onepercentbetter.project.model.Project;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "check_in_project_daily_summaries")
+@Entity
+public class CheckInProjectDailySummary {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    LocalDate date;
+
+    @Column(nullable = false)
+    int noOfCheckIns;
+
+    @Column(nullable = false)
+    int streak;
+
+    @OneToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    Project project;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    public CheckInProjectDailySummary(LocalDate date, int noOfCheckIns, int streak, Project project) {
+        this.date = date;
+        this.noOfCheckIns = noOfCheckIns;
+        this.streak = streak;
+        this.project = project;
+    }
+
+    public CheckInProjectDailySummary() { }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public int getNoOfCheckIns() {
+        return noOfCheckIns;
+    }
+
+    public void setNoOfCheckIns(int noOfCheckIns) {
+        this.noOfCheckIns = noOfCheckIns;
+    }
+
+    public int getStreak() {
+        return streak;
+    }
+
+    public void setStreak(int streak) {
+        this.streak = streak;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+}
