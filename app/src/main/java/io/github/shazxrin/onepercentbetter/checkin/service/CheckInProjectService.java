@@ -76,9 +76,6 @@ public class CheckInProjectService {
                     commit.sha(),
                     commitType,
                     commitMessage,
-                    commit.stats().additions(),
-                    commit.stats().deletions(),
-                    commit.stats().total(),
                     project
                 )
             );

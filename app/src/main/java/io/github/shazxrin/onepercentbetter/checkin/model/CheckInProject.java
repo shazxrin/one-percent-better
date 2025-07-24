@@ -38,15 +38,6 @@ public class CheckInProject {
     @Column(nullable = true, length = 100)
     private String message;
 
-    @Column(nullable = true)
-    private int linesAdded;
-
-    @Column(nullable = true)
-    private int linesDeleted;
-
-    @Column(nullable = true)
-    private int linesTotal;
-
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
@@ -62,18 +53,12 @@ public class CheckInProject {
         String hash,
         String type,
         String message,
-        int linesAdded,
-        int linesDeleted,
-        int linesTotal,
         Project project
     ) {
         this.date = date;
         this.hash = hash;
         this.type = type;
         this.message = message;
-        this.linesAdded = linesAdded;
-        this.linesDeleted = linesDeleted;
-        this.linesTotal = linesTotal;
         this.project = project;
     }
 
@@ -117,30 +102,6 @@ public class CheckInProject {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public int getLinesAdded() {
-        return linesAdded;
-    }
-
-    public void setLinesAdded(int linesAdded) {
-        this.linesAdded = linesAdded;
-    }
-
-    public int getLinesDeleted() {
-        return linesDeleted;
-    }
-
-    public void setLinesDeleted(int linesDeleted) {
-        this.linesDeleted = linesDeleted;
-    }
-
-    public int getLinesTotal() {
-        return linesTotal;
-    }
-
-    public void setLinesTotal(int linesTotal) {
-        this.linesTotal = linesTotal;
     }
 
     public Project getProject() {
