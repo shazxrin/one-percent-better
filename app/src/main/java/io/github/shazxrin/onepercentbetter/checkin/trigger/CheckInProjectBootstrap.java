@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Observed
-@ConditionalOnProperty("app.check-in.bootstrap.enabled")
+@ConditionalOnProperty("app.check-in.project.bootstrap.enabled")
 @Component
 public class CheckInProjectBootstrap {
     private static final Logger log = LoggerFactory.getLogger(CheckInProjectBootstrap.class);
