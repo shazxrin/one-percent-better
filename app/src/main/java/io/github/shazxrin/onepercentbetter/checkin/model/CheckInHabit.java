@@ -31,7 +31,7 @@ public class CheckInHabit {
     @Column(nullable = false)
     private int amount;
 
-    @Column(nullable = true, length = 100)
+    @Column(nullable = true, length = 1000)
     private String notes;
 
     @ManyToOne

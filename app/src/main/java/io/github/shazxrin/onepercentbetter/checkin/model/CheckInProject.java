@@ -32,10 +32,10 @@ public class CheckInProject {
     @Column(nullable = true)
     private String hash;
 
-    @Column(nullable = true, length = 20)
+    @Column(nullable = true)
     private String type;
 
-    @Column(nullable = true, length = 100)
+    @Column(nullable = true, length = 1000)
     private String message;
 
     @ManyToOne
