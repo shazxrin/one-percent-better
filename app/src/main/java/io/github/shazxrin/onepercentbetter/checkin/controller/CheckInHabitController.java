@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "Check In Habits",
     description = "API for managing check ins for habits"
 )
-@RequestMapping("/api/check-in/habits")
+@RequestMapping("/api/check-ins/habits")
 @RestController
 public class CheckInHabitController {
     private final CheckInHabitService checkInHabitService;

@@ -15,7 +15,7 @@ import java.time.LocalDate;
     name = "Check Ins",
     description = "API for managing check ins"
 )
-@RequestMapping("/api/check-in/projects/daily-summaries")
+@RequestMapping("/api/check-ins/projects/daily-summaries")
 @RestController
 public class CheckInProjectDailySummaryController {
     private final CheckInProjectDailySummaryService checkInProjectDailySummaryService;
