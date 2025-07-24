@@ -20,6 +20,8 @@ spring:
         completions-path: /chat/completions
         options:
           model: gemini-2.0-flash-lite
+  liquibase:
+    change-log: db/changelog-master.yaml
 server:
   error:
     whitelabel:
