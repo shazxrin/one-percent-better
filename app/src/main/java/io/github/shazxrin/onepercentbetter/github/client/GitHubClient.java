@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.github.client;
 
-import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
 import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
+import io.github.shazxrin.onepercentbetter.github.model.Commit;
 import io.micrometer.observation.annotation.Observed;
 import java.time.OffsetDateTime;
 import java.util.List;

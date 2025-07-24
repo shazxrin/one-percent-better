@@ -1,7 +1,8 @@
 package io.github.shazxrin.onepercentbetter.github.client;
 
-import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
 import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
+import io.github.shazxrin.onepercentbetter.github.model.Commit;
+
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

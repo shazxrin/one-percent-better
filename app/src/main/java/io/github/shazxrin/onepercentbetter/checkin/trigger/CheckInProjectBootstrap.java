@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.trigger;
 
-import io.github.shazxrin.onepercentbetter.checkin.configuration.CheckInProperties;
-import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.checkin.configuration.CheckInProjectProperties;
+import io.github.shazxrin.onepercentbetter.checkin.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
@@ -16,20 +16,20 @@ import org.springframework.stereotype.Component;
 @Observed
 @ConditionalOnProperty("app.check-in.bootstrap.enabled")
 @Component
-public class CheckInBootstrap {
-    private static final Logger log = LoggerFactory.getLogger(CheckInBootstrap.class);
+public class CheckInProjectBootstrap {
+    private static final Logger log = LoggerFactory.getLogger(CheckInProjectBootstrap.class);
 
-    private final CheckInProperties checkInProperties;
-    private final CheckInService checkInService;
+    private final CheckInProjectProperties checkInProperties;
+    private final CheckInProjectService checkInProjectService;
     private final ProjectService projectService;
 
-    public CheckInBootstrap(
-        CheckInProperties checkInProperties,
-        CheckInService checkInService,
+    public CheckInProjectBootstrap(
+        CheckInProjectProperties checkInProperties,
+        CheckInProjectService checkInService,
         ProjectService projectService
     ) {
         this.checkInProperties = checkInProperties;
-        this.checkInService = checkInService;
+        this.checkInProjectService = checkInService;
         this.projectService = projectService;
     }
 
@@ -42,6 +42,6 @@ public class CheckInBootstrap {
         }
 
         var bootstrapDate = LocalDate.parse(checkInProperties.getBootstrap().getDate());
-        checkInService.checkInInterval(bootstrapDate, LocalDate.now());
+        checkInProjectService.checkInAllInterval(bootstrapDate, LocalDate.now());
     }
 }

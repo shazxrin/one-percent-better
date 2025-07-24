@@ -1,8 +1,8 @@
 package io.github.shazxrin.onepercentbetter.github.service;
 
 import io.github.shazxrin.onepercentbetter.github.client.GitHubClient;
-import io.github.shazxrin.onepercentbetter.github.dto.commit.Commit;
 import io.github.shazxrin.onepercentbetter.github.exception.GitHubException;
+import io.github.shazxrin.onepercentbetter.github.model.Commit;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,18 +39,17 @@ public class GitHubService {
             .toOffsetDateTime();
     }
 
-    public int getCommitCountForRepositoryOnDate(String username, String repository, LocalDate date) {
+    public List<Commit> getCommitsForRespositoryOnDate(String username, String repository, LocalDate date) {
         try {
-            List<Commit> commits = gitHubClient.getCommits(
+            return gitHubClient.getCommits(
                 username,
                 repository,
                 getStartOfDay(date),
                 getEndOfDay(date)
             );
-            return commits.size();
         } catch (GitHubException ex) {
             log.error("Error getting commit count today.", ex);
-            return 0;
+            return List.of();
         }
     }
 }

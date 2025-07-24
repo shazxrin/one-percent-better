@@ -1,4 +1,4 @@
-package io.github.shazxrin.onepercentbetter.github.dto.commit;
+package io.github.shazxrin.onepercentbetter.github.model;
 
 import java.net.URI;
 import java.time.OffsetDateTime;

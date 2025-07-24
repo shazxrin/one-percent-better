@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.trigger;
 
-import io.github.shazxrin.onepercentbetter.checkin.configuration.CheckInProperties;
-import io.github.shazxrin.onepercentbetter.checkin.service.CheckInService;
+import io.github.shazxrin.onepercentbetter.checkin.configuration.CheckInProjectProperties;
+import io.github.shazxrin.onepercentbetter.checkin.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,16 +19,16 @@ import static org.mockito.Mockito.*;
 public class CheckInBootstrapTest {
 
     @Mock
-    private CheckInProperties checkInProperties;
+    private CheckInProjectProperties checkInProperties;
 
     @Mock
-    private CheckInService checkInService;
+    private CheckInProjectService checkInService;
 
     @Mock
     private ProjectService projectService;
 
     @InjectMocks
-    private CheckInBootstrap checkInBootstrap;
+    private CheckInProjectBootstrap checkInBootstrap;
 
     private static final LocalDate TODAY = LocalDate.now();
     private static final String BOOTSTRAP_DATE = "2023-01-01";
@@ -40,7 +40,7 @@ public class CheckInBootstrapTest {
         String validProject1 = "owner1/project1";
         String validProject2 = "owner2/project2";
 
-        CheckInProperties.Bootstrap bootstrap = new CheckInProperties.Bootstrap();
+        CheckInProjectProperties.Bootstrap bootstrap = new CheckInProjectProperties.Bootstrap();
         bootstrap.setDate(BOOTSTRAP_DATE);
         bootstrap.setProjects(Arrays.asList(validProject1, validProject2));
         when(checkInProperties.getBootstrap()).thenReturn(bootstrap);
@@ -51,13 +51,13 @@ public class CheckInBootstrapTest {
         // Then
         verify(projectService).addProject("owner1/project1");
         verify(projectService).addProject("owner2/project2");
-        verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+        verify(checkInService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY);
     }
 
     @Test
     void testCheckInBootstrap_checksCorrectDateInterval() {
         // Given
-        CheckInProperties.Bootstrap bootstrap = new CheckInProperties.Bootstrap();
+        CheckInProjectProperties.Bootstrap bootstrap = new CheckInProjectProperties.Bootstrap();
         bootstrap.setDate(BOOTSTRAP_DATE);
         bootstrap.setProjects(Collections.emptyList());
         when(checkInProperties.getBootstrap()).thenReturn(bootstrap);
@@ -66,6 +66,6 @@ public class CheckInBootstrapTest {
         checkInBootstrap.checkInBootstrap();
 
         // Then
-        verify(checkInService).checkInInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+        verify(checkInService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY);
     }
 }

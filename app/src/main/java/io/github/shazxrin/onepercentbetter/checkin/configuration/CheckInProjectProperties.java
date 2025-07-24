@@ -5,8 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "app.check-in")
-public class CheckInProperties {
+@ConfigurationProperties(prefix = "app.check-in.project")
+public class CheckInProjectProperties {
     public static class Bootstrap {
         private boolean enabled;
         private String date;

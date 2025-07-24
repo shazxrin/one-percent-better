@@ -44,16 +44,11 @@ public class CheckInHabit {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public CheckInHabit(Long id, LocalDate date, int amount, String notes, Habit habit) {
-        this.id = id;
+    public CheckInHabit(LocalDate date, int amount, String notes, Habit habit) {
         this.date = date;
         this.amount = amount;
         this.notes = notes;
         this.habit = habit;
-    }
-
-    public CheckInHabit(LocalDate date, int amount, String notes, Habit habit) {
-        this(null, date, amount, notes, habit);
     }
 
     public CheckInHabit() { }

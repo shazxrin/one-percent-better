@@ -49,4 +49,9 @@ public class ProjectService {
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
+
+    public Project getProjectById(@SpanTag long id) {
+        return projectRepository.findById(id)
+            .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
+    }
 }
