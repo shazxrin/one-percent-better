@@ -18,17 +18,17 @@ public class CheckInProjectDailySummary {
     private Long id;
 
     @Column(nullable = false)
-    LocalDate date;
+    private LocalDate date;
 
     @Column(nullable = false)
-    int noOfCheckIns;
+    private int noOfCheckIns;
 
     @Column(nullable = false)
-    int streak;
+    private int streak;
 
     @OneToOne
     @JoinColumn(name = "project_id", nullable = false)
-    Project project;
+    private Project project;
 
     @CreatedDate
     private LocalDateTime createdAt;
