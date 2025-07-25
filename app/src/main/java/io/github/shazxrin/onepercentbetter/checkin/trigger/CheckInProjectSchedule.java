@@ -22,7 +22,7 @@ public class CheckInProjectSchedule {
     }
 
     @Scheduled(cron = "${app.check-in.project.schedule-cron}")
-    public void runScheduledCheckIn() {
+    public void runScheduledCheckInProjectsAll() {
         log.info("Running check-in schedule.");
 
         checkInProjectService.checkInAll(LocalDate.now());

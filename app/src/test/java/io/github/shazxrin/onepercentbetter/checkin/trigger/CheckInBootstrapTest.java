@@ -46,7 +46,7 @@ public class CheckInBootstrapTest {
         when(checkInProperties.getBootstrap()).thenReturn(bootstrap);
 
         // When
-        checkInBootstrap.checkInBootstrap();
+        checkInBootstrap.runBootstrapCheckInProjectsAll();
 
         // Then
         verify(projectService).addProject("owner1/project1");
@@ -63,7 +63,7 @@ public class CheckInBootstrapTest {
         when(checkInProperties.getBootstrap()).thenReturn(bootstrap);
         
         // When
-        checkInBootstrap.checkInBootstrap();
+        checkInBootstrap.runBootstrapCheckInProjectsAll();
 
         // Then
         verify(checkInService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY);

@@ -35,7 +35,7 @@ public class CheckInProjectBootstrap {
 
     @Async
     @EventListener(ApplicationReadyEvent.class)
-    public void checkInBootstrap() {
+    public void runBootstrapCheckInProjectsAll() {
         log.info("Running check-in bootstrap.");
         for (String project : checkInProperties.getBootstrap().getProjects()) {
             projectService.addProject(project);

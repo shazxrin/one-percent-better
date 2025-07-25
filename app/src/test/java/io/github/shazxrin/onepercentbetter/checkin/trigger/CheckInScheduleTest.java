@@ -25,7 +25,7 @@ public class CheckInScheduleTest {
     @Test
     void testRunScheduledCheckIn_shouldCallCheckInServiceCheckInToday() {
         // When
-        checkInSchedule.runScheduledCheckIn();
+        checkInSchedule.runScheduledCheckInProjectsAll();
 
         // Then
         verify(checkInService, times(1)).checkInAll(eq(LocalDate.now()));
