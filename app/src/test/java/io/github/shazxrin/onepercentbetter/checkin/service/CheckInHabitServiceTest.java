@@ -37,7 +37,7 @@ public class CheckInHabitServiceTest {
     private ArgumentCaptor<CheckInHabit> checkInHabitCaptor;
 
     @Test
-    void testCheckIn_shouldCreateAndSaveCheckInHabit() {
+    void testCheckIn_shouldCreateAndSaveAddCheckInHabit() {
         // Given
         long habitId = 1L;
         LocalDate date = LocalDate.of(2023, 1, 15);
@@ -51,7 +51,7 @@ public class CheckInHabitServiceTest {
         when(checkInHabitRepository.save(any(CheckInHabit.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        checkInHabitService.checkIn(habitId, date, amount, notes);
+        checkInHabitService.addCheckIn(habitId, date, amount, notes);
 
         // Then
         verify(habitService, times(1)).getHabitById(habitId);
@@ -66,7 +66,7 @@ public class CheckInHabitServiceTest {
     }
 
     @Test
-    void testCheckIn_withNullNotes_shouldCreateAndSaveCheckInHabitWithNullNotes() {
+    void testCheckIn_withNullNotes_shouldCreateAndSaveAddCheckInHabitWithNullNotes() {
         // Given
         long habitId = 1L;
         LocalDate date = LocalDate.of(2023, 1, 15);
@@ -80,7 +80,7 @@ public class CheckInHabitServiceTest {
         when(checkInHabitRepository.save(any(CheckInHabit.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        checkInHabitService.checkIn(habitId, date, amount, notes);
+        checkInHabitService.addCheckIn(habitId, date, amount, notes);
 
         // Then
         verify(habitService, times(1)).getHabitById(habitId);

@@ -47,7 +47,7 @@ public class CheckInHabitControllerTest {
             .andExpect(status().isCreated());
 
         verify(checkInHabitService, times(1))
-            .checkIn(eq(habitId), eq(date), eq(amount), eq(notes));
+            .addCheckIn(eq(habitId), eq(date), eq(amount), eq(notes));
     }
 
     @Test
@@ -67,6 +67,6 @@ public class CheckInHabitControllerTest {
             .andExpect(status().isCreated());
 
         verify(checkInHabitService, times(1))
-            .checkIn(eq(habitId), eq(date), eq(amount), eq(notes));
+            .addCheckIn(eq(habitId), eq(date), eq(amount), eq(notes));
     }
 }

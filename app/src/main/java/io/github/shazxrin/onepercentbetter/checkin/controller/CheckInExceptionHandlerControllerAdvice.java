@@ -1,5 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.controller;
 
+import io.github.shazxrin.onepercentbetter.checkin.exception.CheckInHabitNotFoundException;
 import io.github.shazxrin.onepercentbetter.checkin.exception.CheckInProjectDailySummaryNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -13,6 +14,14 @@ public class CheckInExceptionHandlerControllerAdvice {
     @ExceptionHandler(CheckInProjectDailySummaryNotFoundException.class)
     public ProblemDetail handleCheckInProjectDailySummaryNotFoundException(
         CheckInProjectDailySummaryNotFoundException ex
+    ) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CheckInHabitNotFoundException.class)
+    public ProblemDetail handleCheckInHabitNotFoundException(
+            CheckInHabitNotFoundException ex
     ) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
