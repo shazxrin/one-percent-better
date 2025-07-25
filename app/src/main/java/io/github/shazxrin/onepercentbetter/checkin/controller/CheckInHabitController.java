@@ -1,6 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.controller;
 
-import io.github.shazxrin.onepercentbetter.checkin.dto.AddCheckInHabit;
+import io.github.shazxrin.onepercentbetter.checkin.dto.CheckInHabitAddRequest;
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInHabitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,13 +35,13 @@ public class CheckInHabitController {
     @PostMapping("/{id}")
     public void postCheckInHabit(
         @PathVariable long id,
-        @RequestBody AddCheckInHabit addCheckInHabit
+        @RequestBody CheckInHabitAddRequest checkInHabitAddRequest
     ) {
         checkInHabitService.checkIn(
             id,
-            addCheckInHabit.date(),
-            addCheckInHabit.amount(),
-            addCheckInHabit.notes()
+            checkInHabitAddRequest.date(),
+            checkInHabitAddRequest.amount(),
+            checkInHabitAddRequest.notes()
         );
     }
 }

@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.shazxrin.onepercentbetter.checkin.dto.AddCheckInHabit;
+import io.github.shazxrin.onepercentbetter.checkin.dto.CheckInHabitAddRequest;
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInHabitService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +38,12 @@ public class CheckInHabitControllerTest {
         int amount = 30;
         String notes = "Completed 30 minutes of reading";
 
-        AddCheckInHabit addCheckInHabit = new AddCheckInHabit(date, amount, notes);
+        CheckInHabitAddRequest checkInHabitAddRequest = new CheckInHabitAddRequest(date, amount, notes);
 
         // When & Then
         mockMvc.perform(post("/api/check-in/habits/{id}", habitId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(addCheckInHabit)))
+                .content(objectMapper.writeValueAsString(checkInHabitAddRequest)))
             .andExpect(status().isCreated());
 
         verify(checkInHabitService, times(1))
@@ -58,12 +58,12 @@ public class CheckInHabitControllerTest {
         int amount = 30;
         String notes = null;
 
-        AddCheckInHabit addCheckInHabit = new AddCheckInHabit(date, amount, notes);
+        CheckInHabitAddRequest checkInHabitAddRequest = new CheckInHabitAddRequest(date, amount, notes);
         
         // When & Then
         mockMvc.perform(post("/api/check-in/habits/{id}", habitId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(addCheckInHabit)))
+                .content(objectMapper.writeValueAsString(checkInHabitAddRequest)))
             .andExpect(status().isCreated());
 
         verify(checkInHabitService, times(1))
