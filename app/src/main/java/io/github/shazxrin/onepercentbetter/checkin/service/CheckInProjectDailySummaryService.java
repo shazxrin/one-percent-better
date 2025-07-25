@@ -10,6 +10,7 @@ import io.micrometer.observation.annotation.Observed;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Observed
 @Service
@@ -29,12 +30,12 @@ public class CheckInProjectDailySummaryService {
         this.projectService = projectService;
     }
 
-    public CheckInProjectDailySummary getDailySummary(long projectId, LocalDate date) {
+    public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
         return checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)
                 .orElseThrow(() -> new CheckInProjectDailySummaryNotFoundException("Check in project daily summary not found!"));
     }
 
-    public void calculateCheckInDailySummary(long projectId, LocalDate date) {
+    public void calculateSummary(long projectId, LocalDate date) {
         Project project = projectService.getProjectById(projectId);
 
         LocalDate previousDate = date.minusDays(1);

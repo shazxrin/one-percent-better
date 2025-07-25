@@ -33,7 +33,7 @@ public class CheckInProjectDailySummaryController {
         @PathVariable long projectId,
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        var summary = checkInProjectDailySummaryService.getDailySummary(projectId, date);
+        var summary = checkInProjectDailySummaryService.getSummary(projectId, date);
         return CheckInProjectDailySummaryResponse.from(summary);
     }
 
@@ -46,6 +46,6 @@ public class CheckInProjectDailySummaryController {
         @PathVariable long projectId,
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        checkInProjectDailySummaryService.calculateCheckInDailySummary(projectId, date);
+        checkInProjectDailySummaryService.calculateSummary(projectId, date);
     }
 }
