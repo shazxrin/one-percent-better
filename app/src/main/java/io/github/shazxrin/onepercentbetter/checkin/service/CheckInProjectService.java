@@ -55,7 +55,7 @@ public class CheckInProjectService {
         for (Commit commit : commits) {
             log.info("Checking in commit {} for project {}.", commit.sha(), project.getName());
 
-            if (checkInProjectRepository.existsByHash(commit.sha())) {
+            if (checkInProjectRepository.existsByProjectIdAndHash(project.getId(), commit.sha())) {
                 log.info("Commit {} already checked in for project {}. Skipping.", commit.sha(), project.getName());
                 continue;
             }

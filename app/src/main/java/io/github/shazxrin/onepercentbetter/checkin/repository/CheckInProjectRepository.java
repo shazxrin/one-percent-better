@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CheckInProjectRepository extends ListCrudRepository<CheckInProject, Long> {
-    boolean existsByHash(String hash);
+    boolean existsByProjectIdAndHash(long projectId, String hash);
 
     int countByDate(LocalDate date);
 }
