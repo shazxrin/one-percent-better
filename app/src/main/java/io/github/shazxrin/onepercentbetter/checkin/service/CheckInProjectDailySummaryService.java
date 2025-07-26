@@ -7,10 +7,8 @@ import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectRepo
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Observed
 @Service
@@ -21,9 +19,9 @@ public class CheckInProjectDailySummaryService {
     private final ProjectService projectService;
 
     public CheckInProjectDailySummaryService(
-            CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository,
-            CheckInProjectRepository checkInProjectRepository,
-            ProjectService projectService
+        CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository,
+        CheckInProjectRepository checkInProjectRepository,
+        ProjectService projectService
     ) {
         this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
         this.checkInProjectRepository = checkInProjectRepository;
@@ -32,7 +30,8 @@ public class CheckInProjectDailySummaryService {
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
         return checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)
-                .orElseThrow(() -> new CheckInProjectDailySummaryNotFoundException("Check in project daily summary not found!"));
+            .orElseThrow(() -> new CheckInProjectDailySummaryNotFoundException(
+                "Check in project daily summary not found!"));
     }
 
     public void calculateSummary(long projectId, LocalDate date) {
@@ -41,14 +40,14 @@ public class CheckInProjectDailySummaryService {
         LocalDate previousDate = date.minusDays(1);
 
         var previousDateSummaryOpt = checkInProjectDailySummaryRepository
-                .findByProjectIdAndDate(projectId, previousDate);
+            .findByProjectIdAndDate(projectId, previousDate);
         var currentDateSummary = checkInProjectDailySummaryRepository
-                .findByProjectIdAndDate(projectId, date)
-                .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
+            .findByProjectIdAndDate(projectId, date)
+            .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
 
         int currentStreak = previousDateSummaryOpt
-                .map(CheckInProjectDailySummary::getStreak)
-                .orElse(0);
+            .map(CheckInProjectDailySummary::getStreak)
+            .orElse(0);
 
         int totalCommits = checkInProjectRepository.countByDate(date);
         if (totalCommits > 0) {

@@ -2,16 +2,15 @@ package io.github.shazxrin.onepercentbetter.checkin.service;
 
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectRepository;
-import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.github.model.Commit;
 import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
+import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
+import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
+import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.util.List;
-
-import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
-import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -84,7 +83,7 @@ public class CheckInProjectService {
 
     public void checkIn(long projectId, LocalDate date) {
         Project project = projectService.getProjectById(projectId);
-        
+
         checkInProject(project, date);
     }
 

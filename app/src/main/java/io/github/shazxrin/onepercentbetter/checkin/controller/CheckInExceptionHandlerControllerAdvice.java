@@ -21,7 +21,7 @@ public class CheckInExceptionHandlerControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CheckInHabitNotFoundException.class)
     public ProblemDetail handleCheckInHabitNotFoundException(
-            CheckInHabitNotFoundException ex
+        CheckInHabitNotFoundException ex
     ) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }

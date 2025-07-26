@@ -1,3 +1,4 @@
 package io.github.shazxrin.onepercentbetter.habit.dto;
 
-public record ListItemHabit(long id, String name) { }
+public record ListItemHabit(long id, String name) {
+}

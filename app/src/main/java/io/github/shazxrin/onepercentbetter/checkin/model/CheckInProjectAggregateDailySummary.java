@@ -1,11 +1,16 @@
 package io.github.shazxrin.onepercentbetter.checkin.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDate;
 
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "check_in_project_aggregate_daily_summaries")
@@ -36,7 +41,8 @@ public class CheckInProjectAggregateDailySummary {
         this.streak = streak;
     }
 
-    public CheckInProjectAggregateDailySummary() { }
+    public CheckInProjectAggregateDailySummary() {
+    }
 
     public Long getId() {
         return id;

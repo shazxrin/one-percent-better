@@ -4,10 +4,9 @@ import io.github.shazxrin.onepercentbetter.habit.exception.HabitNotFoundExceptio
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import io.github.shazxrin.onepercentbetter.habit.repository.HabitRepository;
 import io.micrometer.observation.annotation.Observed;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Observed
 @Service

@@ -1,12 +1,5 @@
 package io.github.shazxrin.onepercentbetter.checkin.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "check_in_projects")
@@ -49,7 +47,7 @@ public class CheckInProject {
     private LocalDateTime updatedAt;
 
     public CheckInProject(
-        LocalDate date, 
+        LocalDate date,
         String hash,
         String type,
         String message,
@@ -62,7 +60,8 @@ public class CheckInProject {
         this.project = project;
     }
 
-    public CheckInProject() { }
+    public CheckInProject() {
+    }
 
     public Long getId() {
         return id;

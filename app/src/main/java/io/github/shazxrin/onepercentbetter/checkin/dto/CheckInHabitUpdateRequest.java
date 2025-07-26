@@ -6,4 +6,5 @@ public record CheckInHabitUpdateRequest(
     LocalDate date,
     int amount,
     String notes
-) { }
+) {
+}

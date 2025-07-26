@@ -14,7 +14,8 @@ import org.springframework.web.client.RestClientException;
 @Component
 public class GitHubClient {
     private final RestClient gitHubRestClient;
-    private static final ParameterizedTypeReference<List<Commit>> LIST_COMMIT_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<Commit>> LIST_COMMIT_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     public GitHubClient(RestClient gitHubRestClient) {
         this.gitHubRestClient = gitHubRestClient;

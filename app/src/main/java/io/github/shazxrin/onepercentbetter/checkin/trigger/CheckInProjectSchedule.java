@@ -2,9 +2,7 @@ package io.github.shazxrin.onepercentbetter.checkin.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInProjectService;
 import io.micrometer.observation.annotation.Observed;
-
 import java.time.LocalDate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;

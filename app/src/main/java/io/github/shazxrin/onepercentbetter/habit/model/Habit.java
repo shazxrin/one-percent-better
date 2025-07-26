@@ -42,7 +42,8 @@ public class Habit {
         this(null, name, description);
     }
 
-    public Habit() { }
+    public Habit() {
+    }
 
     public Long getId() {
         return id;

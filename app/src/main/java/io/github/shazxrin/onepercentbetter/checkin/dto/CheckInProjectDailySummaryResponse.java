@@ -1,7 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.dto;
 
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProjectDailySummary;
-
 import java.time.LocalDate;
 
 public record CheckInProjectDailySummaryResponse(

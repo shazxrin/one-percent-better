@@ -4,9 +4,8 @@ import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProjectAggregate
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectAggregateDailySummaryRepository;
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectDailySummaryRepository;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CheckInProjectAggregateDailySummaryService {
@@ -25,20 +24,20 @@ public class CheckInProjectAggregateDailySummaryService {
         LocalDate previousDate = date.minusDays(1);
 
         var previousDateAggregateSummaryOpt = checkInProjectAggregateDailySummaryRepository
-                .findByDate(previousDate);
+            .findByDate(previousDate);
         var currentDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
-                .findByDate(date)
-                .orElse(new CheckInProjectAggregateDailySummary(date, 0, 0));
+            .findByDate(date)
+            .orElse(new CheckInProjectAggregateDailySummary(date, 0, 0));
 
         int currentStreak = previousDateAggregateSummaryOpt
-                .map(CheckInProjectAggregateDailySummary::getStreak)
-                .orElse(0);
+            .map(CheckInProjectAggregateDailySummary::getStreak)
+            .orElse(0);
 
         int totalCommits = checkInProjectDailySummaryRepository
-                .findAllByDate(date)
-                .stream()
-                .map(CheckInProjectDailySummary::getNoOfCheckIns)
-                .reduce(0, Integer::sum);
+            .findAllByDate(date)
+            .stream()
+            .map(CheckInProjectDailySummary::getNoOfCheckIns)
+            .reduce(0, Integer::sum);
         if (totalCommits > 0) {
             currentStreak++;
         }

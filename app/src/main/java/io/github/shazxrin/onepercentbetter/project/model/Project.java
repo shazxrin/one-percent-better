@@ -38,7 +38,8 @@ public class Project {
         this(null, name);
     }
 
-    public Project() { }
+    public Project() {
+    }
 
     public Long getId() {
         return id;

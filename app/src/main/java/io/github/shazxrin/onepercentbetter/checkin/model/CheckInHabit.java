@@ -51,7 +51,8 @@ public class CheckInHabit {
         this.habit = habit;
     }
 
-    public CheckInHabit() { }
+    public CheckInHabit() {
+    }
 
     public Long getId() {
         return id;

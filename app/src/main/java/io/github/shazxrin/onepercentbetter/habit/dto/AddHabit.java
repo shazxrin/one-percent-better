@@ -7,4 +7,5 @@ import jakarta.validation.constraints.NotNull;
 public record AddHabit(
     @NotNull @NotEmpty @NotBlank String name,
     @NotNull @NotEmpty @NotBlank String description
-) { }
+) {
+}

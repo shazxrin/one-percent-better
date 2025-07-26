@@ -7,12 +7,12 @@ import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 @Observed
 @Service
@@ -66,7 +66,7 @@ public class CoachService {
             log.error("No response from coach.");
             throw new CoachException("No response from coach.");
         }
-        
+
         // We need to cleanse the response because Gemini wraps it in a Markdown code block
         String cleanReminderJson;
         Matcher matcher = MD_JSON_REGEX_PATTERN.matcher(reminderJson);

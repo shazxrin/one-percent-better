@@ -2,8 +2,6 @@ package io.github.shazxrin.onepercentbetter.reminder.service;
 
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.service.CheckInProjectService;
-import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
-import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
 import io.github.shazxrin.onepercentbetter.coach.service.CoachService;
 import io.github.shazxrin.onepercentbetter.notification.service.NotificationService;
 import io.micrometer.observation.annotation.Observed;
