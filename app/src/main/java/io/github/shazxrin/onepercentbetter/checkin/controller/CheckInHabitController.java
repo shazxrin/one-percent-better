@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -64,7 +65,7 @@ public class CheckInHabitController {
         @ApiResponse(responseCode = "200", description = "Updated check in habit successfully")
     })
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/{checkInId}")
+    @PutMapping("/{checkInId}")
     public void putUpdateCheckInHabit(
         @PathVariable long checkInId,
         @RequestBody CheckInHabitUpdateRequest checkInHabitUpdateRequest
