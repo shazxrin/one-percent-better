@@ -127,12 +127,13 @@ public class CheckInProjectService {
         }
 
         List<Project> projects = projectService.getAllProjects();
-        for (Project project : projects) {
-            var currentDate = from;
-            while (!currentDate.isAfter(to)) {
+
+        var currentDate = from;
+        while (!currentDate.isAfter(to)) {
+            for (Project project : projects) {
                 checkInProject(project, currentDate);
-                currentDate = currentDate.plusDays(1);
             }
+            currentDate = currentDate.plusDays(1);
         }
     }
 }
