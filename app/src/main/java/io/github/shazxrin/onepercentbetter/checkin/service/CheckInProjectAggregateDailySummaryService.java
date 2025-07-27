@@ -20,6 +20,16 @@ public class CheckInProjectAggregateDailySummaryService {
         this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
     }
 
+    public void initAggregateSummary(LocalDate date) {
+        var newSummary = new CheckInProjectAggregateDailySummary(
+            date,
+            0,
+            0
+        );
+
+        checkInProjectAggregateDailySummaryRepository.save(newSummary);
+    }
+
     public void calculateAggregateSummary(LocalDate date) {
         LocalDate previousDate = date.minusDays(1);
 

@@ -1,6 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.service;
 
-import io.github.shazxrin.onepercentbetter.checkin.exception.CheckInProjectDailySummaryNotFoundException;
+import io.github.shazxrin.onepercentbetter.checkin.event.CheckInProjectDailySummaryUpdateEvent;
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectDailySummaryRepository;
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectRepository;
@@ -8,6 +8,7 @@ import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Observed
@@ -17,21 +18,48 @@ public class CheckInProjectDailySummaryService {
     private final CheckInProjectRepository checkInProjectRepository;
 
     private final ProjectService projectService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public CheckInProjectDailySummaryService(
         CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository,
         CheckInProjectRepository checkInProjectRepository,
-        ProjectService projectService
+        ProjectService projectService,
+        ApplicationEventPublisher applicationEventPublisher
     ) {
         this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
         this.checkInProjectRepository = checkInProjectRepository;
         this.projectService = projectService;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    public void initSummaries(LocalDate date) {
+        for (Project project : projectService.getAllProjects()) {
+            var newSummary = new CheckInProjectDailySummary(
+                date,
+                0,
+                0,
+                project
+            );
+
+            checkInProjectDailySummaryRepository.save(newSummary);
+        }
     }
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
-        return checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)
-            .orElseThrow(() -> new CheckInProjectDailySummaryNotFoundException(
-                "Check in project daily summary not found!"));
+        var project = projectService.getProjectById(projectId);
+
+        var summaryOpt = checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date);
+        if (summaryOpt.isPresent()) {
+            return summaryOpt.get();
+        }
+
+        var newSummary = new CheckInProjectDailySummary(
+            date,
+            0,
+            0,
+            project
+        );
+        return checkInProjectDailySummaryRepository.save(newSummary);
     }
 
     public void calculateSummary(long projectId, LocalDate date) {
@@ -58,5 +86,9 @@ public class CheckInProjectDailySummaryService {
         currentDateSummary.setStreak(currentStreak);
 
         checkInProjectDailySummaryRepository.save(currentDateSummary);
+
+        applicationEventPublisher.publishEvent(
+            new CheckInProjectDailySummaryUpdateEvent(this, date)
+        );
     }
 }

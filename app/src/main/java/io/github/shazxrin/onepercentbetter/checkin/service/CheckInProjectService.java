@@ -1,5 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.service;
 
+import io.github.shazxrin.onepercentbetter.checkin.event.CheckInProjectAddedEvent;
 import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.github.model.Commit;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Observed
@@ -21,18 +23,20 @@ public class CheckInProjectService {
     private static final Logger log = LoggerFactory.getLogger(CheckInProjectService.class);
 
     private final CheckInProjectRepository checkInProjectRepository;
-
     private final ProjectService projectService;
     private final GitHubService gitHubService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public CheckInProjectService(
         CheckInProjectRepository checkInRepository,
         ProjectService projectService,
-        GitHubService gitHubService
+        GitHubService gitHubService,
+        ApplicationEventPublisher applicationEventPublisher
     ) {
         this.checkInProjectRepository = checkInRepository;
         this.projectService = projectService;
         this.gitHubService = gitHubService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     private void checkInProject(Project project, LocalDate date) {
@@ -51,6 +55,7 @@ public class CheckInProjectService {
             date
         );
 
+        boolean hasNewCheckIn = false;
         for (Commit commit : commits) {
             log.info("Checking in commit {} for project {}.", commit.sha(), project.getName());
 
@@ -58,6 +63,8 @@ public class CheckInProjectService {
                 log.info("Commit {} already checked in for project {}. Skipping.", commit.sha(), project.getName());
                 continue;
             }
+
+            hasNewCheckIn = true;
 
             String commitType = "unknown";
             String commitMessage = "";
@@ -77,6 +84,12 @@ public class CheckInProjectService {
                     commitMessage,
                     project
                 )
+            );
+        }
+
+        if (hasNewCheckIn) {
+            applicationEventPublisher.publishEvent(
+                new CheckInProjectAddedEvent(this, project.getId(), date)
             );
         }
     }
