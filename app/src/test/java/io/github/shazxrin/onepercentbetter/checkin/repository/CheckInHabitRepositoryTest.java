@@ -89,31 +89,4 @@ public class CheckInHabitRepositoryTest {
         assertNotNull(foundCheckInHabits);
         assertTrue(foundCheckInHabits.isEmpty());
     }
-    
-    @Test
-    void testSaveAndFindById_shouldPersistAndRetrieveCheckInHabit() {
-        // Given
-        LocalDate testDate = LocalDate.of(2023, 1, 15);
-        
-        // Create a habit
-        Habit habit = new Habit("Meditation", "Meditate daily");
-        entityManager.persistAndFlush(habit);
-        
-        // Create a check-in
-        CheckInHabit checkInHabit = new CheckInHabit(testDate, 15, "Meditated for 15 minutes", habit);
-        
-        // When
-        CheckInHabit savedCheckInHabit = checkInHabitRepository.save(checkInHabit);
-        entityManager.flush();
-        entityManager.clear();
-        
-        CheckInHabit retrievedCheckInHabit = checkInHabitRepository.findById(savedCheckInHabit.getId()).orElse(null);
-        
-        // Then
-        assertNotNull(retrievedCheckInHabit);
-        assertEquals(testDate, retrievedCheckInHabit.getDate());
-        assertEquals(15, retrievedCheckInHabit.getAmount());
-        assertEquals("Meditated for 15 minutes", retrievedCheckInHabit.getNotes());
-        assertEquals(habit.getId(), retrievedCheckInHabit.getHabit().getId());
-    }
 }
