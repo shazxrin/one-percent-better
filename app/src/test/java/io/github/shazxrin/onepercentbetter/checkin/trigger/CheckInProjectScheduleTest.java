@@ -14,20 +14,20 @@ import static org.mockito.Mockito.verify;
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
-public class CheckInScheduleTest {
+public class CheckInProjectScheduleTest {
 
     @Mock
-    private CheckInProjectService checkInService;
+    private CheckInProjectService checkInProjectService;
 
     @InjectMocks
-    private CheckInProjectSchedule checkInSchedule;
+    private CheckInProjectSchedule checkInProjectSchedule;
 
     @Test
-    void testRunScheduledCheckIn_shouldCallCheckInServiceCheckInToday() {
+    void testRunScheduledCheckInProjectsAll_shouldCallCheckInServiceCheckInToday() {
         // When
-        checkInSchedule.runScheduledCheckInProjectsAll();
+        checkInProjectSchedule.runScheduledCheckInProjectsAll();
 
         // Then
-        verify(checkInService, times(1)).checkInAll(eq(LocalDate.now()));
+        verify(checkInProjectService, times(1)).checkInAll(eq(LocalDate.now()));
     }
 }
