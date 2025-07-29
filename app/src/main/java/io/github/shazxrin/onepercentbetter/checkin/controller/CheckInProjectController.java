@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RequestMapping("/api/check-ins/projects")
 @RestController
-public class CheckInProjectController {
+public class CheckInProjectController { 
     private final CheckInProjectService checkInProjectService;
 
     public CheckInProjectController(CheckInProjectService checkInProjectService) {
@@ -44,7 +44,7 @@ public class CheckInProjectController {
     @PostMapping("/{projectId:^[0-9]*}")
     public void postCheckInProject(
         @PathVariable long projectId,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+        @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         checkInProjectService.checkIn(projectId, date);
     }
