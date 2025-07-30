@@ -7,34 +7,44 @@ import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Observed
-@ConditionalOnProperty("app.check-in.project.bootstrap.enabled")
 @Component
-public class CheckInProjectBootstrap {
-    private static final Logger log = LoggerFactory.getLogger(CheckInProjectBootstrap.class);
+public class CheckInProjectTrigger {
+    private static final Logger log = LoggerFactory.getLogger(CheckInProjectTrigger.class);
 
     private final CheckInProjectProperties checkInProperties;
     private final CheckInProjectService checkInProjectService;
     private final ProjectService projectService;
 
-    public CheckInProjectBootstrap(
+    public CheckInProjectTrigger(
         CheckInProjectProperties checkInProperties,
-        CheckInProjectService checkInService,
+        CheckInProjectService checkInProjectService,
         ProjectService projectService
     ) {
         this.checkInProperties = checkInProperties;
-        this.checkInProjectService = checkInService;
+        this.checkInProjectService = checkInProjectService;
         this.projectService = projectService;
     }
 
     @Async
-    @EventListener(ApplicationReadyEvent.class)
+    @Scheduled(cron = "${app.check-in.project.schedule-cron}")
+    public void runScheduledCheckInProjectsAll() {
+        log.info("Running check-in schedule.");
+
+        checkInProjectService.checkInAll(LocalDate.now());
+    }
+
+    @Async
+    @EventListener(
+        classes = ApplicationReadyEvent.class,
+        condition = "#{checkInProjectProperties.bootstrap.enabled}"
+    )
     public void runBootstrapCheckInProjectsAll() {
         log.info("Running check-in bootstrap.");
         for (String project : checkInProperties.getBootstrap().getProjects()) {
