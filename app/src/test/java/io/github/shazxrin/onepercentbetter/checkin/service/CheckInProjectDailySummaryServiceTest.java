@@ -5,7 +5,9 @@ import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectDail
 import io.github.shazxrin.onepercentbetter.checkin.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
-
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,11 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,7 +42,7 @@ public class CheckInProjectDailySummaryServiceTest {
     private CheckInProjectDailySummaryService checkInProjectDailySummaryService;
 
     @Test
-    public void testInitSummaries_shouldCreateSummariesForAllProjects() {
+    void testInitSummaries_shouldCreateSummariesForAllProjects() {
         LocalDate date = LocalDate.now();
         Project project1 = new Project(1L, "Project 1");
         Project project2 = new Project(2L, "Project 2");
@@ -62,14 +62,14 @@ public class CheckInProjectDailySummaryServiceTest {
     }
 
     @Test
-    public void testGetSummary_whenSummaryExists_shouldReturnExistingSummary() {
+    void testGetSummary_whenSummaryExists_shouldReturnExistingSummary() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary summary = new CheckInProjectDailySummary(date, 2, 3, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(project);
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(java.util.Optional.of(summary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(summary));
 
         CheckInProjectDailySummary result = checkInProjectDailySummaryService.getSummary(projectId, date);
 
@@ -79,15 +79,15 @@ public class CheckInProjectDailySummaryServiceTest {
     }
 
     @Test
-    public void testGetSummary_whenSummaryDoesNotExist_shouldCreateNewSummaryAndSave() {
+    void testGetSummary_whenSummaryDoesNotExist_shouldCreateNewSummaryAndSave() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary savedSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(project);
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(java.util.Optional.empty());
-        when(checkInProjectDailySummaryRepository.save(any(CheckInProjectDailySummary.class))).thenReturn(savedSummary);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.empty());
+        when(checkInProjectDailySummaryRepository.save(any())).thenReturn(savedSummary);
 
         CheckInProjectDailySummary result = checkInProjectDailySummaryService.getSummary(projectId, date);
 
@@ -96,22 +96,22 @@ public class CheckInProjectDailySummaryServiceTest {
         assertEquals(0, result.getNoOfCheckIns());
         assertEquals(0, result.getStreak());
         assertEquals(project, result.getProject());
-        verify(checkInProjectDailySummaryRepository, times(1)).save(any(CheckInProjectDailySummary.class));
+        verify(checkInProjectDailySummaryRepository, times(1)).save(any());
     }
 
     @Test
-    public void testGetSummary_whenProjectDoesNotExist_shouldThrowException() {
+    void testGetSummary_whenProjectDoesNotExist_shouldThrowException() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         when(projectService.getProjectById(projectId)).thenThrow(new RuntimeException("Project not found"));
 
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             checkInProjectDailySummaryService.getSummary(projectId, date);
         });
     }
 
     @Test
-    public void testCalculateSummary_whenCheckInExistsshouldUpdateSummaryWithCheckInCounts() {
+    void testCalculateSummary_whenPreviousHasStreakAndCurrentHasCheckIns_shouldContinueStreak() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
@@ -120,8 +120,8 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(project);
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(java.util.Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(java.util.Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(3);
 
         checkInProjectDailySummaryService.calculateSummary(projectId, date);
@@ -131,6 +131,124 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(3, savedSummary.getNoOfCheckIns());
         assertEquals(previousSummary.getStreak() + 1, savedSummary.getStreak());
+        verify(applicationEventPublisher, times(1)).publishEvent(any());
+    }
+    
+    @Test
+    void testCalculateSummary_whenPreviousHasStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
+        long projectId = 1L;
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        Project project = new Project(projectId, "Project 1");
+        CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 3, project);
+        CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
+
+        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectRepository.countByDate(date)).thenReturn(0);
+
+        checkInProjectDailySummaryService.calculateSummary(projectId, date);
+
+        ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
+        verify(checkInProjectDailySummaryRepository).save(captor.capture());
+        CheckInProjectDailySummary savedSummary = captor.getValue();
+        assertEquals(0, savedSummary.getNoOfCheckIns());
+        assertEquals(0, savedSummary.getStreak());
+        verify(applicationEventPublisher, times(1)).publishEvent(any());
+    }
+    
+    @Test
+    void testCalculateSummary_whenPreviousHasNoStreakAndCurrentHasCheckIns_shouldStartStreakForCurrent() {
+        long projectId = 1L;
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        Project project = new Project(projectId, "Project 1");
+        CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
+        CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
+
+        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectRepository.countByDate(date)).thenReturn(2);
+
+        checkInProjectDailySummaryService.calculateSummary(projectId, date);
+
+        ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
+        verify(checkInProjectDailySummaryRepository).save(captor.capture());
+        CheckInProjectDailySummary savedSummary = captor.getValue();
+        assertEquals(2, savedSummary.getNoOfCheckIns());
+        assertEquals(1, savedSummary.getStreak());
+        verify(applicationEventPublisher, times(1)).publishEvent(any());
+    }
+    
+    @Test
+    void testCalculateSummary_whenPreviousHasNoStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
+        long projectId = 1L;
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        Project project = new Project(projectId, "Project 1");
+        CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
+        CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
+
+        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectRepository.countByDate(date)).thenReturn(0);
+
+        checkInProjectDailySummaryService.calculateSummary(projectId, date);
+
+        ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
+        verify(checkInProjectDailySummaryRepository).save(captor.capture());
+        CheckInProjectDailySummary savedSummary = captor.getValue();
+        assertEquals(0, savedSummary.getNoOfCheckIns());
+        assertEquals(0, savedSummary.getStreak());
+        verify(applicationEventPublisher, times(1)).publishEvent(any());
+    }
+    
+    @Test
+    void testCalculateSummary_whenPreviousIsMissingAndCurrentHaveCheckIns_shouldStartStreakForCurrent() {
+        long projectId = 1L;
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        Project project = new Project(projectId, "Project 1");
+        CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
+
+        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectRepository.countByDate(date)).thenReturn(2);
+
+        checkInProjectDailySummaryService.calculateSummary(projectId, date);
+
+        ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
+        verify(checkInProjectDailySummaryRepository).save(captor.capture());
+        CheckInProjectDailySummary savedSummary = captor.getValue();
+        assertEquals(2, savedSummary.getNoOfCheckIns());
+        assertEquals(1, savedSummary.getStreak());
+        verify(applicationEventPublisher, times(1)).publishEvent(any());
+    }
+    
+    @Test
+    void testCalculateSummary_whenPreviousIsMissingAndCurrentHaveNoCheckIns_shouldHaveZeroStreakForCurrent() {
+        long projectId = 1L;
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        Project project = new Project(projectId, "Project 1");
+        CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
+
+        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectRepository.countByDate(date)).thenReturn(0);
+
+        checkInProjectDailySummaryService.calculateSummary(projectId, date);
+
+        ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
+        verify(checkInProjectDailySummaryRepository).save(captor.capture());
+        CheckInProjectDailySummary savedSummary = captor.getValue();
+        assertEquals(0, savedSummary.getNoOfCheckIns());
+        assertEquals(0, savedSummary.getStreak());
         verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
 }

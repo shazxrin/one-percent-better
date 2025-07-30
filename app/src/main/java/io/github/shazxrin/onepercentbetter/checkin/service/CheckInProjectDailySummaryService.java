@@ -73,13 +73,13 @@ public class CheckInProjectDailySummaryService {
             .findByProjectIdAndDate(projectId, date)
             .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
 
-        int currentStreak = previousDateSummaryOpt
-            .map(CheckInProjectDailySummary::getStreak)
-            .orElse(0);
-
         int totalCommits = checkInProjectRepository.countByDate(date);
+        
+        int currentStreak = 0;
         if (totalCommits > 0) {
-            currentStreak++;
+            currentStreak = previousDateSummaryOpt
+                .map(CheckInProjectDailySummary::getStreak)
+                .orElse(0) + 1;
         }
 
         currentDateSummary.setNoOfCheckIns(totalCommits);
