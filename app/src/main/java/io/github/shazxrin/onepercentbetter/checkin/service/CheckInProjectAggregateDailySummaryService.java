@@ -50,6 +50,8 @@ public class CheckInProjectAggregateDailySummaryService {
             .reduce(0, Integer::sum);
         if (totalCommits > 0) {
             currentStreak++;
+        } else {
+            currentStreak = 0;
         }
 
         currentDateAggregateSummary.setNoOfCheckIns(totalCommits);
