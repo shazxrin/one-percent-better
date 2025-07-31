@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(
-    name = "Check Ins",
-    description = "API for managing check ins"
+    name = "Check In Project Daily Summaries",
+    description = "API for managing check in project daily summaries"
 )
 @RequestMapping("/api/check-ins/projects/daily-summaries")
 @RestController
@@ -27,7 +27,7 @@ public class CheckInProjectDailySummaryController {
         this.checkInProjectDailySummaryService = checkInProjectDailySummaryService;
     }
 
-    @Operation(summary = "Get check-in project summary for date")
+    @Operation(summary = "Get check-in project daily summary for date")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Get check-in project summary for date successfully"),
     })
@@ -40,7 +40,7 @@ public class CheckInProjectDailySummaryController {
         return CheckInProjectDailySummaryResponse.from(summary);
     }
 
-    @Operation(summary = "Calculate check-in project summary for date")
+    @Operation(summary = "Calculate check-in project daily summary for date")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Calculated check-in project summary for date successfully"),
     })

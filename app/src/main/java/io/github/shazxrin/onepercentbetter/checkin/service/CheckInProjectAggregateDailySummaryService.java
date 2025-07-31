@@ -59,4 +59,18 @@ public class CheckInProjectAggregateDailySummaryService {
 
         checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
     }
+
+    public CheckInProjectAggregateDailySummary getAggregateSummary(LocalDate date) {
+        var aggregateSummaryOpt = checkInProjectAggregateDailySummaryRepository.findByDate(date);
+        if (aggregateSummaryOpt.isPresent()) {
+            return aggregateSummaryOpt.get();
+        }
+
+        var newSummary = new CheckInProjectAggregateDailySummary(
+            date,
+            0,
+            0
+        );
+        return checkInProjectAggregateDailySummaryRepository.save(newSummary);
+    }
 }
