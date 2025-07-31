@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,7 +45,7 @@ public class CheckInProjectAggregateDailySummaryController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Calculated check-in project aggregate daily summary for date successfully")
     })
-    @GetMapping("/{date}")
+    @PostMapping("/{date}")
     public void postCalculatesCheckInProjectAggregateDailySummary(
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
