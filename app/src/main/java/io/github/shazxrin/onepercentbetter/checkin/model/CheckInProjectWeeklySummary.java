@@ -17,15 +17,24 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "check_in_project_daily_summaries")
+@Table(name = "check_in_project_weekly_summaries")
 @Entity
-public class CheckInProjectDailySummary {
+public class CheckInProjectWeeklySummary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private int weekNo;
+
+    @Column(nullable = false)
+    private int year;
+
+    @Column(nullable = false)
+    private LocalDate startDate;
+
+    @Column(nullable = false)
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private int noOfCheckIns;
@@ -43,14 +52,25 @@ public class CheckInProjectDailySummary {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public CheckInProjectDailySummary(LocalDate date, int noOfCheckIns, int streak, Project project) {
-        this.date = date;
+    public CheckInProjectWeeklySummary(
+        int weekNo,
+        int year,
+        LocalDate startDate,
+        LocalDate endDate,
+        int noOfCheckIns,
+        int streak,
+        Project project
+    ) {
+        this.weekNo = weekNo;
+        this.year = year;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.noOfCheckIns = noOfCheckIns;
         this.streak = streak;
         this.project = project;
     }
 
-    public CheckInProjectDailySummary() {
+    public CheckInProjectWeeklySummary() {
     }
 
     public Long getId() {
@@ -61,12 +81,36 @@ public class CheckInProjectDailySummary {
         this.id = id;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public int getWeekNo() {
+        return weekNo;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setWeekNo(int weekNo) {
+        this.weekNo = weekNo;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public int getNoOfCheckIns() {
