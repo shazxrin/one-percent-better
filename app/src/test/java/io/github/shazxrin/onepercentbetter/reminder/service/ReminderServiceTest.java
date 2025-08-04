@@ -1,21 +1,9 @@
 package io.github.shazxrin.onepercentbetter.reminder.service;
 
-import io.github.shazxrin.onepercentbetter.checkin.model.CheckInProject;
-import io.github.shazxrin.onepercentbetter.checkin.service.CheckInProjectService;
-import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
-import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
-import io.github.shazxrin.onepercentbetter.coach.service.CoachService;
-import io.github.shazxrin.onepercentbetter.notification.service.NotificationService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ReminderServiceTest {
