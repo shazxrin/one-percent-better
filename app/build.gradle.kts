@@ -66,7 +66,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.liquibase:liquibase-core")
     runtimeOnly("org.postgresql:postgresql")
-    testRuntimeOnly("com.h2database:h2")
+    testRuntimeOnly("org.postgresql:postgresql")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:junit-jupiter")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

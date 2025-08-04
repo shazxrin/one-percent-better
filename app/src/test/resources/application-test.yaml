@@ -1,11 +1,18 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:one-percent-better;DB_CLOSE_DELAY=-1
+    url: jdbc:postgresql://localhost:5432/one-percent-better
+    username: user
+    password: password
+  rabbitmq:
+    host: localhost
+    username: user
+    password: password
 
 app:
   check-in:
-    bootstrap:
-      enabled: false
+    project:
+      bootstrap:
+        enabled: false
 
 management:
   endpoints:

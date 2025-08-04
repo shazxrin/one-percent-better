@@ -43,7 +43,7 @@ public class CheckInProjectTrigger {
     @Async
     @EventListener(
         classes = ApplicationReadyEvent.class,
-        condition = "#{checkInProjectProperties.bootstrap.enabled}"
+        condition = "@checkInProjectProperties.bootstrap.enabled"
     )
     public void runBootstrapCheckInProjectsAll() {
         log.info("Running check-in bootstrap.");
