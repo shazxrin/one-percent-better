@@ -42,7 +42,7 @@ public class CheckInHabitControllerTest {
         CheckInHabitAddRequest checkInHabitAddRequest = new CheckInHabitAddRequest(date, amount, notes);
 
         // When & Then
-        mockMvc.perform(post("/api/check-in/habits/{id}", habitId)
+        mockMvc.perform(post("/api/check-ins/habits/{id}", habitId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(checkInHabitAddRequest)))
             .andExpect(status().isCreated());
@@ -62,7 +62,7 @@ public class CheckInHabitControllerTest {
         CheckInHabitAddRequest checkInHabitAddRequest = new CheckInHabitAddRequest(date, amount, notes);
         
         // When & Then
-        mockMvc.perform(post("/api/check-in/habits/{id}", habitId)
+        mockMvc.perform(post("/api/check-ins/habits/{id}", habitId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(checkInHabitAddRequest)))
             .andExpect(status().isCreated());
