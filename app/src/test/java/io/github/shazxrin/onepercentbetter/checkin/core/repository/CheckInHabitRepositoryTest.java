@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.repository;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInHabit;
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInHabitRepository;
+import io.github.shazxrin.onepercentbetter.common.BaseRepositoryTest;
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class CheckInHabitRepositoryTest {
+public class CheckInHabitRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;

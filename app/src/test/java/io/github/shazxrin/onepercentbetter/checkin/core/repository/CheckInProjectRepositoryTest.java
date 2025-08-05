@@ -1,8 +1,8 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.repository;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
+import io.github.shazxrin.onepercentbetter.common.BaseRepositoryTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class CheckInProjectRepositoryTest {
+public class CheckInProjectRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
