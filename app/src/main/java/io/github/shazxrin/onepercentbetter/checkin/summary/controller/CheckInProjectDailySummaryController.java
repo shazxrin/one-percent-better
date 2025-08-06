@@ -49,6 +49,6 @@ public class CheckInProjectDailySummaryController {
         @PathVariable long projectId,
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        checkInProjectDailySummaryService.calculateSummary(projectId, date);
+        checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
     }
 }

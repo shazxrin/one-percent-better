@@ -62,6 +62,6 @@ public class CheckInProjectDailySummaryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         
-        verify(checkInProjectDailySummaryService, times(1)).calculateSummary(projectId, date);
+        verify(checkInProjectDailySummaryService, times(1)).calculateSummaryForDate(projectId, date, true);
     }
 }

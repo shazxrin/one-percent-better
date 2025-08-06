@@ -1,6 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.configuration.CheckInProjectProperties;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.core.trigger.CheckInProjectTrigger;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
@@ -42,7 +43,7 @@ public class CheckInProjectTriggerTest {
         checkInProjectTrigger.runScheduledCheckInProjectsAll();
 
         // Then
-        verify(checkInProjectService, times(1)).checkInAll(eq(LocalDate.now()));
+        verify(checkInProjectService, times(1)).checkInAll(eq(LocalDate.now()), eq(CheckInProjectSource.SCHEDULED));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class CheckInProjectTriggerTest {
         // Then
         verify(projectService).addProject("owner1/project1");
         verify(projectService).addProject("owner2/project2");
-        verify(checkInProjectService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+        verify(checkInProjectService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY, CheckInProjectSource.BOOTSTRAP);
     }
 
     @Test
@@ -77,7 +78,7 @@ public class CheckInProjectTriggerTest {
         checkInProjectTrigger.runBootstrapCheckInProjectsAll();
 
         // Then
-        verify(checkInProjectService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY);
+        verify(checkInProjectService).checkInAllInterval(PARSED_BOOTSTRAP_DATE, TODAY, CheckInProjectSource.BOOTSTRAP);
     }
 
 }

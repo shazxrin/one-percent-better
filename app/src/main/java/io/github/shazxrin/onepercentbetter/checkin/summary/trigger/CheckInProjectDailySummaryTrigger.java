@@ -1,6 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
@@ -26,9 +27,15 @@ public class CheckInProjectDailySummaryTrigger {
 
     @Async
     @EventListener
-    public void runCalculateDailySummary(CheckInProjectAddedEvent event) {
-        log.info("Running calculate daily summary for project: {}", event.getProjectId());
-        checkInProjectDailySummaryService.calculateSummary(event.getProjectId(), event.getDate());
+    public void runAddCheckInToSummary(CheckInProjectAddedEvent event) {
+        log.info("Running add checkin daily summary for project: {}", event.getProjectId());
+
+        if (event.getCheckInProjectSource() == CheckInProjectSource.BOOTSTRAP) {
+            log.info("Skipping add checkin daily summary for project as event from bootstrap");
+            return;
+        }
+
+        checkInProjectDailySummaryService.addCheckInToSummary(event.getProjectId(), event.getDate());
     }
 
     @Async

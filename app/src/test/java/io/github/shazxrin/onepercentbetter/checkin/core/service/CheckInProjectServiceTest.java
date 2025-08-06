@@ -2,6 +2,7 @@ package io.github.shazxrin.onepercentbetter.checkin.core.service;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.github.model.Commit;
@@ -59,7 +60,7 @@ public class CheckInProjectServiceTest {
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "abc123")).thenReturn(false);
 
-        checkInProjectService.checkIn(projectId, date);
+        checkInProjectService.checkIn(projectId, date, CheckInProjectSource.MANUAL);
 
         ArgumentCaptor<CheckInProject> checkInCaptor = ArgumentCaptor.forClass(CheckInProject.class);
         verify(checkInProjectRepository).save(checkInCaptor.capture());
@@ -88,7 +89,7 @@ public class CheckInProjectServiceTest {
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "def456")).thenReturn(true);
 
-        checkInProjectService.checkIn(projectId, date);
+        checkInProjectService.checkIn(projectId, date, CheckInProjectSource.MANUAL);
 
         verify(checkInProjectRepository, never()).save(any());
         verify(applicationEventPublisher, never()).publishEvent(any());
@@ -121,7 +122,7 @@ public class CheckInProjectServiceTest {
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha2")).thenReturn(false);
 
-        checkInProjectService.checkInInterval(projectId, from, to);
+        checkInProjectService.checkInInterval(projectId, from, to, CheckInProjectSource.MANUAL);
 
         verify(checkInProjectRepository, times(2)).save(any());
         verify(applicationEventPublisher, times(2)).publishEvent(any(CheckInProjectAddedEvent.class));
@@ -155,7 +156,7 @@ public class CheckInProjectServiceTest {
         when(checkInProjectRepository.existsByProjectIdAndHash(1L, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(2L, "sha2")).thenReturn(false);
 
-        checkInProjectService.checkInAll(date);
+        checkInProjectService.checkInAll(date, CheckInProjectSource.MANUAL);
 
         verify(checkInProjectRepository, times(2)).save(any());
         verify(applicationEventPublisher, times(2)).publishEvent(any(CheckInProjectAddedEvent.class));
@@ -192,7 +193,7 @@ public class CheckInProjectServiceTest {
         when(checkInProjectRepository.existsByProjectIdAndHash(1L, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(2L, "sha2")).thenReturn(false);
 
-        checkInProjectService.checkInAllInterval(from, to);
+        checkInProjectService.checkInAllInterval(from, to, CheckInProjectSource.MANUAL);
 
         verify(checkInProjectRepository, times(4)).save(any());
         verify(applicationEventPublisher, times(4)).publishEvent(any(CheckInProjectAddedEvent.class));

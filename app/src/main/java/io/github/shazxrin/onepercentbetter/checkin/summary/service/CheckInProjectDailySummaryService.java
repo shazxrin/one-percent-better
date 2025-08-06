@@ -7,7 +7,6 @@ import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Observed
@@ -58,7 +57,7 @@ public class CheckInProjectDailySummaryService {
         return checkInProjectDailySummaryRepository.save(newSummary);
     }
 
-    public void calculateSummary(long projectId, LocalDate date) {
+    public void calculateSummaryForDate(long projectId, LocalDate date, boolean withCount) {
         Project project = projectService.getProjectById(projectId);
 
         LocalDate previousDate = date.minusDays(1);
@@ -69,18 +68,55 @@ public class CheckInProjectDailySummaryService {
             .findByProjectIdAndDate(projectId, date)
             .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
 
-        int totalCommits = checkInProjectRepository.countByDate(date);
-        
+        // If with count enabled, the check ins for the date will be fetched
+        // Else it will use the existing count
+        int noOfCheckIns = currentDateSummary.getNoOfCheckIns();
+        if (withCount) {
+            noOfCheckIns = checkInProjectRepository.countByDate(date);
+        }
+
         int currentStreak = 0;
-        if (totalCommits > 0) {
+        if (noOfCheckIns > 0) {
             currentStreak = previousDateSummaryOpt
                 .map(CheckInProjectDailySummary::getStreak)
                 .orElse(0) + 1;
         }
 
-        currentDateSummary.setNoOfCheckIns(totalCommits);
+        currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
 
         checkInProjectDailySummaryRepository.save(currentDateSummary);
+    }
+
+    public void addCheckInToSummary(long projectId, LocalDate date) {
+        Project project = projectService.getProjectById(projectId);
+
+        LocalDate previousDate = date.minusDays(1);
+
+        var previousDateSummaryOpt = checkInProjectDailySummaryRepository
+            .findByProjectIdAndDate(projectId, previousDate);
+        var currentDateSummary = checkInProjectDailySummaryRepository
+            .findByProjectIdAndDate(projectId, date)
+            .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
+
+        int noOfCheckIns = currentDateSummary.getNoOfCheckIns() + 1;
+        int currentStreak = previousDateSummaryOpt
+            .map(CheckInProjectDailySummary::getStreak)
+            .orElse(0) + 1;
+
+        currentDateSummary.setNoOfCheckIns(noOfCheckIns);
+        currentDateSummary.setStreak(currentStreak);
+
+        checkInProjectDailySummaryRepository.save(currentDateSummary);
+
+        // Recalculate dates after the current date (if any)
+        // Streak may have changed from the current date onwards
+        var today = LocalDate.now();
+        var currentDate = date.plusDays(1);
+        while (!currentDate.isAfter(today)) {
+            calculateSummaryForDate(projectId, currentDate, false);
+
+            currentDate = currentDate.plusDays(1);
+        }
     }
 }

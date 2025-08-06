@@ -1,6 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.controller;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.controller.CheckInProjectController;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class CheckInProjectControllerTest {
         mockMvc.perform(post("/api/check-ins/projects/all")
                 .param("date", date.toString()))
                 .andExpect(status().isOk());
-        verify(checkInProjectService, times(1)).checkInAll(date);
+        verify(checkInProjectService, times(1)).checkInAll(date, CheckInProjectSource.MANUAL);
     }
 
     @Test
@@ -40,7 +41,7 @@ public class CheckInProjectControllerTest {
         mockMvc.perform(post("/api/check-ins/projects/{projectId}", projectId)
                 .param("date", date.toString()))
                 .andExpect(status().isOk());
-        verify(checkInProjectService, times(1)).checkIn(projectId, date);
+        verify(checkInProjectService, times(1)).checkIn(projectId, date, CheckInProjectSource.MANUAL);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class CheckInProjectControllerTest {
                 .param("fromDate", fromDate.toString())
                 .param("toDate", toDate.toString()))
                 .andExpect(status().isOk());
-        verify(checkInProjectService, times(1)).checkInAllInterval(fromDate, toDate);
+        verify(checkInProjectService, times(1)).checkInAllInterval(fromDate, toDate, CheckInProjectSource.MANUAL);
     }
 
     @Test
@@ -63,6 +64,6 @@ public class CheckInProjectControllerTest {
                 .param("fromDate", fromDate.toString())
                 .param("toDate", toDate.toString()))
                 .andExpect(status().isOk());
-        verify(checkInProjectService, times(1)).checkInInterval(projectId, fromDate, toDate);
+        verify(checkInProjectService, times(1)).checkInInterval(projectId, fromDate, toDate, CheckInProjectSource.MANUAL);
     }
 }
