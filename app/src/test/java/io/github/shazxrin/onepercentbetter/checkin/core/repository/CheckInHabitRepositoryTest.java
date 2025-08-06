@@ -1,7 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.repository;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInHabit;
-import io.github.shazxrin.onepercentbetter.common.BaseRepositoryTest;
+import io.github.shazxrin.onepercentbetter.configuration.RepositoryTestConfiguration;
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,13 +9,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Import(RepositoryTestConfiguration.class)
 @DataJpaTest
-public class CheckInHabitRepositoryTest extends BaseRepositoryTest {
+public class CheckInHabitRepositoryTest {
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
     private TestEntityManager entityManager;

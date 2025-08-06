@@ -1,18 +1,19 @@
 package io.github.shazxrin.onepercentbetter.project.repository;
 
-import io.github.shazxrin.onepercentbetter.common.BaseRepositoryTest;
+import io.github.shazxrin.onepercentbetter.configuration.RepositoryTestConfiguration;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Import(RepositoryTestConfiguration.class)
 @DataJpaTest
-public class ProjectRepositoryTest extends BaseRepositoryTest {
-
+public class ProjectRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 

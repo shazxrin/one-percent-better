@@ -1,19 +1,21 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.repository;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
+import io.github.shazxrin.onepercentbetter.configuration.RepositoryTestConfiguration;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
-import io.github.shazxrin.onepercentbetter.common.BaseRepositoryTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Import(RepositoryTestConfiguration.class)
 @DataJpaTest
-public class CheckInProjectRepositoryTest extends BaseRepositoryTest {
+public class CheckInProjectRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 

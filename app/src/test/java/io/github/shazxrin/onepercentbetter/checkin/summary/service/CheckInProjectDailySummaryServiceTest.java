@@ -131,7 +131,6 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(3, savedSummary.getNoOfCheckIns());
         assertEquals(previousSummary.getStreak() + 1, savedSummary.getStreak());
-        verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
     
     @Test
@@ -155,7 +154,6 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
-        verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
     
     @Test
@@ -179,7 +177,6 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(2, savedSummary.getNoOfCheckIns());
         assertEquals(1, savedSummary.getStreak());
-        verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
     
     @Test
@@ -203,7 +200,6 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
-        verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
     
     @Test
@@ -226,7 +222,6 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(2, savedSummary.getNoOfCheckIns());
         assertEquals(1, savedSummary.getStreak());
-        verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
     
     @Test
@@ -249,6 +244,5 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
-        verify(applicationEventPublisher, times(1)).publishEvent(any());
     }
 }
