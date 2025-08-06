@@ -2,9 +2,13 @@ package io.github.shazxrin.onepercentbetter.coach.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
+import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectAggregateDailySummaryService;
 import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
 import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
+import io.github.shazxrin.onepercentbetter.notification.service.NotificationService;
 import io.micrometer.observation.annotation.Observed;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -41,12 +45,21 @@ public class CoachService {
 
     private final ChatClient chatClient;
     private final ObjectMapper objectMapper;
+    private final CheckInProjectAggregateDailySummaryService checkInProjectAggregateDailySummaryService;
+    private final NotificationService notificationService;
 
-    public CoachService(ChatClient.Builder chatClientBuilder, ObjectMapper objectMapper) {
+    public CoachService(
+        ChatClient.Builder chatClientBuilder,
+        ObjectMapper objectMapper,
+        CheckInProjectAggregateDailySummaryService checkInProjectAggregateDailySummaryService,
+        NotificationService notificationService
+    ) {
         this.chatClient = chatClientBuilder
             .defaultSystem(SYSTEM_PROMPT)
             .build();
         this.objectMapper = objectMapper;
+        this.checkInProjectAggregateDailySummaryService = checkInProjectAggregateDailySummaryService;
+        this.notificationService = notificationService;
     }
 
     public CoachReminder promptReminder(int commitsToday, int streakToday) {
@@ -86,5 +99,17 @@ public class CoachService {
         }
 
         return reminder;
+    }
+
+    public void remindUserProgress() {
+        var checkInProjectAggregateSummary = checkInProjectAggregateDailySummaryService
+            .getAggregateSummary(LocalDate.now());
+
+        var coachReminder = promptReminder(
+            checkInProjectAggregateSummary.getNoOfCheckIns(),
+            checkInProjectAggregateSummary.getStreak()
+        );
+
+        notificationService.sendNotification(coachReminder.title(), coachReminder.body());
     }
 }

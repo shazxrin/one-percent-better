@@ -1,11 +1,11 @@
-package io.github.shazxrin.onepercentbetter.reminder.configuration;
+package io.github.shazxrin.onepercentbetter.coach.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "app.reminder")
-public class ReminderProperties {
+@ConfigurationProperties(prefix = "app.coach.reminder")
+public class CoachReminderProperties {
     private String scheduleCron;
 
     public String getScheduleCron() {

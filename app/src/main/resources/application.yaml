@@ -38,8 +38,9 @@ app:
         date: 2025-05-01
         projects:
           - "shazxrin/one-percent-better"
-  reminder:
-    schedule-cron: "0 0 */1 * * *"
+  coach:
+    reminder:
+      schedule-cron: "0 0 */1 * * *"
 management:
   endpoints:
     web:

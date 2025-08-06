@@ -30,5 +30,6 @@ app:
         enabled: true
         projects:
           - "shazxrin/one-percent-better"
-  reminder:
-    schedule-cron: "0 0 */1 * * *"
+  coach:
+    reminder:
+      schedule-cron: "0 0 */1 * * *"
