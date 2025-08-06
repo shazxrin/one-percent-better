@@ -5,6 +5,7 @@ import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInHabitR
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInHabitService;
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import io.github.shazxrin.onepercentbetter.habit.service.HabitService;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +49,7 @@ public class CheckInHabitServiceTest {
         Habit mockHabit = new Habit("Reading", "Read a book daily");
         mockHabit.setId(habitId);
 
-        when(habitService.getHabitById(habitId)).thenReturn(mockHabit);
+        when(habitService.getHabitById(habitId)).thenReturn(Optional.of(mockHabit));
         when(checkInHabitRepository.save(any(CheckInHabit.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -77,7 +78,7 @@ public class CheckInHabitServiceTest {
         Habit mockHabit = new Habit("Reading", "Read a book daily");
         mockHabit.setId(habitId);
 
-        when(habitService.getHabitById(habitId)).thenReturn(mockHabit);
+        when(habitService.getHabitById(habitId)).thenReturn(Optional.of(mockHabit));
         when(checkInHabitRepository.save(any(CheckInHabit.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When

@@ -28,14 +28,14 @@ public class HabitExceptionHandlerControllerAdviceTest {
             .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andExpect(jsonPath("$.status").value(400))
             .andExpect(jsonPath("$.type").exists())
-            .andExpect(jsonPath("$.detail").value("Bad request."));
+            .andExpect(jsonPath("$.detail").value("Habit not found."));
     }
 
     @RestController
     static class ExceptionController {
         @GetMapping("/test/project-not-found")
         public String badRequest() {
-            throw new HabitNotFoundException("Bad request.");
+            throw new HabitNotFoundException();
         }
     }
 }

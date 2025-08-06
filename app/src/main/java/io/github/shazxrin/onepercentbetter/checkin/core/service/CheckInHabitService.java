@@ -3,6 +3,7 @@ package io.github.shazxrin.onepercentbetter.checkin.core.service;
 import io.github.shazxrin.onepercentbetter.checkin.core.exception.CheckInHabitNotFoundException;
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInHabit;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInHabitRepository;
+import io.github.shazxrin.onepercentbetter.habit.exception.HabitNotFoundException;
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import io.github.shazxrin.onepercentbetter.habit.service.HabitService;
 import io.micrometer.observation.annotation.Observed;
@@ -25,7 +26,8 @@ public class CheckInHabitService {
     }
 
     public void addCheckIn(long habitId, LocalDate date, int amount, String notes) {
-        Habit habit = habitService.getHabitById(habitId);
+        Habit habit = habitService.getHabitById(habitId)
+            .orElseThrow(HabitNotFoundException::new);
 
         CheckInHabit checkInHabit = new CheckInHabit(date, amount, notes, habit);
         checkInHabitRepository.save(checkInHabit);

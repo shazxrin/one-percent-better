@@ -5,6 +5,7 @@ import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import io.github.shazxrin.onepercentbetter.habit.repository.HabitRepository;
 import io.micrometer.observation.annotation.Observed;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class HabitService {
     @Transactional
     public void removeHabit(Long id) {
         if (habitRepository.existsById(id)) {
-            throw new HabitNotFoundException("Habit not found!");
+            throw new HabitNotFoundException();
         }
 
         habitRepository.deleteById(id);
@@ -35,8 +36,7 @@ public class HabitService {
         return habitRepository.findAll();
     }
 
-    public Habit getHabitById(long id) {
-        return habitRepository.findById(id)
-            .orElseThrow(() -> new HabitNotFoundException("Habit not found!"));
+    public Optional<Habit> getHabitById(long id) {
+        return habitRepository.findById(id);
     }
 }

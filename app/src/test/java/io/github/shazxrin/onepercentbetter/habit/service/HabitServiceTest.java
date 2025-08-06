@@ -16,6 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
@@ -98,10 +99,11 @@ public class HabitServiceTest {
         when(habitRepository.findById(habitId)).thenReturn(Optional.of(expectedHabit));
 
         // When
-        Habit actualHabit = habitService.getHabitById(habitId);
+        Optional<Habit> actualHabitOpt = habitService.getHabitById(habitId);
 
         // Then
-        assertSame(expectedHabit, actualHabit);
+        assertTrue(actualHabitOpt.isPresent());
+        assertSame(expectedHabit, actualHabitOpt.get());
         verify(habitRepository, times(1)).findById(habitId);
     }
 
@@ -111,8 +113,11 @@ public class HabitServiceTest {
         Long habitId = 1L;
         when(habitRepository.findById(habitId)).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(HabitNotFoundException.class, () -> habitService.getHabitById(habitId));
+        // When
+        Optional<Habit> habitOpt = habitService.getHabitById(habitId);
+
+        // Then
+        assertTrue(habitOpt.isEmpty());
         verify(habitRepository, times(1)).findById(habitId);
     }
 }
