@@ -29,13 +29,8 @@ public class Project {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Project(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public Project(String name) {
-        this(null, name);
+        this.name = name;
     }
 
     public Project() {

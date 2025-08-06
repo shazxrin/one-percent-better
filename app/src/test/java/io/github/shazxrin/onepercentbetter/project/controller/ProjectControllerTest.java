@@ -35,8 +35,10 @@ public class ProjectControllerTest {
     @Test
     void testGetAllProjects_shouldReturnAllProjects() throws Exception {
         // Given
-        Project project1 = new Project(1L, "owner1/repo1");
-        Project project2 = new Project(2L, "owner2/repo2");
+        Project project1 = new Project("owner1/repo1");
+        project1.setId(1L);
+        Project project2 = new Project("owner2/repo2");
+        project2.setId(2L);
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
 
         // When & Then

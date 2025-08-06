@@ -40,8 +40,10 @@ public class CheckInProjectDailySummaryServiceTest {
     @Test
     void testInitSummaries_shouldCreateSummariesForAllProjects() {
         LocalDate date = LocalDate.now();
-        Project project1 = new Project(1L, "Project 1");
-        Project project2 = new Project(2L, "Project 2");
+        Project project1 = new Project("Project 1");
+        project1.setId(1L);
+        Project project2 = new Project("Project 2");
+        project2.setId(2L);
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
 
         checkInProjectDailySummaryService.initSummaries(date);
@@ -61,7 +63,8 @@ public class CheckInProjectDailySummaryServiceTest {
     void testGetSummary_whenSummaryExists_shouldReturnExistingSummary() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary summary = new CheckInProjectDailySummary(date, 2, 3, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
@@ -78,7 +81,8 @@ public class CheckInProjectDailySummaryServiceTest {
     void testGetSummary_whenSummaryDoesNotExist_shouldCreateNewSummaryAndSave() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary savedSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
@@ -111,7 +115,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 2, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
@@ -134,7 +139,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 3, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
@@ -157,7 +163,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
@@ -180,7 +187,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
@@ -203,7 +211,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
@@ -225,7 +234,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
@@ -247,7 +257,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 2, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 3, 0, project);
 
@@ -269,7 +280,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 3, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
@@ -291,7 +303,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 2, 0, project);
 
@@ -313,7 +326,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
@@ -335,7 +349,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 2, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
@@ -356,7 +371,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         LocalDate previousDate = date.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
@@ -377,7 +393,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         
         CheckInProjectDailySummary yesterdaySummary = new CheckInProjectDailySummary(yesterday, 1, 3, project);
         CheckInProjectDailySummary todaySummary = new CheckInProjectDailySummary(today, 1, 0, project);
@@ -401,7 +418,8 @@ public class CheckInProjectDailySummaryServiceTest {
         long projectId = 1L;
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         
         CheckInProjectDailySummary yesterdaySummary = new CheckInProjectDailySummary(yesterday, 0, 0, project);
         CheckInProjectDailySummary todaySummary = new CheckInProjectDailySummary(today, 0, 0, project);
@@ -428,7 +446,8 @@ public class CheckInProjectDailySummaryServiceTest {
         LocalDate twoDaysAgo = today.minusDays(2);
         LocalDate yesterday = today.minusDays(1);
 
-        Project project = new Project(projectId, "Project 1");
+        Project project = new Project("Project 1");
+        project.setId(projectId);
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         CheckInProjectDailySummary threeDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 0, 0, project);
