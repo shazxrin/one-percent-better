@@ -83,7 +83,7 @@ public class ProjectServiceTest {
             ProjectNotFoundException.class, () -> {
             projectService.removeProject(id);
         });
-        assertEquals("Project not found", exception.getMessage());
+        assertEquals("Project not found.", exception.getMessage());
         verify(projectRepository, never()).deleteById(any());
     }
 

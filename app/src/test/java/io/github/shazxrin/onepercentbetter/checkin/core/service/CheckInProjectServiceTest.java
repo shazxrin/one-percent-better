@@ -10,6 +10,7 @@ import io.github.shazxrin.onepercentbetter.github.model.CommitDetail;
 import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -56,7 +57,7 @@ public class CheckInProjectServiceTest {
         when(commit.sha()).thenReturn("abc123");
         when(commit.commit()).thenReturn(commitDetail);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "abc123")).thenReturn(false);
 
@@ -85,7 +86,7 @@ public class CheckInProjectServiceTest {
         Commit commit = mock(Commit.class);
         when(commit.sha()).thenReturn("def456");
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "def456")).thenReturn(true);
 
@@ -116,7 +117,7 @@ public class CheckInProjectServiceTest {
         when(commit2.sha()).thenReturn("sha2");
         when(commit2.commit()).thenReturn(commitInfo2);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", from)).thenReturn(List.of(commit1));
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", to)).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha1")).thenReturn(false);

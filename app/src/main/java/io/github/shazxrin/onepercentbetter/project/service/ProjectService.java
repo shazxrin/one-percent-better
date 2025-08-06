@@ -8,6 +8,7 @@ import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
 import io.micrometer.observation.annotation.Observed;
 import io.micrometer.tracing.annotation.SpanTag;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class ProjectService {
     @Transactional
     public void removeProject(@SpanTag long id) {
         if (!projectRepository.existsById(id)) {
-            throw new ProjectNotFoundException("Project not found");
+            throw new ProjectNotFoundException();
         }
 
         projectRepository.deleteById(id);
@@ -49,8 +50,7 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    public Project getProjectById(@SpanTag long id) {
-        return projectRepository.findById(id)
-            .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
+    public Optional<Project> getProjectById(@SpanTag long id) {
+        return projectRepository.findById(id);
     }
 }

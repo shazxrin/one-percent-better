@@ -3,6 +3,7 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
+import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
@@ -41,7 +42,8 @@ public class CheckInProjectDailySummaryService {
     }
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
-        var project = projectService.getProjectById(projectId);
+        var project = projectService.getProjectById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
 
         var summaryOpt = checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date);
         if (summaryOpt.isPresent()) {
@@ -58,7 +60,8 @@ public class CheckInProjectDailySummaryService {
     }
 
     public void calculateSummaryForDate(long projectId, LocalDate date, boolean withCount) {
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getProjectById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
 
         LocalDate previousDate = date.minusDays(1);
 
@@ -89,7 +92,8 @@ public class CheckInProjectDailySummaryService {
     }
 
     public void addCheckInToSummary(long projectId, LocalDate date) {
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getProjectById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
 
         LocalDate previousDate = date.minusDays(1);
 

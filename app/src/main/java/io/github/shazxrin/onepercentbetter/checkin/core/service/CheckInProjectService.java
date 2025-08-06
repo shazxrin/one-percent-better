@@ -6,6 +6,7 @@ import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.github.model.Commit;
 import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
+import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
@@ -96,7 +97,8 @@ public class CheckInProjectService {
     }
 
     public void checkIn(long projectId, LocalDate date, CheckInProjectSource source) {
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getProjectById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
 
         checkInProject(project, date, source);
     }
@@ -106,7 +108,8 @@ public class CheckInProjectService {
             throw new IllegalArgumentException("From date must be before to date.");
         }
 
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getProjectById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
 
         var currentDate = from;
         while (!currentDate.isAfter(to)) {

@@ -64,7 +64,7 @@ public class CheckInProjectDailySummaryServiceTest {
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary summary = new CheckInProjectDailySummary(date, 2, 3, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(summary));
 
         CheckInProjectDailySummary result = checkInProjectDailySummaryService.getSummary(projectId, date);
@@ -81,7 +81,7 @@ public class CheckInProjectDailySummaryServiceTest {
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary savedSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.empty());
         when(checkInProjectDailySummaryRepository.save(any())).thenReturn(savedSummary);
 
@@ -115,7 +115,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 2, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(3);
@@ -138,7 +138,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 3, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(0);
@@ -161,7 +161,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(2);
@@ -184,7 +184,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(0);
@@ -206,7 +206,7 @@ public class CheckInProjectDailySummaryServiceTest {
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(2);
@@ -228,7 +228,7 @@ public class CheckInProjectDailySummaryServiceTest {
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByDate(date)).thenReturn(0);
@@ -251,7 +251,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 2, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 3, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
 
@@ -273,7 +273,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 1, 3, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
 
@@ -295,7 +295,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 2, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
 
@@ -317,7 +317,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
 
@@ -338,7 +338,7 @@ public class CheckInProjectDailySummaryServiceTest {
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 2, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
 
@@ -359,7 +359,7 @@ public class CheckInProjectDailySummaryServiceTest {
         Project project = new Project(projectId, "Project 1");
         CheckInProjectDailySummary currentSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
 
@@ -382,7 +382,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary yesterdaySummary = new CheckInProjectDailySummary(yesterday, 1, 3, project);
         CheckInProjectDailySummary todaySummary = new CheckInProjectDailySummary(today, 1, 0, project);
         
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today)).thenReturn(Optional.of(todaySummary));
         
@@ -406,7 +406,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary yesterdaySummary = new CheckInProjectDailySummary(yesterday, 0, 0, project);
         CheckInProjectDailySummary todaySummary = new CheckInProjectDailySummary(today, 0, 0, project);
         
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today)).thenReturn(Optional.of(todaySummary));
         
@@ -429,7 +429,7 @@ public class CheckInProjectDailySummaryServiceTest {
         LocalDate yesterday = today.minusDays(1);
 
         Project project = new Project(projectId, "Project 1");
-        when(projectService.getProjectById(projectId)).thenReturn(project);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         CheckInProjectDailySummary threeDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 0, 0, project);
         CheckInProjectDailySummary twoDaysAgoSummary = new CheckInProjectDailySummary(twoDaysAgo, 1, 1, project);
