@@ -32,14 +32,9 @@ public class Habit {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Habit(Long id, String name, String description) {
-        this.id = id;
+    public Habit(String name, String description) {
         this.name = name;
         this.description = description;
-    }
-
-    public Habit(String name, String description) {
-        this(null, name, description);
     }
 
     public Habit() {

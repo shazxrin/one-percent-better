@@ -95,7 +95,8 @@ public class HabitServiceTest {
     void testGetHabitById_shouldReturnHabit_whenHabitExists() {
         // Given
         Long habitId = 1L;
-        Habit expectedHabit = new Habit(habitId, "Read", "Read a book daily");
+        Habit expectedHabit = new Habit("Read", "Read a book daily");
+        expectedHabit.setId(habitId);
         when(habitRepository.findById(habitId)).thenReturn(Optional.of(expectedHabit));
 
         // When

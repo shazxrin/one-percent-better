@@ -35,8 +35,10 @@ public class HabitControllerTest {
     @Test
     void getAllHabits_shouldReturnListOfHabits() throws Exception {
         // Given
-        Habit habit1 = new Habit(1L, "Read", "Read a book daily");
-        Habit habit2 = new Habit(2L, "Exercise", "Go to the gym");
+        Habit habit1 = new Habit("Read", "Read a book daily");
+        habit1.setId(1L);
+        Habit habit2 = new Habit("Exercise", "Go to the gym");
+        habit2.setId(2L);
         List<Habit> habits = Arrays.asList(habit1, habit2);
 
         when(habitService.getAllHabits()).thenReturn(habits);
