@@ -56,7 +56,6 @@ public class CheckInProjectService {
             date
         );
 
-        boolean hasNewCheckIn = false;
         for (Commit commit : commits) {
             log.info("Checking in commit {} for project {}.", commit.sha(), project.getName());
 
@@ -64,8 +63,6 @@ public class CheckInProjectService {
                 log.info("Commit {} already checked in for project {}. Skipping.", commit.sha(), project.getName());
                 continue;
             }
-
-            hasNewCheckIn = true;
 
             String commitType = "unknown";
             String commitMessage = "";
@@ -77,7 +74,7 @@ public class CheckInProjectService {
                 commitMessage = commit.commit().message();
             }
 
-            checkInProjectRepository.save(
+            CheckInProject checkInProject = checkInProjectRepository.save(
                 new CheckInProject(
                     date,
                     commit.sha(),
@@ -86,11 +83,9 @@ public class CheckInProjectService {
                     project
                 )
             );
-        }
 
-        if (hasNewCheckIn) {
             applicationEventPublisher.publishEvent(
-                new CheckInProjectAddedEvent(this, project.getId(), date)
+                new CheckInProjectAddedEvent(this, project.getId(), checkInProject.getId(), date)
             );
         }
     }

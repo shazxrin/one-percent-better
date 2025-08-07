@@ -26,8 +26,9 @@ public class CheckInProjectDailySummaryTriggerTest {
     void testRunAddCheckInToSummary_shouldCalculateSummaryForProjectAndDate() {
         // Given
         long projectId = 123L;
+        long checkInProjectId = 456L;
         LocalDate testDate = LocalDate.of(2025, 7, 30);
-        CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(this, projectId, testDate);
+        CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(this, projectId, checkInProjectId, testDate);
         
         // When
         checkInProjectDailySummaryTrigger.runAddCheckInToSummary(event);

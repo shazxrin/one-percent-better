@@ -58,6 +58,11 @@ public class CheckInProjectServiceTest {
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "abc123")).thenReturn(false);
+        when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
+            CheckInProject checkInProject = invocation.getArgument(0);
+            checkInProject.setId(1L);
+            return checkInProject;
+        });
 
         checkInProjectService.checkIn(projectId, date);
 
@@ -95,6 +100,37 @@ public class CheckInProjectServiceTest {
     }
 
     @Test
+    void testCheckIn_whenProjectHasNewAndExistingCommits_shouldCreateCheckInsAndFireEventForNewCommit() {
+        long projectId = 2L;
+        LocalDate date = LocalDate.now();
+        Project project = new Project();
+        project.setId(projectId);
+        project.setName("owner/repo");
+
+        Commit commit1 = mock(Commit.class);
+        when(commit1.sha()).thenReturn("def456");
+        Commit commit2 = mock(Commit.class);
+        when(commit2.sha()).thenReturn("abc123");
+        CommitDetail commit2Detail = mock(CommitDetail.class);
+        when(commit2Detail.message()).thenReturn("chore: update");
+        when(commit2.commit()).thenReturn(commit2Detail);
+
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit1, commit2));
+        when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "def456")).thenReturn(true);
+        when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
+            CheckInProject checkInProject = invocation.getArgument(0);
+            checkInProject.setId(1L);
+            return checkInProject;
+        });
+
+        checkInProjectService.checkIn(projectId, date);
+
+        verify(checkInProjectRepository, times(1)).save(any());
+        verify(applicationEventPublisher, times(1)).publishEvent(any());
+    }
+
+    @Test
     void testCheckInInterval_whenProjectHasNewCommitsForMultipleDays_shouldCreateNewCheckInsAndFireEvents() {
         long projectId = 3L;
         LocalDate from = LocalDate.now().minusDays(1);
@@ -120,6 +156,11 @@ public class CheckInProjectServiceTest {
         when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", to)).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha2")).thenReturn(false);
+        when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
+            CheckInProject checkInProject = invocation.getArgument(0);
+            checkInProject.setId(1L);
+            return checkInProject;
+        });
 
         checkInProjectService.checkInInterval(projectId, from, to);
 
@@ -154,6 +195,11 @@ public class CheckInProjectServiceTest {
         when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", date)).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(1L, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(2L, "sha2")).thenReturn(false);
+        when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
+            CheckInProject checkInProject = invocation.getArgument(0);
+            checkInProject.setId(1L);
+            return checkInProject;
+        });
 
         checkInProjectService.checkInAll(date);
 
@@ -191,6 +237,11 @@ public class CheckInProjectServiceTest {
         when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", to)).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(1L, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(2L, "sha2")).thenReturn(false);
+        when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
+            CheckInProject checkInProject = invocation.getArgument(0);
+            checkInProject.setId(1L);
+            return checkInProject;
+        });
 
         checkInProjectService.checkInAllInterval(from, to);
 
