@@ -1,6 +1,5 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.controller;
 
-import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +34,7 @@ public class CheckInProjectController {
     public void postCheckInProjectAll(
         @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        checkInProjectService.checkInAll(date, CheckInProjectSource.MANUAL);
+        checkInProjectService.checkInAll(date);
     }
 
     @Operation(summary = "Check in for a projects on date")
@@ -47,7 +46,7 @@ public class CheckInProjectController {
         @PathVariable long projectId,
         @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        checkInProjectService.checkIn(projectId, date, CheckInProjectSource.MANUAL);
+        checkInProjectService.checkIn(projectId, date);
     }
 
     @Operation(summary = "Check in for all projects between date interval")
@@ -59,7 +58,7 @@ public class CheckInProjectController {
         @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
         @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {
-        checkInProjectService.checkInAllInterval(fromDate, toDate, CheckInProjectSource.MANUAL);
+        checkInProjectService.checkInAllInterval(fromDate, toDate);
     }
 
     @Operation(summary = "Check in for a projects between date interval")
@@ -72,6 +71,6 @@ public class CheckInProjectController {
         @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
         @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {
-        checkInProjectService.checkInInterval(projectId, fromDate, toDate, CheckInProjectSource.MANUAL);
+        checkInProjectService.checkInInterval(projectId, fromDate, toDate);
     }
 }

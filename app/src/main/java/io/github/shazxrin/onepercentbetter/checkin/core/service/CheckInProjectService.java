@@ -1,7 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.service;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
-import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.github.model.Commit;
@@ -41,7 +40,7 @@ public class CheckInProjectService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    private void checkInProject(Project project, LocalDate date, CheckInProjectSource source) {
+    private void checkInProject(Project project, LocalDate date) {
         log.info("Checking in project {} for date {}.", project.getName(), date);
         ProjectOwnerName projectOwnerName;
         try {
@@ -91,19 +90,19 @@ public class CheckInProjectService {
 
         if (hasNewCheckIn) {
             applicationEventPublisher.publishEvent(
-                new CheckInProjectAddedEvent(this, project.getId(), date, source)
+                new CheckInProjectAddedEvent(this, project.getId(), date)
             );
         }
     }
 
-    public void checkIn(long projectId, LocalDate date, CheckInProjectSource source) {
+    public void checkIn(long projectId, LocalDate date) {
         Project project = projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
-        checkInProject(project, date, source);
+        checkInProject(project, date);
     }
 
-    public void checkInInterval(long projectId, LocalDate from, LocalDate to, CheckInProjectSource source) {
+    public void checkInInterval(long projectId, LocalDate from, LocalDate to) {
         if (from.isAfter(to)) {
             throw new IllegalArgumentException("From date must be before to date.");
         }
@@ -113,19 +112,19 @@ public class CheckInProjectService {
 
         var currentDate = from;
         while (!currentDate.isAfter(to)) {
-            checkInProject(project, currentDate, source);
+            checkInProject(project, currentDate);
             currentDate = currentDate.plusDays(1);
         }
     }
 
-    public void checkInAll(LocalDate date, CheckInProjectSource source) {
+    public void checkInAll(LocalDate date) {
         List<Project> projects = projectService.getAllProjects();
         for (Project project : projects) {
-            checkInProject(project, date, source);
+            checkInProject(project, date);
         }
     }
 
-    public void checkInAllInterval(LocalDate from, LocalDate to, CheckInProjectSource source) {
+    public void checkInAllInterval(LocalDate from, LocalDate to) {
         if (from.isAfter(to)) {
             throw new IllegalArgumentException("From date must be before to date.");
         }
@@ -135,7 +134,7 @@ public class CheckInProjectService {
         var currentDate = from;
         while (!currentDate.isAfter(to)) {
             for (Project project : projects) {
-                checkInProject(project, currentDate, source);
+                checkInProject(project, currentDate);
             }
             currentDate = currentDate.plusDays(1);
         }

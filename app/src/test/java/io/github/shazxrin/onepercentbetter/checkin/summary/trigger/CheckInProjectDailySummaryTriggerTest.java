@@ -1,7 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
-import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -25,45 +23,17 @@ public class CheckInProjectDailySummaryTriggerTest {
     private CheckInProjectDailySummaryTrigger checkInProjectDailySummaryTrigger;
 
     @Test
-    void testRunAddCheckInToSummary_whenEventFromScheduler_shouldCalculateSummaryForProjectAndDate() {
+    void testRunAddCheckInToSummary_shouldCalculateSummaryForProjectAndDate() {
         // Given
         long projectId = 123L;
         LocalDate testDate = LocalDate.of(2025, 7, 30);
-        CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(this, projectId, testDate, CheckInProjectSource.SCHEDULED);
+        CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(this, projectId, testDate);
         
         // When
         checkInProjectDailySummaryTrigger.runAddCheckInToSummary(event);
         
         // Then
         verify(checkInProjectDailySummaryService, times(1)).addCheckInToSummary(eq(projectId), eq(testDate));
-    }
-
-    @Test
-    void testRunAddCheckInToSummary_whenEventFromManual_shouldCalculateSummaryForProjectAndDate() {
-        // Given
-        long projectId = 123L;
-        LocalDate testDate = LocalDate.of(2025, 7, 30);
-        CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(this, projectId, testDate, CheckInProjectSource.MANUAL);
-
-        // When
-        checkInProjectDailySummaryTrigger.runAddCheckInToSummary(event);
-
-        // Then
-        verify(checkInProjectDailySummaryService, times(1)).addCheckInToSummary(eq(projectId), eq(testDate));
-    }
-
-    @Test
-    void testRunAddCheckInToSummary_whenEventFromBootstrap_shouldNotCalculateSummaryForProjectAndDate() {
-        // Given
-        long projectId = 123L;
-        LocalDate testDate = LocalDate.of(2025, 7, 30);
-        CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(this, projectId, testDate, CheckInProjectSource.BOOTSTRAP);
-
-        // When
-        checkInProjectDailySummaryTrigger.runAddCheckInToSummary(event);
-
-        // Then
-        verify(checkInProjectDailySummaryService, never()).addCheckInToSummary(eq(projectId), eq(testDate));
     }
 
     @Test

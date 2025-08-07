@@ -1,7 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.configuration.CheckInProjectProperties;
-import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProjectSource;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
@@ -38,7 +37,7 @@ public class CheckInProjectTrigger {
     public void runScheduledCheckInProjectsAll() {
         log.info("Running check-in schedule.");
 
-        checkInProjectService.checkInAll(LocalDate.now(), CheckInProjectSource.SCHEDULED);
+        checkInProjectService.checkInAll(LocalDate.now());
     }
 
     @Async
@@ -53,6 +52,6 @@ public class CheckInProjectTrigger {
         }
 
         var bootstrapDate = LocalDate.parse(checkInProperties.getBootstrap().getDate());
-        checkInProjectService.checkInAllInterval(bootstrapDate, LocalDate.now(), CheckInProjectSource.BOOTSTRAP);
+        checkInProjectService.checkInAllInterval(bootstrapDate, LocalDate.now());
     }
 }
