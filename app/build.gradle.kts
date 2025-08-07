@@ -83,6 +83,8 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    testImplementation("org.awaitility:awaitility:4.2.0")
+
     mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
 }
 
