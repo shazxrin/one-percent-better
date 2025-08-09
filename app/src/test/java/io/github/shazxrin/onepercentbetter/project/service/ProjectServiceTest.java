@@ -1,5 +1,6 @@
 package io.github.shazxrin.onepercentbetter.project.service;
 
+import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
@@ -11,6 +12,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,6 +23,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Mock
     private ProjectRepository projectRepository;
@@ -36,6 +40,11 @@ public class ProjectServiceTest {
         // Given
         String name = "shazxrin/test-project";
         when(projectRepository.existsByName(name)).thenReturn(false);
+        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> {
+            Project project = invocation.getArgument(0);
+            project.setId(1L);
+            return project;
+        });
 
         // When
         projectService.addProject(name);
@@ -44,6 +53,8 @@ public class ProjectServiceTest {
         verify(projectRepository).save(projectCaptor.capture());
         Project savedProject = projectCaptor.getValue();
         assertEquals(name, savedProject.getName());
+
+        verify(applicationEventPublisher).publishEvent(any(ProjectAddedEvent.class));
     }
 
     @Test
@@ -57,6 +68,7 @@ public class ProjectServiceTest {
 
         // Then
         verify(projectRepository, never()).save(any());
+        verify(applicationEventPublisher, never()).publishEvent(any(ProjectAddedEvent.class));
     }
 
     @Test
