@@ -21,9 +21,9 @@ public class CheckInProjectTriggerTest {
     private CheckInProjectTrigger checkInProjectTrigger;
 
     @Test
-    void testRunScheduledCheckInProjectsAll_shouldCallCheckInServiceCheckInToday() {
+    void testRunScheduledCheckInAllProjects_shouldCallCheckInServiceCheckInTodayProjects() {
         // When
-        checkInProjectTrigger.runScheduledCheckInProjectsAll();
+        checkInProjectTrigger.runScheduledCheckInAllProjects();
 
         // Then
         verify(checkInProjectService, times(1)).checkInAll(eq(LocalDate.now()));

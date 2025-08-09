@@ -1,10 +1,12 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
+import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,8 @@ public class CheckInProjectTrigger {
 
     @Async
     @Scheduled(cron = "${app.check-in.project.schedule-cron}")
-    public void runScheduledCheckInProjectsAll() {
-        log.info("Running check-in schedule.");
+    public void runScheduledCheckInAllProjects() {
+        log.info("Running check-in all projects schedule.");
 
         checkInProjectService.checkInAll(LocalDate.now());
     }
