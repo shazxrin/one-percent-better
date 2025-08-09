@@ -3,17 +3,18 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
-import io.github.shazxrin.onepercentbetter.project.model.Project;
-import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
+import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
+import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.ComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -22,6 +23,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
 @ActiveProfiles("test")
@@ -30,6 +34,9 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
     @Container
     static final ComposeContainer environment = new ComposeContainer(new File("../deploy/dev.compose.yaml"));
 
+    @MockitoBean
+    private GitHubService gitHubService;
+
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -37,29 +44,27 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
     private CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository;
 
     @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired private CheckInProjectDailySummaryService checkInProjectDailySummaryService;
+    private ProjectService projectService;
 
     @Test
     void testRunAddCheckInToSummary_whenConcurrentEvents_shouldUpdateDailySummaryCorrectly() {
         // Given
-        // Create a test project
-        Project project = new Project();
-        project.setName("test-project");
-        project = projectRepository.save(project);
-        long projectId = project.getId();
+        when(gitHubService.getCommitsForRespositoryOnDate(eq("user"), eq("repo"), any()))
+            .thenReturn(List.of());
 
-        LocalDate today = LocalDate.now();
-
-        CheckInProjectDailySummary initialSummary = new CheckInProjectDailySummary(today, 0, 0, project);
-        checkInProjectDailySummaryRepository.save(initialSummary);
+        // Add project and wait for onboarding to finish (i.e. create daily project summaries)
+        var projectId = projectService.addProject("user/repo");
+        await().atMost(30, SECONDS).untilAsserted(() -> {
+            List<CheckInProjectDailySummary> summaries = checkInProjectDailySummaryRepository.findAll();
+            assertEquals(LocalDate.now().lengthOfYear(), summaries.size());
+        });
 
         // When
         CheckInProjectAddedEvent event = new CheckInProjectAddedEvent(
             this,
-            project.getId(),
+            projectId,
             123L,
-            today
+            LocalDate.now()
         );
 
         // Publish events 4 times
@@ -71,7 +76,7 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
         // Then
         await().atMost(10, SECONDS).untilAsserted(() -> {
             Optional<CheckInProjectDailySummary> updatedSummaryOpt =
-                checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today);
+                checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, LocalDate.now());
 
             assertTrue(updatedSummaryOpt.isPresent());
             CheckInProjectDailySummary updatedSummary = updatedSummaryOpt.get();

@@ -3,7 +3,6 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
 import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
 import io.micrometer.observation.annotation.Observed;
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -33,8 +32,8 @@ public class CheckInProjectDailySummaryTrigger {
     }
 
     @Async
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "@yearly")
     public void runScheduledInitDailySummaries() {
-        checkInProjectDailySummaryService.initSummaries(LocalDate.now());
+        checkInProjectDailySummaryService.initSummaries();
     }
 }

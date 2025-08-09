@@ -5,6 +5,8 @@ import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectD
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,16 +20,6 @@ public class CheckInProjectAggregateDailySummaryService {
     ) {
         this.checkInProjectAggregateDailySummaryRepository = checkInProjectAggregateDailySummaryRepository;
         this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
-    }
-
-    public void initAggregateSummary(LocalDate date) {
-        var newSummary = new CheckInProjectAggregateDailySummary(
-            date,
-            0,
-            0
-        );
-
-        checkInProjectAggregateDailySummaryRepository.save(newSummary);
     }
 
     public void calculateAggregateSummary(LocalDate date) {
@@ -72,5 +64,16 @@ public class CheckInProjectAggregateDailySummaryService {
             0
         );
         return checkInProjectAggregateDailySummaryRepository.save(newSummary);
+    }
+
+    public void initAggregateSummaries() {
+        var now = LocalDate.now();
+
+        List<CheckInProjectAggregateDailySummary> summaries = new ArrayList<>();
+        for (int i = 1; i <= now.lengthOfYear(); i++) {
+            summaries.add(new CheckInProjectAggregateDailySummary(now.withDayOfYear(i), 0, 0));
+        }
+
+        checkInProjectAggregateDailySummaryRepository.saveAll(summaries);
     }
 }

@@ -7,9 +7,9 @@ import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundExce
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
-import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
-import org.springframework.data.jpa.repository.Lock;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,19 +29,6 @@ public class CheckInProjectDailySummaryService {
         this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
         this.checkInProjectRepository = checkInProjectRepository;
         this.projectService = projectService;
-    }
-
-    public void initSummaries(LocalDate date) {
-        for (Project project : projectService.getAllProjects()) {
-            var newSummary = new CheckInProjectDailySummary(
-                date,
-                0,
-                0,
-                project
-            );
-
-            checkInProjectDailySummaryRepository.save(newSummary);
-        }
     }
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
@@ -125,6 +112,28 @@ public class CheckInProjectDailySummaryService {
             calculateSummaryForDate(projectId, currentDate, false);
 
             currentDate = currentDate.plusDays(1);
+        }
+    }
+
+    public void initSummary(long projectId) {
+        var project = projectService.getProjectById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
+
+        var now = LocalDate.now();
+
+        List<CheckInProjectDailySummary> summaries = new ArrayList<>();
+        for (int i = 1; i <= now.lengthOfYear(); i++) {
+            summaries.add(new CheckInProjectDailySummary(now.withDayOfYear(i), 0, 0, project));
+        }
+
+        checkInProjectDailySummaryRepository.saveAll(summaries);
+    }
+
+    public void initSummaries() {
+        var projects = projectService.getAllProjects();
+
+        for (Project project : projects) {
+            initSummary(project.getId());
         }
     }
 }

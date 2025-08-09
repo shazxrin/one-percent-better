@@ -124,3 +124,45 @@ ALTER TABLE check_in_project_daily_summaries
 ALTER TABLE check_in_project_weekly_summaries
     ADD CONSTRAINT FK_CHECK_IN_PROJECT_WEEKLY_SUMMARIES_ON_PROJECT FOREIGN KEY (project_id) REFERENCES projects (id);
 
+-- changeset rin:seed-daily-summaries-2025-1
+-- Seed check_in_project_aggregate_daily_summaries for the entire year 2025
+INSERT INTO check_in_project_aggregate_daily_summaries (date, no_of_check_ins, streak, created_at, updated_at)
+WITH dates AS (
+    SELECT generate_series(
+                   '2025-01-01'::date,
+                   '2025-12-31'::date,
+                   '1 day'::interval
+           )::date AS date
+)
+SELECT
+    date,
+    0 AS no_of_check_ins,
+    0 AS streak,
+    CURRENT_TIMESTAMP AS created_at,
+    CURRENT_TIMESTAMP AS updated_at
+FROM dates
+ON CONFLICT (date) DO NOTHING;
+
+-- changeset rin:seed-daily-summaries-2025-2
+-- Seed check_in_project_daily_summaries for the entire year 2025 for all existing projects
+INSERT INTO check_in_project_daily_summaries (date, no_of_check_ins, streak, project_id, created_at, updated_at)
+WITH dates AS (
+    SELECT generate_series(
+                   '2025-01-01'::date,
+                   '2025-12-31'::date,
+                   '1 day'::interval
+           )::date AS date
+),
+     projects AS (
+         SELECT id FROM projects
+     )
+SELECT
+    d.date,
+    0 AS no_of_check_ins,
+    0 AS streak,
+    p.id AS project_id,
+    CURRENT_TIMESTAMP AS created_at,
+    CURRENT_TIMESTAMP AS updated_at
+FROM dates d
+         CROSS JOIN projects p
+ON CONFLICT DO NOTHING;

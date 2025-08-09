@@ -31,24 +31,6 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     @InjectMocks
     private CheckInProjectAggregateDailySummaryService checkInProjectAggregateDailySummaryService;
     
-    @Test
-    void testInitAggregateSummary_shouldCreateSummaryForDate() {
-        // Given
-        LocalDate testDate = LocalDate.of(2025, 7, 30);
-        
-        // When
-        checkInProjectAggregateDailySummaryService.initAggregateSummary(testDate);
-        
-        // Then
-        ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
-            ArgumentCaptor.forClass(CheckInProjectAggregateDailySummary.class);
-        verify(checkInProjectAggregateDailySummaryRepository).save(summaryCaptor.capture());
-        
-        CheckInProjectAggregateDailySummary savedSummary = summaryCaptor.getValue();
-        assertEquals(testDate, savedSummary.getDate());
-        assertEquals(0, savedSummary.getNoOfCheckIns());
-        assertEquals(0, savedSummary.getStreak());
-    }
     
     @Test
     void testCalculateAggregateSummary_whenPreviousHasStreakAndCurrentHasCheckIns_shouldContinueStreak() {
@@ -240,5 +222,22 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         assertEquals(currentDate, savedSummary.getDate());
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
+    }
+    
+    @Test
+    void testInitAggregateSummaries_shouldCreateSummariesForEntireYear() {
+        // Given
+        int daysInYear = LocalDate.now().lengthOfYear();
+        
+        // When
+        checkInProjectAggregateDailySummaryService.initAggregateSummaries();
+        
+        // Then
+        ArgumentCaptor<List<CheckInProjectAggregateDailySummary>> summariesCaptor = 
+            ArgumentCaptor.forClass(List.class);
+        verify(checkInProjectAggregateDailySummaryRepository).saveAll(summariesCaptor.capture());
+        
+        List<CheckInProjectAggregateDailySummary> savedSummaries = summariesCaptor.getValue();
+        assertEquals(daysInYear, savedSummaries.size());
     }
 }

@@ -2,7 +2,6 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectAggregateDailySummaryService;
 import io.micrometer.observation.annotation.Observed;
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -23,8 +22,10 @@ public class CheckInProjectAggregateDailySummaryTrigger {
     }
 
     @Async
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "@yearly")
     public void runScheduledInitAggregateDailySummary() {
-        checkInProjectAggregateDailySummaryService.initAggregateSummary(LocalDate.now());
+        log.info("Running init aggregate daily summaries schedule.");
+
+        checkInProjectAggregateDailySummaryService.initAggregateSummaries();
     }
 }

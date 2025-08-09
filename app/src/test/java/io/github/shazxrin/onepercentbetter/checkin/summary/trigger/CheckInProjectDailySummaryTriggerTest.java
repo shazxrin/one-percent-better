@@ -43,6 +43,6 @@ public class CheckInProjectDailySummaryTriggerTest {
         checkInProjectDailySummaryTrigger.runScheduledInitDailySummaries();
         
         // Then
-        verify(checkInProjectDailySummaryService, times(1)).initSummaries(eq(LocalDate.now()));
+        verify(checkInProjectDailySummaryService, times(1)).initSummaries();
     }
 }

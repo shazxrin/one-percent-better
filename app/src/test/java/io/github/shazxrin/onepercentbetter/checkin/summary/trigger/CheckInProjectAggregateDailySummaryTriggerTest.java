@@ -7,9 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -22,11 +19,11 @@ public class CheckInProjectAggregateDailySummaryTriggerTest {
     private CheckInProjectAggregateDailySummaryTrigger checkInProjectAggregateDailySummaryTrigger;
 
     @Test
-    void runScheduledCalculateDailySummary_shouldInitDailySummariesForToday() {
+    void runScheduledInitAggregateDailySummary_shouldInitAggregateSummaries() {
         // When
         checkInProjectAggregateDailySummaryTrigger.runScheduledInitAggregateDailySummary();
         
         // Then
-        verify(checkInProjectAggregateDailySummaryService, times(1)).initAggregateSummary(eq(LocalDate.now()));
+        verify(checkInProjectAggregateDailySummaryService, times(1)).initAggregateSummaries();
     }
 }

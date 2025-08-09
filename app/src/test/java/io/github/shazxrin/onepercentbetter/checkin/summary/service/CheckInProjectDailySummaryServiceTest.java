@@ -39,24 +39,29 @@ public class CheckInProjectDailySummaryServiceTest {
 
     @Test
     void testInitSummaries_shouldCreateSummariesForAllProjects() {
-        LocalDate date = LocalDate.now();
         Project project1 = new Project("Project 1");
         project1.setId(1L);
         Project project2 = new Project("Project 2");
         project2.setId(2L);
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
+        when(projectService.getProjectById(1L)).thenReturn(Optional.of(project1));
+        when(projectService.getProjectById(2L)).thenReturn(Optional.of(project2));
 
-        checkInProjectDailySummaryService.initSummaries(date);
+        checkInProjectDailySummaryService.initSummaries();
 
-        ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
-        verify(checkInProjectDailySummaryRepository, times(2)).save(captor.capture());
-        List<CheckInProjectDailySummary> savedSummaries = captor.getAllValues();
-        assertEquals(2, savedSummaries.size());
-        assertEquals(project1, savedSummaries.get(0).getProject());
-        assertEquals(date, savedSummaries.get(0).getDate());
-        assertEquals(0, savedSummaries.get(0).getNoOfCheckIns());
-        assertEquals(0, savedSummaries.get(0).getStreak());
-        assertEquals(project2, savedSummaries.get(1).getProject());
+        ArgumentCaptor<List<CheckInProjectDailySummary>> captor = ArgumentCaptor.forClass(List.class);
+        verify(checkInProjectDailySummaryRepository, times(2)).saveAll(captor.capture());
+        
+        List<List<CheckInProjectDailySummary>> allSavedSummaries = captor.getAllValues();
+        assertEquals(2, allSavedSummaries.size());
+        
+        // Verify project1 summaries
+        List<CheckInProjectDailySummary> project1Summaries = allSavedSummaries.get(0);
+        assertEquals(LocalDate.now().lengthOfYear(), project1Summaries.size());
+
+        // Verify project2 summaries
+        List<CheckInProjectDailySummary> project2Summaries = allSavedSummaries.get(1);
+        assertEquals(LocalDate.now().lengthOfYear(), project2Summaries.size());
     }
 
     @Test

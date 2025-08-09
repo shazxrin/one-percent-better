@@ -1,12 +1,10 @@
 package io.github.shazxrin.onepercentbetter.checkin.core.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
-import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
