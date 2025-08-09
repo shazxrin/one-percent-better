@@ -26,10 +26,6 @@ app:
   check-in:
     project:
       schedule-cron: "0 0 */1 * * *"
-      bootstrap:
-        enabled: true
-        projects:
-          - "shazxrin/one-percent-better"
   coach:
     reminder:
       schedule-cron: "0 0 */1 * * *"

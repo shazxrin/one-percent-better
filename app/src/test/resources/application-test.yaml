@@ -10,12 +10,6 @@ spring:
   jpa:
     show-sql: true
 
-app:
-  check-in:
-    project:
-      bootstrap:
-        enabled: false
-
 management:
   endpoints:
     web:
