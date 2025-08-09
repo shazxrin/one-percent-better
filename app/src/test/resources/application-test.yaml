@@ -7,6 +7,8 @@ spring:
     host: localhost
     username: user
     password: password
+  jpa:
+    show-sql: true
 
 app:
   check-in:
