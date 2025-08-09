@@ -1,6 +1,5 @@
 package io.github.shazxrin.onepercentbetter.habit.controller;
 
-import io.github.shazxrin.onepercentbetter.habit.dto.ListItemHabit;
 import io.github.shazxrin.onepercentbetter.habit.model.Habit;
 import io.github.shazxrin.onepercentbetter.habit.service.HabitService;
 import org.junit.jupiter.api.Test;
@@ -42,11 +41,6 @@ public class HabitControllerTest {
         List<Habit> habits = Arrays.asList(habit1, habit2);
 
         when(habitService.getAllHabits()).thenReturn(habits);
-
-        List<ListItemHabit> expectedList = Arrays.asList(
-            new ListItemHabit(1L, "Read"),
-            new ListItemHabit(2L, "Exercise")
-        );
 
         // When & Then
         mockMvc.perform(get("/api/habits"))

@@ -1,14 +1,12 @@
 package io.github.shazxrin.onepercentbetter.habit.controller;
 
-import io.github.shazxrin.onepercentbetter.habit.dto.AddHabit;
-import io.github.shazxrin.onepercentbetter.habit.dto.ListItemHabit;
+import io.github.shazxrin.onepercentbetter.habit.dto.AddHabitRequest;
+import io.github.shazxrin.onepercentbetter.habit.dto.GetAllHabitsResponse;
 import io.github.shazxrin.onepercentbetter.habit.service.HabitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +33,13 @@ public class HabitController {
     @Operation(summary = "Get all habits")
     @ApiResponse(responseCode = "200", description = "Get all habits successfully")
     @GetMapping
-    public List<ListItemHabit> getAllHabits() {
-        ArrayList<ListItemHabit> habits = new ArrayList<>();
+    public GetAllHabitsResponse getAllHabits() {
+        GetAllHabitsResponse getAllHabitsResponse = new GetAllHabitsResponse();
         habitService.getAllHabits()
-            .forEach(habit -> habits.add(new ListItemHabit(habit.getId(), habit.getName())));
-        return habits;
+            .forEach(habit -> getAllHabitsResponse.add(
+                new GetAllHabitsResponse.ListItem(habit.getId(), habit.getName()))
+            );
+        return getAllHabitsResponse;
     }
 
     @Operation(summary = "Add a new habit")
@@ -49,8 +49,8 @@ public class HabitController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void postAddHabit(@RequestBody AddHabit habit) {
-        habitService.addHabit(habit.name(), habit.description());
+    public void postAddHabit(@RequestBody AddHabitRequest addHabitRequest) {
+        habitService.addHabit(addHabitRequest.name(), addHabitRequest.description());
     }
 
     @Operation(summary = "Delete a habit")
