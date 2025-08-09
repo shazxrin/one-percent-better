@@ -1,14 +1,13 @@
 package io.github.shazxrin.onepercentbetter.project.controller;
 
-import io.github.shazxrin.onepercentbetter.project.dto.AddProject;
-import io.github.shazxrin.onepercentbetter.project.dto.ListItemProject;
+import io.github.shazxrin.onepercentbetter.project.dto.AddProjectRequest;
+import io.github.shazxrin.onepercentbetter.project.dto.AddProjectResponse;
+import io.github.shazxrin.onepercentbetter.project.dto.GetAllProjectsResponse;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +34,15 @@ public class ProjectController {
     @Operation(summary = "Get all projects")
     @ApiResponse(responseCode = "200", description = "Get all projects successfully")
     @GetMapping
-    public List<ListItemProject> getAllProjects() {
-        ArrayList<ListItemProject> projects = new ArrayList<>();
+    public GetAllProjectsResponse getAllProjects() {
+        GetAllProjectsResponse getAllProjectsResponse = new GetAllProjectsResponse();
         projectService.getAllProjects()
-            .forEach(project -> projects.add(new ListItemProject(project.getId(), project.getName())));
-        return projects;
+            .forEach(project ->
+                 getAllProjectsResponse.add(
+                     new GetAllProjectsResponse.ListItem(project.getId(), project.getName())
+                 )
+            );
+        return getAllProjectsResponse;
     }
 
     @Operation(summary = "Add a new project")
@@ -49,8 +52,9 @@ public class ProjectController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void postAddProject(@RequestBody AddProject addProject) {
-        projectService.addProject(addProject.name());
+    public AddProjectResponse postAddProject(@RequestBody AddProjectRequest addProjectRequest) {
+        long id = projectService.addProject(addProjectRequest.name());
+        return new AddProjectResponse(id);
     }
 
     @Operation(summary = "Delete a project")

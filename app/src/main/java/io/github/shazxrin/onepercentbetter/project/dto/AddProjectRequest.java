@@ -1,4 +1,4 @@
 package io.github.shazxrin.onepercentbetter.project.dto;
 
-public record AddProject(String name) {
+public record AddProjectRequest(String name) {
 }

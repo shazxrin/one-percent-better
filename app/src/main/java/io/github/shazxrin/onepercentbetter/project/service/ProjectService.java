@@ -28,10 +28,11 @@ public class ProjectService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void addProject(@SpanTag String name) {
-        if (projectRepository.existsByName(name)) {
+    public long addProject(@SpanTag String name) {
+        Optional<Project> projectOpt = projectRepository.findByName(name);
+        if (projectOpt.isPresent()) {
             log.info("Project {} already exists. Skipping.", name);
-            return;
+            return projectOpt.get().getId();
         }
 
         if (!ProjectUtil.isProjectNameValid(name)) {
@@ -43,6 +44,8 @@ public class ProjectService {
         applicationEventPublisher.publishEvent(
             new ProjectAddedEvent(this, project.getId())
         );
+
+        return project.getId();
     }
 
     @Transactional

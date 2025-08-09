@@ -5,6 +5,7 @@ import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundExce
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -39,7 +40,6 @@ public class ProjectServiceTest {
     void testAddProject_whenProjectDoesNotExist_shouldSaveProject() {
         // Given
         String name = "shazxrin/test-project";
-        when(projectRepository.existsByName(name)).thenReturn(false);
         when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> {
             Project project = invocation.getArgument(0);
             project.setId(1L);
@@ -61,7 +61,9 @@ public class ProjectServiceTest {
     void testAddProject_whenProjectAlreadyExists_shouldNotSaveProject() {
         // Given
         String name = "shazxrin/existing-project";
-        when(projectRepository.existsByName(name)).thenReturn(true);
+        Project project = new Project(name);
+        project.setId(1L);
+        when(projectRepository.findByName(name)).thenReturn(Optional.of(project));
 
         // When
         projectService.addProject(name);
