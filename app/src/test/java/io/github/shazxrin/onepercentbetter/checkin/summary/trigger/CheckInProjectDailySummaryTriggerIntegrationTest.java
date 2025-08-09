@@ -3,6 +3,7 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 import io.github.shazxrin.onepercentbetter.checkin.core.event.CheckInProjectAddedEvent;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
+import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
 import java.io.File;
@@ -37,9 +38,10 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
 
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired private CheckInProjectDailySummaryService checkInProjectDailySummaryService;
 
     @Test
-    void testCheckIn_whenNewCommit_shouldUpdateDailySummary() {
+    void testRunAddCheckInToSummary_whenConcurrentEvents_shouldUpdateDailySummaryCorrectly() {
         // Given
         // Create a test project
         Project project = new Project();
@@ -49,7 +51,6 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
 
         LocalDate today = LocalDate.now();
 
-        // Create an initial summary with 0 check-ins
         CheckInProjectDailySummary initialSummary = new CheckInProjectDailySummary(today, 0, 0, project);
         checkInProjectDailySummaryRepository.save(initialSummary);
 
@@ -60,6 +61,11 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
             123L,
             today
         );
+
+        // Publish events 4 times
+        applicationEventPublisher.publishEvent(event);
+        applicationEventPublisher.publishEvent(event);
+        applicationEventPublisher.publishEvent(event);
         applicationEventPublisher.publishEvent(event);
 
         // Then
@@ -67,10 +73,9 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
             Optional<CheckInProjectDailySummary> updatedSummaryOpt =
                 checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today);
 
-            assertTrue(updatedSummaryOpt.isPresent(), "Daily summary should exist");
-
+            assertTrue(updatedSummaryOpt.isPresent());
             CheckInProjectDailySummary updatedSummary = updatedSummaryOpt.get();
-            assertEquals(1, updatedSummary.getNoOfCheckIns());
+            assertEquals(4, updatedSummary.getNoOfCheckIns());
             assertEquals(1, updatedSummary.getStreak());
         });
     }

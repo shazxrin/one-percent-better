@@ -7,8 +7,11 @@ import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundExce
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
+import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Observed
 @Service
@@ -91,8 +94,9 @@ public class CheckInProjectDailySummaryService {
         checkInProjectDailySummaryRepository.save(currentDateSummary);
     }
 
+    @Transactional
     public void addCheckInToSummary(long projectId, LocalDate date) {
-        Project project = projectService.getProjectById(projectId)
+         projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
         LocalDate previousDate = date.minusDays(1);
@@ -100,8 +104,8 @@ public class CheckInProjectDailySummaryService {
         var previousDateSummaryOpt = checkInProjectDailySummaryRepository
             .findByProjectIdAndDate(projectId, previousDate);
         var currentDateSummary = checkInProjectDailySummaryRepository
-            .findByProjectIdAndDate(projectId, date)
-            .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
+            .findByProjectIdAndDateWithLock(projectId, date)
+            .orElseThrow(() -> new IllegalStateException("No summary found for the given date. Cannot lock and update."));
 
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns() + 1;
         int currentStreak = previousDateSummaryOpt

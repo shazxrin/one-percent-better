@@ -401,7 +401,7 @@ public class CheckInProjectDailySummaryServiceTest {
         
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today)).thenReturn(Optional.of(todaySummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, today)).thenReturn(Optional.of(todaySummary));
         
         checkInProjectDailySummaryService.addCheckInToSummary(projectId, today);
         
@@ -426,7 +426,7 @@ public class CheckInProjectDailySummaryServiceTest {
         
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today)).thenReturn(Optional.of(todaySummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, today)).thenReturn(Optional.of(todaySummary));
         
         checkInProjectDailySummaryService.addCheckInToSummary(projectId, today);
         
@@ -451,15 +451,17 @@ public class CheckInProjectDailySummaryServiceTest {
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         CheckInProjectDailySummary threeDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 0, 0, project);
+        CheckInProjectDailySummary updatedThreeDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 1, 1, project);
         CheckInProjectDailySummary twoDaysAgoSummary = new CheckInProjectDailySummary(twoDaysAgo, 1, 1, project);
         CheckInProjectDailySummary yesterdaySummary = new CheckInProjectDailySummary(yesterday, 1, 2, project);
         CheckInProjectDailySummary todaySummary = new CheckInProjectDailySummary(today, 1, 3, project);
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, threeDaysAgo.minusDays(1))).thenReturn(Optional.empty());
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, threeDaysAgo)).thenReturn(Optional.of(threeDaysAgoSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, threeDaysAgo)).thenReturn(Optional.of(threeDaysAgoSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, threeDaysAgo)).thenReturn(Optional.of(updatedThreeDaysAgoSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, twoDaysAgo)).thenReturn(Optional.of(twoDaysAgoSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today)).thenReturn(Optional.of(todaySummary));
-        
+
         checkInProjectDailySummaryService.addCheckInToSummary(projectId, threeDaysAgo);
         
         ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
