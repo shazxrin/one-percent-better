@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProjectUtil {
-    private static final String ALPHANUMERIC_OWNER_NAME_REGEX = "^[a-zA-Z0-9]+/[a-zA-Z0-9\\-_]+$";
+    private static final String ALPHANUMERIC_OWNER_NAME_REGEX = "^[a-zA-Z0-9\\-_]+/[a-zA-Z0-9\\-_]+$";
     private static final Pattern PATTERN = Pattern.compile(ALPHANUMERIC_OWNER_NAME_REGEX);
 
     public static boolean isProjectNameValid(String name) {
