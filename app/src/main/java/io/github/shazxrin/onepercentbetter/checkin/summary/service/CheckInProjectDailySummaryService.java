@@ -61,11 +61,11 @@ public class CheckInProjectDailySummaryService {
             .findByProjectIdAndDate(projectId, date)
             .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
 
-        // If with count enabled, the check ins for the date will be fetched
+        // If with count enabled, the check ins for the project and date will be fetched
         // Else it will use the existing count
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns();
         if (withCount) {
-            noOfCheckIns = checkInProjectRepository.countByDate(date);
+            noOfCheckIns = checkInProjectRepository.countByProjectIdAndDate(projectId, date);
         }
 
         int currentStreak = 0;
