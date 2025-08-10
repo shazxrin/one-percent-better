@@ -49,6 +49,6 @@ public class CheckInProjectAggregateDailySummaryController {
     public void postCalculatesCheckInProjectAggregateDailySummary(
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(date);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(date, true);
     }
 }

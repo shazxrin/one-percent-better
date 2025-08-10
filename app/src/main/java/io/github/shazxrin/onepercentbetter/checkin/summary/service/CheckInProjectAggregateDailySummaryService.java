@@ -1,69 +1,90 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 
+import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
-import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CheckInProjectAggregateDailySummaryService {
     private final CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository;
-    private final CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository;
+    private final CheckInProjectRepository checkInProjectRepository;
 
     public CheckInProjectAggregateDailySummaryService(
         CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository,
-        CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository
+        CheckInProjectRepository checkInProjectRepository
     ) {
         this.checkInProjectAggregateDailySummaryRepository = checkInProjectAggregateDailySummaryRepository;
-        this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
+        this.checkInProjectRepository = checkInProjectRepository;
     }
 
-    public void calculateAggregateSummary(LocalDate date) {
+    public CheckInProjectAggregateDailySummary getAggregateSummary(LocalDate date) {
+        var aggregateSummaryOpt = checkInProjectAggregateDailySummaryRepository.findByDate(date);
+        return aggregateSummaryOpt
+            .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the given date."));
+    }
+
+    @Transactional
+    public void calculateAggregateSummary(LocalDate date, boolean withCount) {
         LocalDate previousDate = date.minusDays(1);
 
-        var previousDateAggregateSummaryOpt = checkInProjectAggregateDailySummaryRepository
-            .findByDate(previousDate);
+        var previousDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
+            .findByDate(previousDate)
+            .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the previous date."));
         var currentDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
-            .findByDate(date)
-            .orElse(new CheckInProjectAggregateDailySummary(date, 0, 0));
+            .findByDateWithLock(date)
+            .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the given date."));
 
-        int currentStreak = previousDateAggregateSummaryOpt
-            .map(CheckInProjectAggregateDailySummary::getStreak)
-            .orElse(0);
-
-        int totalCommits = checkInProjectDailySummaryRepository
-            .findAllByDate(date)
-            .stream()
-            .map(CheckInProjectDailySummary::getNoOfCheckIns)
-            .reduce(0, Integer::sum);
-        if (totalCommits > 0) {
-            currentStreak++;
-        } else {
-            currentStreak = 0;
+        // If with count enabled, the check ins for the date will be fetched
+        // Else it will use the existing count
+        int noOfCheckIns = currentDateAggregateSummary.getNoOfCheckIns();
+        if (withCount) {
+            noOfCheckIns = checkInProjectRepository.countByDate(date);
         }
 
-        currentDateAggregateSummary.setNoOfCheckIns(totalCommits);
+        int currentStreak = 0;
+        if (noOfCheckIns > 0) {
+            currentStreak = previousDateAggregateSummary.getStreak() + 1;
+        }
+
+        currentDateAggregateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateAggregateSummary.setStreak(currentStreak);
 
         checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
     }
 
-    public CheckInProjectAggregateDailySummary getAggregateSummary(LocalDate date) {
-        var aggregateSummaryOpt = checkInProjectAggregateDailySummaryRepository.findByDate(date);
-        if (aggregateSummaryOpt.isPresent()) {
-            return aggregateSummaryOpt.get();
-        }
+    @Transactional
+    public void addCheckInToAggregateSummary(LocalDate date) {
+        LocalDate previousDate = date.minusDays(1);
 
-        var newSummary = new CheckInProjectAggregateDailySummary(
-            date,
-            0,
-            0
-        );
-        return checkInProjectAggregateDailySummaryRepository.save(newSummary);
+        var previousDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
+            .findByDate(previousDate)
+            .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the previous date."));
+        var currentDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
+            .findByDateWithLock(date)
+            .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the given date. Cannot lock and update."));
+
+        int noOfCheckIns = currentDateAggregateSummary.getNoOfCheckIns() + 1;
+        int currentStreak = previousDateAggregateSummary.getStreak() + 1;
+
+        currentDateAggregateSummary.setNoOfCheckIns(noOfCheckIns);
+        currentDateAggregateSummary.setStreak(currentStreak);
+
+        checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
+
+        // Recalculate dates after the current date (if any)
+        // Streak may have changed from the current date onwards
+        var today = LocalDate.now();
+        var currentDate = date.plusDays(1);
+        while (!currentDate.isAfter(today)) {
+            calculateAggregateSummary(currentDate, false);
+
+            currentDate = currentDate.plusDays(1);
+        }
     }
 
     public void initAggregateSummaries() {

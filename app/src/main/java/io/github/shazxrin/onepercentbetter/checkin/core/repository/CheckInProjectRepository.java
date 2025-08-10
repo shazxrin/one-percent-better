@@ -7,5 +7,7 @@ import org.springframework.data.repository.ListCrudRepository;
 public interface CheckInProjectRepository extends ListCrudRepository<CheckInProject, Long> {
     boolean existsByProjectIdAndHash(long projectId, String hash);
 
+    int countByProjectIdAndDate(long projectId, LocalDate date);
+
     int countByDate(LocalDate date);
 }
