@@ -3,6 +3,7 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
+import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import java.time.LocalDate;
@@ -16,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -38,34 +38,7 @@ public class CheckInProjectDailySummaryServiceTest {
     private CheckInProjectDailySummaryService checkInProjectDailySummaryService;
 
     @Test
-    void testInitSummaries_shouldCreateSummariesForAllProjects() {
-        Project project1 = new Project("Project 1");
-        project1.setId(1L);
-        Project project2 = new Project("Project 2");
-        project2.setId(2L);
-        when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
-        when(projectService.getProjectById(1L)).thenReturn(Optional.of(project1));
-        when(projectService.getProjectById(2L)).thenReturn(Optional.of(project2));
-
-        checkInProjectDailySummaryService.initSummaries();
-
-        ArgumentCaptor<List<CheckInProjectDailySummary>> captor = ArgumentCaptor.forClass(List.class);
-        verify(checkInProjectDailySummaryRepository, times(2)).saveAll(captor.capture());
-        
-        List<List<CheckInProjectDailySummary>> allSavedSummaries = captor.getAllValues();
-        assertEquals(2, allSavedSummaries.size());
-        
-        // Verify project1 summaries
-        List<CheckInProjectDailySummary> project1Summaries = allSavedSummaries.get(0);
-        assertEquals(LocalDate.now().lengthOfYear(), project1Summaries.size());
-
-        // Verify project2 summaries
-        List<CheckInProjectDailySummary> project2Summaries = allSavedSummaries.get(1);
-        assertEquals(LocalDate.now().lengthOfYear(), project2Summaries.size());
-    }
-
-    @Test
-    void testGetSummary_whenSummaryExists_shouldReturnExistingSummary() {
+    void testGetSummary_whenSummaryExists_shouldReturnSummary() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         Project project = new Project("Project 1");
@@ -83,25 +56,16 @@ public class CheckInProjectDailySummaryServiceTest {
     }
 
     @Test
-    void testGetSummary_whenSummaryDoesNotExist_shouldCreateNewSummaryAndSave() {
+    void testGetSummary_whenSummaryDoesNotExist_shouldThrowException() {
         long projectId = 1L;
         LocalDate date = LocalDate.now();
         Project project = new Project("Project 1");
         project.setId(projectId);
-        CheckInProjectDailySummary savedSummary = new CheckInProjectDailySummary(date, 0, 0, project);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.empty());
-        when(checkInProjectDailySummaryRepository.save(any())).thenReturn(savedSummary);
 
-        CheckInProjectDailySummary result = checkInProjectDailySummaryService.getSummary(projectId, date);
-
-        assertNotNull(result);
-        assertEquals(savedSummary, result);
-        assertEquals(0, result.getNoOfCheckIns());
-        assertEquals(0, result.getStreak());
-        assertEquals(project, result.getProject());
-        verify(checkInProjectDailySummaryRepository, times(1)).save(any());
+        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.getSummary(projectId, date));
     }
 
     @Test
@@ -127,7 +91,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByProjectIdAndDate(projectId, date)).thenReturn(3);
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
@@ -151,7 +115,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByProjectIdAndDate(projectId, date)).thenReturn(0);
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
@@ -175,7 +139,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByProjectIdAndDate(projectId, date)).thenReturn(2);
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
@@ -199,7 +163,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
         when(checkInProjectRepository.countByProjectIdAndDate(projectId, date)).thenReturn(0);
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
@@ -223,7 +187,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, false);
 
@@ -246,7 +210,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, false);
 
@@ -269,7 +233,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, false);
 
@@ -292,7 +256,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)).thenReturn(Optional.of(currentSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, false);
 
@@ -301,6 +265,51 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
+    }
+
+    @Test
+    void testCalculateSummaryForDate_whenPreviousDoesNotExist_shouldThrowException() {
+        long projectId = 1L;
+        Project project = new Project("Project 1");
+        project.setId(projectId);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
+
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
+
+        assertThrows(
+            IllegalStateException.class,
+            () -> checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true)
+        );
+    }
+
+    @Test
+    void testCalculateSummaryForDate_whenCurrentDoesNotExist_shouldThrowException() {
+        long projectId = 1L;
+        Project project = new Project("Project 1");
+        project.setId(projectId);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
+
+        LocalDate date = LocalDate.now();
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.empty());
+
+        LocalDate previousDate = date.minusDays(1);
+        CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
+
+        assertThrows(
+            IllegalStateException.class,
+            () -> checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true)
+        );
+    }
+
+    @Test
+    void testCalculateSummaryForDate_whenProjectDoesNotExist_shouldThrowException() {
+        long projectId = 1L;
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.empty());
+
+        assertThrows(ProjectNotFoundException.class, () -> checkInProjectDailySummaryService.calculateSummaryForDate(projectId, LocalDate.now(), true));
     }
 
     @Test
@@ -357,6 +366,7 @@ public class CheckInProjectDailySummaryServiceTest {
     void testAddCheckInToSummary_whenDateIsFewDaysBeforeToday_shouldIncrementNoOfCheckInsAndCalculateStreakForFollowingDays() {
         long projectId = 1L;
         LocalDate today = LocalDate.now();
+        LocalDate fourDaysAgo = today.minusDays(4);
         LocalDate threeDaysAgo = today.minusDays(3);
         LocalDate twoDaysAgo = today.minusDays(2);
         LocalDate yesterday = today.minusDays(1);
@@ -365,17 +375,22 @@ public class CheckInProjectDailySummaryServiceTest {
         project.setId(projectId);
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
+        CheckInProjectDailySummary fourDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 0, 0, project);
         CheckInProjectDailySummary threeDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 0, 0, project);
         CheckInProjectDailySummary updatedThreeDaysAgoSummary = new CheckInProjectDailySummary(threeDaysAgo, 1, 1, project);
         CheckInProjectDailySummary twoDaysAgoSummary = new CheckInProjectDailySummary(twoDaysAgo, 1, 1, project);
         CheckInProjectDailySummary yesterdaySummary = new CheckInProjectDailySummary(yesterday, 1, 2, project);
         CheckInProjectDailySummary todaySummary = new CheckInProjectDailySummary(today, 1, 3, project);
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, threeDaysAgo.minusDays(1))).thenReturn(Optional.empty());
+
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, fourDaysAgo)).thenReturn(Optional.of(fourDaysAgoSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, threeDaysAgo)).thenReturn(Optional.of(threeDaysAgoSummary));
+
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, threeDaysAgo)).thenReturn(Optional.of(updatedThreeDaysAgoSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, twoDaysAgo)).thenReturn(Optional.of(twoDaysAgoSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, twoDaysAgo)).thenReturn(Optional.of(twoDaysAgoSummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
-        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, today)).thenReturn(Optional.of(todaySummary));
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, today)).thenReturn(Optional.of(todaySummary));
 
         checkInProjectDailySummaryService.addCheckInToSummary(projectId, threeDaysAgo);
         
@@ -398,5 +413,71 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary updatedToday = savedSummaries.get(3);
         assertEquals(1, updatedToday.getNoOfCheckIns());
         assertEquals(4, updatedToday.getStreak());
+    }
+
+    @Test
+    void testAddCheckInToSummary_whenProjectDoesNotExist_shouldThrowException() {
+        long projectId = 1L;
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.empty());
+
+        assertThrows(ProjectNotFoundException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, LocalDate.now()));
+    }
+
+    @Test
+    void testAddCheckInToSummary_whenPreviousSummaryDoesNotExist_shouldThrowException() {
+        long projectId = 1L;
+        Project project = new Project("Project 1");
+        project.setId(projectId);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
+
+        LocalDate date = LocalDate.now();
+        LocalDate previousDate = date.minusDays(1);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, date));
+    }
+
+    @Test
+    void testAddCheckInToSummary_whenCurrentSummaryDoesNotExist_shouldThrowException() {
+        long projectId = 1L;
+        Project project = new Project("Project 1");
+        project.setId(projectId);
+        when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
+
+        LocalDate date = LocalDate.now();
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.empty());
+
+        LocalDate previousDate = date.minusDays(1);
+        CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
+        when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
+
+        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, date));
+    }
+
+    @Test
+    void testInitSummaries_shouldCreateSummariesForAllProjects() {
+        Project project1 = new Project("Project 1");
+        project1.setId(1L);
+        Project project2 = new Project("Project 2");
+        project2.setId(2L);
+        when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
+        when(projectService.getProjectById(1L)).thenReturn(Optional.of(project1));
+        when(projectService.getProjectById(2L)).thenReturn(Optional.of(project2));
+
+        checkInProjectDailySummaryService.initSummaries();
+
+        ArgumentCaptor<List<CheckInProjectDailySummary>> captor = ArgumentCaptor.forClass(List.class);
+        verify(checkInProjectDailySummaryRepository, times(2)).saveAll(captor.capture());
+
+        List<List<CheckInProjectDailySummary>> allSavedSummaries = captor.getAllValues();
+        assertEquals(2, allSavedSummaries.size());
+
+        // Verify project1 summaries
+        List<CheckInProjectDailySummary> project1Summaries = allSavedSummaries.get(0);
+        assertEquals(LocalDate.now().lengthOfYear(), project1Summaries.size());
+
+        // Verify project2 summaries
+        List<CheckInProjectDailySummary> project2Summaries = allSavedSummaries.get(1);
+        assertEquals(LocalDate.now().lengthOfYear(), project2Summaries.size());
     }
 }

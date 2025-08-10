@@ -35,31 +35,23 @@ public class CheckInProjectDailySummaryService {
         var project = projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
-        var summaryOpt = checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date);
-        if (summaryOpt.isPresent()) {
-            return summaryOpt.get();
-        }
-
-        var newSummary = new CheckInProjectDailySummary(
-            date,
-            0,
-            0,
-            project
-        );
-        return checkInProjectDailySummaryRepository.save(newSummary);
+        return checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)
+            .orElseThrow(() -> new IllegalStateException("No summary found for the given date."));
     }
 
+    @Transactional
     public void calculateSummaryForDate(long projectId, LocalDate date, boolean withCount) {
-        Project project = projectService.getProjectById(projectId)
+        projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
         LocalDate previousDate = date.minusDays(1);
 
-        var previousDateSummaryOpt = checkInProjectDailySummaryRepository
-            .findByProjectIdAndDate(projectId, previousDate);
+        var previousDateSummary = checkInProjectDailySummaryRepository
+            .findByProjectIdAndDate(projectId, previousDate)
+            .orElseThrow(() -> new IllegalStateException("No summary found for the previous date."));
         var currentDateSummary = checkInProjectDailySummaryRepository
-            .findByProjectIdAndDate(projectId, date)
-            .orElse(new CheckInProjectDailySummary(date, 0, 0, project));
+            .findByProjectIdAndDateWithLock(projectId, date)
+            .orElseThrow(() -> new IllegalStateException("No summary found for the previous date. Cannot lock and update."));
 
         // If with count enabled, the check ins for the project and date will be fetched
         // Else it will use the existing count
@@ -70,9 +62,7 @@ public class CheckInProjectDailySummaryService {
 
         int currentStreak = 0;
         if (noOfCheckIns > 0) {
-            currentStreak = previousDateSummaryOpt
-                .map(CheckInProjectDailySummary::getStreak)
-                .orElse(0) + 1;
+            currentStreak = previousDateSummary.getStreak() + 1;
         }
 
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
@@ -88,16 +78,15 @@ public class CheckInProjectDailySummaryService {
 
         LocalDate previousDate = date.minusDays(1);
 
-        var previousDateSummaryOpt = checkInProjectDailySummaryRepository
-            .findByProjectIdAndDate(projectId, previousDate);
+        var previousDateSummary = checkInProjectDailySummaryRepository
+            .findByProjectIdAndDate(projectId, previousDate)
+            .orElseThrow(() -> new IllegalStateException("No summary found for the previous date."));
         var currentDateSummary = checkInProjectDailySummaryRepository
             .findByProjectIdAndDateWithLock(projectId, date)
             .orElseThrow(() -> new IllegalStateException("No summary found for the given date. Cannot lock and update."));
 
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns() + 1;
-        int currentStreak = previousDateSummaryOpt
-            .map(CheckInProjectDailySummary::getStreak)
-            .orElse(0) + 1;
+        int currentStreak = previousDateSummary.getStreak() + 1;
 
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
