@@ -1,5 +1,8 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 
+import io.github.shazxrin.onepercentbetter.checkin.core.exception.CheckInProjectNotFoundException;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
+import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
@@ -9,7 +12,10 @@ import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,18 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CheckInProjectDailySummaryService {
     private final CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository;
-    private final CheckInProjectRepository checkInProjectRepository;
 
     private final ProjectService projectService;
+    private final CheckInProjectService checkInProjectService;
 
     public CheckInProjectDailySummaryService(
         CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository,
         CheckInProjectRepository checkInProjectRepository,
-        ProjectService projectService
+        ProjectService projectService,
+        CheckInProjectService checkInProjectService
     ) {
         this.checkInProjectDailySummaryRepository = checkInProjectDailySummaryRepository;
-        this.checkInProjectRepository = checkInProjectRepository;
         this.projectService = projectService;
+        this.checkInProjectService = checkInProjectService;
     }
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
@@ -51,13 +58,26 @@ public class CheckInProjectDailySummaryService {
             .orElseThrow(() -> new IllegalStateException("No summary found for the previous date."));
         var currentDateSummary = checkInProjectDailySummaryRepository
             .findByProjectIdAndDateWithLock(projectId, date)
-            .orElseThrow(() -> new IllegalStateException("No summary found for the previous date. Cannot lock and update."));
+            .orElseThrow(() -> new IllegalStateException(
+                "No summary found for the previous date. Cannot lock and update."));
 
         // If with count enabled, the check ins for the project and date will be fetched
         // Else it will use the existing count
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns();
+        Map<String, Integer> typeDistribution = currentDateSummary.getTypeDistribution();
         if (withCount) {
-            noOfCheckIns = checkInProjectRepository.countByProjectIdAndDate(projectId, date);
+            List<CheckInProject> checkIns = checkInProjectService.getAllCheckIns(projectId, date);
+
+            // Calculate check in count
+            noOfCheckIns = checkIns.size();
+
+            // Calculate type distribution
+            typeDistribution = checkIns.stream()
+                .filter(c -> c.getType() != null)
+                .collect(Collectors.groupingBy(
+                    CheckInProject::getType,
+                    Collectors.summingInt(_ -> 1)
+                ));
         }
 
         int currentStreak = 0;
@@ -67,14 +87,18 @@ public class CheckInProjectDailySummaryService {
 
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
+        currentDateSummary.setTypeDistribution(typeDistribution);
 
         checkInProjectDailySummaryRepository.save(currentDateSummary);
     }
 
     @Transactional
-    public void addCheckInToSummary(long projectId, LocalDate date) {
-         projectService.getProjectById(projectId)
+    public void addCheckInToSummary(long projectId, long checkInProjectId, LocalDate date) {
+        projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
+
+        var checkInProject = checkInProjectService.getCheckIn(checkInProjectId)
+            .orElseThrow(CheckInProjectNotFoundException::new);
 
         LocalDate previousDate = date.minusDays(1);
 
@@ -87,9 +111,11 @@ public class CheckInProjectDailySummaryService {
 
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns() + 1;
         int currentStreak = previousDateSummary.getStreak() + 1;
+        int typeCount = currentDateSummary.getTypeDistribution().getOrDefault(checkInProject.getType(), 0) + 1;
 
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
+        currentDateSummary.getTypeDistribution().put(checkInProject.getType(), typeCount);
 
         checkInProjectDailySummaryRepository.save(currentDateSummary);
 

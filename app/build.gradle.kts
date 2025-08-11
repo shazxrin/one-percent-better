@@ -68,6 +68,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("org.postgresql:postgresql")
     testImplementation("org.testcontainers:postgresql")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.10.3")
 
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")

@@ -13,6 +13,7 @@ import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -133,5 +134,13 @@ public class CheckInProjectService {
             }
             currentDate = currentDate.plusDays(1);
         }
+    }
+
+    public Optional<CheckInProject> getCheckIn(long id) {
+        return checkInProjectRepository.findById(id);
+    }
+
+    public List<CheckInProject> getAllCheckIns(long projectId, LocalDate date) {
+        return checkInProjectRepository.findByProjectIdAndDate(projectId, date);
     }
 }
