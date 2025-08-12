@@ -1,24 +1,7 @@
 spring:
-  application:
-    name: one-percent-better
-  threads:
-    virtual:
-      enabled: true
-  datasource:
-    url: jdbc:postgresql://localhost:5432/one-percent-better
-    username: user
-    password: password
-  rabbitmq:
-    host: localhost
-    username: user
-    password: password
   ai:
     openai:
       api-key: "api-key"
-  docker:
-    compose:
-      file:
-        - "./deploy/dev.compose.yaml"
 github:
   username: "username"
   token: "token"
