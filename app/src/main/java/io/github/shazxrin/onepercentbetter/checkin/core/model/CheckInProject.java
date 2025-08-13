@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -25,7 +24,7 @@ public class CheckInProject {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime dateTime;
 
     @Column(nullable = true)
     private String hash;
@@ -47,13 +46,13 @@ public class CheckInProject {
     private LocalDateTime updatedAt;
 
     public CheckInProject(
-        LocalDate date,
+        LocalDateTime dateTime,
         String hash,
         String type,
         String message,
         Project project
     ) {
-        this.date = date;
+        this.dateTime = dateTime;
         this.hash = hash;
         this.type = type;
         this.message = message;
@@ -71,12 +70,12 @@ public class CheckInProject {
         this.id = id;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateTime(LocalDateTime date) {
+        this.dateTime = date;
     }
 
     public String getHash() {

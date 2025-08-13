@@ -3,15 +3,19 @@ package io.github.shazxrin.onepercentbetter.checkin.core.repository;
 import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.configuration.RepositoryTestConfiguration;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import java.time.LocalDate;
 import org.springframework.context.annotation.Import;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Import(RepositoryTestConfiguration.class)
 @DataJpaTest
@@ -30,11 +34,11 @@ public class CheckInProjectRepositoryTest {
         CheckInProject checkInProject = new CheckInProject();
         checkInProject.setProject(project);
         checkInProject.setHash("abc123");
-        checkInProject.setDate(LocalDate.now());
+        checkInProject.setDateTime(LocalDateTime.now());
         entityManager.persistAndFlush(checkInProject);
 
         boolean exists = checkInProjectRepository.existsByProjectIdAndHash(project.getId(), "abc123");
-        assertThat(exists).isTrue();
+        assertTrue(exists);
     }
 
     @Test
@@ -45,11 +49,11 @@ public class CheckInProjectRepositoryTest {
         CheckInProject checkInProject = new CheckInProject();
         checkInProject.setProject(project);
         checkInProject.setHash("abc123");
-        checkInProject.setDate(LocalDate.now());
+        checkInProject.setDateTime(LocalDateTime.now());
         entityManager.persistAndFlush(checkInProject);
 
         boolean exists = checkInProjectRepository.existsByProjectIdAndHash(project.getId(), "wronghash");
-        assertThat(exists).isFalse();
+        assertFalse(exists);
     }
 
     @Test
@@ -63,16 +67,16 @@ public class CheckInProjectRepositoryTest {
         CheckInProject checkInProject = new CheckInProject();
         checkInProject.setProject(project2);
         checkInProject.setHash("abc123");
-        checkInProject.setDate(LocalDate.now());
+        checkInProject.setDateTime(LocalDateTime.now());
         entityManager.persistAndFlush(checkInProject);
 
         boolean exists = checkInProjectRepository.existsByProjectIdAndHash(project1.getId(), "abc123");
-        assertThat(exists).isFalse();
+        assertFalse(exists);
     }
 
     @Test
-    void testCountByDate_whenHaveByDate_shouldReturnCount() {
-        LocalDate date = LocalDate.of(2024, 6, 1);
+    void testCountByDateTimeBetween_whenHaveCheckIns_shouldReturnCount() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 6, 1, 12, 0);
 
         Project project1 = new Project("Project 1");
         entityManager.persist(project1);
@@ -86,30 +90,30 @@ public class CheckInProjectRepositoryTest {
         CheckInProject checkInProject1 = new CheckInProject();
         checkInProject1.setProject(project1);
         checkInProject1.setHash("hash1");
-        checkInProject1.setDate(date);
+        checkInProject1.setDateTime(dateTime);
         entityManager.persist(checkInProject1);
 
         CheckInProject checkInProject2 = new CheckInProject();
         checkInProject2.setProject(project2);
         checkInProject2.setHash("hash2");
-        checkInProject2.setDate(date);
+        checkInProject2.setDateTime(dateTime);
         entityManager.persist(checkInProject2);
 
         CheckInProject checkInProject3 = new CheckInProject();
         checkInProject3.setProject(project3);
         checkInProject3.setHash("hash3");
-        checkInProject3.setDate(LocalDate.of(2024, 6, 2)); // different date
+        checkInProject3.setDateTime(LocalDateTime.of(2024, 6, 2, 12, 0));
         entityManager.persist(checkInProject3);
 
         entityManager.flush();
 
-        int count = checkInProjectRepository.countByDate(date);
-        assertThat(count).isEqualTo(2);
+        int count = checkInProjectRepository.countByDateTimeBetween(dateTime.with(LocalTime.MIN), dateTime.with(LocalTime.MAX));
+        assertEquals(2, count);
     }
 
     @Test
-    void testCountByDate_whenHaveNoneByDate_shouldReturnZero() {
-        LocalDate date = LocalDate.of(2024, 6, 1);
+    void testCountByDateTimeBetween_whenHaveNone_shouldReturnZero() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 6, 1, 12, 0);
 
         Project project = new Project("Project 1");
         entityManager.persistAndFlush(project);
@@ -117,10 +121,41 @@ public class CheckInProjectRepositoryTest {
         CheckInProject checkInProject = new CheckInProject();
         checkInProject.setProject(project);
         checkInProject.setHash("hash1");
-        checkInProject.setDate(LocalDate.of(2024, 6, 2)); // different date
+        checkInProject.setDateTime(LocalDateTime.of(2024, 6, 2, 12, 0));
         entityManager.persistAndFlush(checkInProject);
 
-        int count = checkInProjectRepository.countByDate(date);
-        assertThat(count).isZero();
+        int count = checkInProjectRepository.countByDateTimeBetween(dateTime.with(LocalTime.MIN), dateTime.with(LocalTime.MAX));
+        assertEquals(0, count);
+    }
+
+    @Test
+    void testFindByProjectIdAndDateTimeBetween_whenHaveCheckIns_shouldReturnCount() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 6, 1, 12, 0);
+
+        Project project = new Project("Project 1");
+        project = entityManager.persist(project);
+
+        CheckInProject checkInProject1 = new CheckInProject();
+        checkInProject1.setProject(project);
+        checkInProject1.setHash("hash1");
+        checkInProject1.setDateTime(dateTime);
+        entityManager.persist(checkInProject1);
+
+        CheckInProject checkInProject2 = new CheckInProject();
+        checkInProject2.setProject(project);
+        checkInProject2.setHash("hash2");
+        checkInProject2.setDateTime(dateTime);
+        entityManager.persist(checkInProject2);
+
+        CheckInProject checkInProject3 = new CheckInProject();
+        checkInProject3.setProject(project);
+        checkInProject3.setHash("hash3");
+        checkInProject3.setDateTime(LocalDateTime.of(2024, 6, 2, 12, 0));
+        entityManager.persist(checkInProject3);
+
+        entityManager.flush();
+
+        List<CheckInProject> checkInProjects = checkInProjectRepository.findByProjectIdAndDateTimeBetween(project.getId(), dateTime.with(LocalTime.MIN), dateTime.with(LocalTime.MAX));
+        assertEquals(2, checkInProjects.size());
     }
 }

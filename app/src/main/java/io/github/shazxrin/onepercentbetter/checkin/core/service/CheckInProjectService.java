@@ -12,6 +12,8 @@ import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
 import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -77,7 +79,7 @@ public class CheckInProjectService {
 
             CheckInProject checkInProject = checkInProjectRepository.save(
                 new CheckInProject(
-                    date,
+                    commit.commit().committer().date().atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime(),
                     commit.sha(),
                     commitType,
                     commitMessage,
@@ -141,6 +143,6 @@ public class CheckInProjectService {
     }
 
     public List<CheckInProject> getAllCheckIns(long projectId, LocalDate date) {
-        return checkInProjectRepository.findByProjectIdAndDate(projectId, date);
+        return checkInProjectRepository.findByProjectIdAndDateTimeBetween(projectId, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
     }
 }

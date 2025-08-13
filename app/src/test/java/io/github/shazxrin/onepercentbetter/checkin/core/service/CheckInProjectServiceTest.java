@@ -5,9 +5,12 @@ import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.github.model.Commit;
 import io.github.shazxrin.onepercentbetter.github.model.CommitDetail;
+import io.github.shazxrin.onepercentbetter.github.model.CommitGitUser;
 import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,19 +47,22 @@ public class CheckInProjectServiceTest {
     @Test
     void testCheckIn_whenProjectHasNewCommits_shouldCreateNewCheckInsAndFireEvent() {
         long projectId = 1L;
-        LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
         Project project = new Project();
         project.setId(projectId);
         project.setName("owner/repo");
 
+        CommitGitUser commitGitUser = mock(CommitGitUser.class);
+        when(commitGitUser.date()).thenReturn(dateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitDetail = mock(CommitDetail.class);
         when(commitDetail.message()).thenReturn("feat: add feature");
+        when(commitDetail.committer()).thenReturn(commitGitUser);
         Commit commit = mock(Commit.class);
         when(commit.sha()).thenReturn("abc123");
         when(commit.commit()).thenReturn(commitDetail);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", dateTime.toLocalDate())).thenReturn(List.of(commit));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "abc123")).thenReturn(false);
         when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
             CheckInProject checkInProject = invocation.getArgument(0);
@@ -64,12 +70,12 @@ public class CheckInProjectServiceTest {
             return checkInProject;
         });
 
-        checkInProjectService.checkIn(projectId, date);
+        checkInProjectService.checkIn(projectId, dateTime.toLocalDate());
 
         ArgumentCaptor<CheckInProject> checkInCaptor = ArgumentCaptor.forClass(CheckInProject.class);
         verify(checkInProjectRepository).save(checkInCaptor.capture());
         CheckInProject saved = checkInCaptor.getValue();
-        assertEquals(date, saved.getDate());
+        assertEquals(dateTime, saved.getDateTime());
         assertEquals("abc123", saved.getHash());
         assertEquals("feat", saved.getType());
         assertEquals("add feature", saved.getMessage());
@@ -102,21 +108,25 @@ public class CheckInProjectServiceTest {
     @Test
     void testCheckIn_whenProjectHasNewAndExistingCommits_shouldCreateCheckInsAndFireEventForNewCommit() {
         long projectId = 2L;
-        LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
         Project project = new Project();
         project.setId(projectId);
         project.setName("owner/repo");
 
         Commit commit1 = mock(Commit.class);
         when(commit1.sha()).thenReturn("def456");
-        Commit commit2 = mock(Commit.class);
-        when(commit2.sha()).thenReturn("abc123");
+
+        CommitGitUser commit2GitUser = mock(CommitGitUser.class);
+        when(commit2GitUser.date()).thenReturn(dateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commit2Detail = mock(CommitDetail.class);
         when(commit2Detail.message()).thenReturn("chore: update");
+        when(commit2Detail.committer()).thenReturn(commit2GitUser);
+        Commit commit2 = mock(Commit.class);
+        when(commit2.sha()).thenReturn("abc123");
         when(commit2.commit()).thenReturn(commit2Detail);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", date)).thenReturn(List.of(commit1, commit2));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", dateTime.toLocalDate())).thenReturn(List.of(commit1, commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "def456")).thenReturn(true);
         when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
             CheckInProject checkInProject = invocation.getArgument(0);
@@ -124,7 +134,7 @@ public class CheckInProjectServiceTest {
             return checkInProject;
         });
 
-        checkInProjectService.checkIn(projectId, date);
+        checkInProjectService.checkIn(projectId, dateTime.toLocalDate());
 
         verify(checkInProjectRepository, times(1)).save(any());
         verify(applicationEventPublisher, times(1)).publishEvent(any());
@@ -133,27 +143,33 @@ public class CheckInProjectServiceTest {
     @Test
     void testCheckInInterval_whenProjectHasNewCommitsForMultipleDays_shouldCreateNewCheckInsAndFireEvents() {
         long projectId = 3L;
-        LocalDate from = LocalDate.now().minusDays(1);
-        LocalDate to = LocalDate.now();
+        LocalDateTime fromDateTime = LocalDateTime.now().minusDays(1);
+        LocalDateTime toDateTime = LocalDateTime.now();
         Project project = new Project();
         project.setId(projectId);
         project.setName("owner/repo");
 
+        CommitGitUser commit1GitUser = mock(CommitGitUser.class);
+        when(commit1GitUser.date()).thenReturn(fromDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitInfo1 = mock(CommitDetail.class);
         when(commitInfo1.message()).thenReturn("chore: update");
+        when(commitInfo1.committer()).thenReturn(commit1GitUser);
         Commit commit1 = mock(Commit.class);
         when(commit1.sha()).thenReturn("sha1");
         when(commit1.commit()).thenReturn(commitInfo1);
 
+        CommitGitUser commit2GitUser = mock(CommitGitUser.class);
+        when(commit2GitUser.date()).thenReturn(toDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitInfo2 = mock(CommitDetail.class);
         when(commitInfo2.message()).thenReturn("docs: update docs");
+        when(commitInfo2.committer()).thenReturn(commit2GitUser);
         Commit commit2 = mock(Commit.class);
         when(commit2.sha()).thenReturn("sha2");
         when(commit2.commit()).thenReturn(commitInfo2);
 
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", from)).thenReturn(List.of(commit1));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", to)).thenReturn(List.of(commit2));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", fromDateTime.toLocalDate())).thenReturn(List.of(commit1));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner", "repo", toDateTime.toLocalDate())).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(projectId, "sha2")).thenReturn(false);
         when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
@@ -162,7 +178,7 @@ public class CheckInProjectServiceTest {
             return checkInProject;
         });
 
-        checkInProjectService.checkInInterval(projectId, from, to);
+        checkInProjectService.checkInInterval(projectId, fromDateTime.toLocalDate(), toDateTime.toLocalDate());
 
         verify(checkInProjectRepository, times(2)).save(any());
         verify(applicationEventPublisher, times(2)).publishEvent(any(CheckInProjectAddedEvent.class));
@@ -170,7 +186,7 @@ public class CheckInProjectServiceTest {
 
     @Test
     void testCheckInAll_whenProjectHasNewCommits_shouldCreateNewCheckInsAndFireEvents() {
-        LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
         Project project1 = new Project();
         project1.setId(1L);
         project1.setName("owner1/repo1");
@@ -178,21 +194,27 @@ public class CheckInProjectServiceTest {
         project2.setId(2L);
         project2.setName("owner2/repo2");
 
+        CommitGitUser commit1GitUser = mock(CommitGitUser.class);
+        when(commit1GitUser.date()).thenReturn(dateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitInfo1 = mock(CommitDetail.class);
         when(commitInfo1.message()).thenReturn("feat: add 1");
+        when(commitInfo1.committer()).thenReturn(commit1GitUser);
         Commit commit1 = mock(Commit.class);
         when(commit1.sha()).thenReturn("sha1");
         when(commit1.commit()).thenReturn(commitInfo1);
 
+        CommitGitUser commit2GitUser = mock(CommitGitUser.class);
+        when(commit2GitUser.date()).thenReturn(dateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitInfo2 = mock(CommitDetail.class);
         when(commitInfo2.message()).thenReturn("fix: fix 2");
+        when(commitInfo2.committer()).thenReturn(commit2GitUser);
         Commit commit2 = mock(Commit.class);
         when(commit2.sha()).thenReturn("sha2");
         when(commit2.commit()).thenReturn(commitInfo2);
 
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner1", "repo1", date)).thenReturn(List.of(commit1));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", date)).thenReturn(List.of(commit2));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner1", "repo1", dateTime.toLocalDate())).thenReturn(List.of(commit1));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", dateTime.toLocalDate())).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(1L, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(2L, "sha2")).thenReturn(false);
         when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
@@ -201,7 +223,7 @@ public class CheckInProjectServiceTest {
             return checkInProject;
         });
 
-        checkInProjectService.checkInAll(date);
+        checkInProjectService.checkInAll(dateTime.toLocalDate());
 
         verify(checkInProjectRepository, times(2)).save(any());
         verify(applicationEventPublisher, times(2)).publishEvent(any(CheckInProjectAddedEvent.class));
@@ -209,8 +231,8 @@ public class CheckInProjectServiceTest {
 
     @Test
     void testCheckInAllInterval_whenProjectHasNewCommitsForMultipleDays_shouldCreateNewCheckInsAndFireEvents() {
-        LocalDate from = LocalDate.now().minusDays(1);
-        LocalDate to = LocalDate.now();
+        LocalDateTime fromDateTime = LocalDateTime.now().minusDays(1);
+        LocalDateTime toDateTime = LocalDateTime.now();
         Project project1 = new Project();
         project1.setId(1L);
         project1.setName("owner1/repo1");
@@ -218,23 +240,29 @@ public class CheckInProjectServiceTest {
         project2.setId(2L);
         project2.setName("owner2/repo2");
 
+        CommitGitUser commit1GitUser = mock(CommitGitUser.class);
+        when(commit1GitUser.date()).thenReturn(fromDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitInfo1 = mock(CommitDetail.class);
         when(commitInfo1.message()).thenReturn("feat: add 1");
+        when(commitInfo1.committer()).thenReturn(commit1GitUser);
         Commit commit1 = mock(Commit.class);
         when(commit1.sha()).thenReturn("sha1");
         when(commit1.commit()).thenReturn(commitInfo1);
 
+        CommitGitUser commit2GitUser = mock(CommitGitUser.class);
+        when(commit2GitUser.date()).thenReturn(toDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime());
         CommitDetail commitInfo2 = mock(CommitDetail.class);
         when(commitInfo2.message()).thenReturn("fix: fix 2");
+        when(commitInfo2.committer()).thenReturn(commit2GitUser);
         Commit commit2 = mock(Commit.class);
         when(commit2.sha()).thenReturn("sha2");
         when(commit2.commit()).thenReturn(commitInfo2);
 
         when(projectService.getAllProjects()).thenReturn(List.of(project1, project2));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner1", "repo1", from)).thenReturn(List.of(commit1));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", from)).thenReturn(List.of(commit2));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner1", "repo1", to)).thenReturn(List.of(commit1));
-        when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", to)).thenReturn(List.of(commit2));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner1", "repo1", fromDateTime.toLocalDate())).thenReturn(List.of(commit1));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", fromDateTime.toLocalDate())).thenReturn(List.of(commit2));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner1", "repo1", toDateTime.toLocalDate())).thenReturn(List.of(commit1));
+        when(gitHubService.getCommitsForRespositoryOnDate("owner2", "repo2", toDateTime.toLocalDate())).thenReturn(List.of(commit2));
         when(checkInProjectRepository.existsByProjectIdAndHash(1L, "sha1")).thenReturn(false);
         when(checkInProjectRepository.existsByProjectIdAndHash(2L, "sha2")).thenReturn(false);
         when(checkInProjectRepository.save(any())).thenAnswer(invocation -> {
@@ -243,7 +271,8 @@ public class CheckInProjectServiceTest {
             return checkInProject;
         });
 
-        checkInProjectService.checkInAllInterval(from, to);
+        checkInProjectService.checkInAllInterval(fromDateTime.toLocalDate(), toDateTime.toLocalDate());
+
 
         verify(checkInProjectRepository, times(4)).save(any());
         verify(applicationEventPublisher, times(4)).publishEvent(any(CheckInProjectAddedEvent.class));

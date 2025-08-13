@@ -4,6 +4,7 @@ import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjec
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectRepository.countByDate(currentDate))
+        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
             .thenReturn(3);
 
         // When
@@ -101,7 +102,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
         
-        when(checkInProjectRepository.countByDate(currentDate))
+        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
             .thenReturn(0);
         
         // When
@@ -132,7 +133,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
         
-        when(checkInProjectRepository.countByDate(currentDate))
+        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
             .thenReturn(3);
         
         // When
@@ -163,7 +164,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
         
-        when(checkInProjectRepository.countByDate(currentDate))
+        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
             .thenReturn(0);
         
         // When

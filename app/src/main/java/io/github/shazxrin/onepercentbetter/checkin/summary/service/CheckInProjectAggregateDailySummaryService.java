@@ -4,6 +4,7 @@ import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjec
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class CheckInProjectAggregateDailySummaryService {
         // Else it will use the existing count
         int noOfCheckIns = currentDateAggregateSummary.getNoOfCheckIns();
         if (withCount) {
-            noOfCheckIns = checkInProjectRepository.countByDate(date);
+            noOfCheckIns = checkInProjectRepository.countByDateTimeBetween(date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
         }
 
         int currentStreak = 0;

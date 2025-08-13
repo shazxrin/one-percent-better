@@ -8,6 +8,7 @@ import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -72,7 +73,7 @@ public class CheckInProjectDailySummaryServiceIntegrationTest {
 
         var checkInProject = checkInProjectRepository.save(
             new CheckInProject(
-                LocalDate.now(),
+                LocalDateTime.now(),
                 "abc123",
                 "feat",
                 "message",

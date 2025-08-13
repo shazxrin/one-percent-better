@@ -4,11 +4,12 @@ import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -85,6 +86,7 @@ public class CheckInProjectDailySummaryServiceTest {
     @Test
     void testCalculateSummaryForDate_whenPreviousHasStreakAndCurrentHasCheckIns_shouldContinueStreak() {
         LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
         LocalDate previousDate = date.minusDays(1);
 
         long projectId = 1L;
@@ -97,9 +99,9 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
-        CheckInProject checkInProject1 = new CheckInProject(date, "a1", "feat", "message", project);
-        CheckInProject checkInProject2 = new CheckInProject(date, "a2", "feat", "message", project);
-        CheckInProject checkInProject3 = new CheckInProject(date, "a3", "feat", "message", project);
+        CheckInProject checkInProject1 = new CheckInProject(dateTime, "a1", "feat", "message", project);
+        CheckInProject checkInProject2 = new CheckInProject(dateTime, "a2", "feat", "message", project);
+        CheckInProject checkInProject3 = new CheckInProject(dateTime, "a3", "feat", "message", project);
         when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of(checkInProject1,  checkInProject2, checkInProject3));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
@@ -142,6 +144,7 @@ public class CheckInProjectDailySummaryServiceTest {
     @Test
     void testCalculateSummaryForDate_whenPreviousHasNoStreakAndCurrentHasCheckIns_shouldStartStreakForCurrent() {
         LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = date.atTime(LocalTime.MIN);
         LocalDate previousDate = date.minusDays(1);
 
         long projectId = 1L;
@@ -154,8 +157,8 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
-        CheckInProject checkInProject1 = new CheckInProject(date, "a1", "feat", "message", project);
-        CheckInProject checkInProject2 = new CheckInProject(date, "a2", "feat", "message", project);
+        CheckInProject checkInProject1 = new CheckInProject(dateTime, "a1", "feat", "message", project);
+        CheckInProject checkInProject2 = new CheckInProject(dateTime, "a2", "feat", "message", project);
         when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of(checkInProject1,  checkInProject2));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
@@ -340,12 +343,13 @@ public class CheckInProjectDailySummaryServiceTest {
     void testAddCheckInToSummary_whenPreviousHasStreakAndDateIsToday_shouldIncrementNoOfCheckInsAndStreakForToday() {
         long projectId = 1L;
         LocalDate today = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         LocalDate yesterday = today.minusDays(1);
         Project project = new Project("Project 1");
         project.setId(projectId);
 
         long checkInProjectId = 1L;
-        CheckInProject checkInProject = new CheckInProject(today, "abc123", "feat", "message", project);
+        CheckInProject checkInProject = new CheckInProject(now, "abc123", "feat", "message", project);
         checkInProject.setId(checkInProjectId);
         when(checkInProjectService.getCheckIn(checkInProjectId)).thenReturn(Optional.of(checkInProject));
         
@@ -369,6 +373,7 @@ public class CheckInProjectDailySummaryServiceTest {
     @Test
     void testAddCheckInToSummary_whenPreviousHasNoStreakAndDateIsToday_shouldIncrementNoOfCheckInsAndStartStreakForToday() {
         LocalDate today = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         LocalDate yesterday = today.minusDays(1);
 
         long projectId = 1L;
@@ -377,7 +382,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         long checkInProjectId = 1L;
-        CheckInProject checkInProject = new CheckInProject(today, "abc123", "feat", "message", project);
+        CheckInProject checkInProject = new CheckInProject(now, "abc123", "feat", "message", project);
         checkInProject.setId(checkInProjectId);
         when(checkInProjectService.getCheckIn(checkInProjectId)).thenReturn(Optional.of(checkInProject));
 
@@ -401,6 +406,7 @@ public class CheckInProjectDailySummaryServiceTest {
         LocalDate today = LocalDate.now();
         LocalDate fourDaysAgo = today.minusDays(4);
         LocalDate threeDaysAgo = today.minusDays(3);
+        LocalDateTime threeDaysAgoWithTime = LocalDateTime.now().minusDays(3);
         LocalDate twoDaysAgo = today.minusDays(2);
         LocalDate yesterday = today.minusDays(1);
 
@@ -410,7 +416,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         long checkInProjectId = 1L;
-        CheckInProject checkInProject = new CheckInProject(threeDaysAgo, "abc123", "feat", "message", project);
+        CheckInProject checkInProject = new CheckInProject(threeDaysAgoWithTime, "abc123", "feat", "message", project);
         checkInProject.setId(checkInProjectId);
         when(checkInProjectService.getCheckIn(checkInProjectId)).thenReturn(Optional.of(checkInProject));
 
@@ -467,6 +473,7 @@ public class CheckInProjectDailySummaryServiceTest {
     @Test
     void testAddCheckInToSummary_whenPreviousSummaryDoesNotExist_shouldThrowException() {
         LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
 
         long projectId = 1L;
         Project project = new Project("Project 1");
@@ -474,7 +481,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         long checkInProjectId = 1L;
-        CheckInProject checkInProject = new CheckInProject(date, "abc123", "feat", "message", project);
+        CheckInProject checkInProject = new CheckInProject(dateTime, "abc123", "feat", "message", project);
         checkInProject.setId(checkInProjectId);
         when(checkInProjectService.getCheckIn(checkInProjectId)).thenReturn(Optional.of(checkInProject));
 
@@ -487,6 +494,7 @@ public class CheckInProjectDailySummaryServiceTest {
     @Test
     void testAddCheckInToSummary_whenCurrentSummaryDoesNotExist_shouldThrowException() {
         LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
 
         long projectId = 1L;
         Project project = new Project("Project 1");
@@ -494,7 +502,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(projectService.getProjectById(projectId)).thenReturn(Optional.of(project));
 
         long checkInProjectId = 1L;
-        CheckInProject checkInProject = new CheckInProject(date, "abc123", "feat", "message", project);
+        CheckInProject checkInProject = new CheckInProject(dateTime, "abc123", "feat", "message", project);
         checkInProject.setId(checkInProjectId);
         when(checkInProjectService.getCheckIn(checkInProjectId)).thenReturn(Optional.of(checkInProject));
 

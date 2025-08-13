@@ -11,6 +11,7 @@ import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,16 +84,16 @@ public class CheckInProjectDailySummaryTriggerIntegrationTest {
         checkInProjectDailySummaryService.initSummary(project.getId());
 
         var checkInProject1 = checkInProjectRepository.save(
-            new CheckInProject(LocalDate.now(), "a1", "feat", "message", project)
+            new CheckInProject(LocalDateTime.now(), "a1", "feat", "message", project)
         );
         var checkInProject2 = checkInProjectRepository.save(
-            new CheckInProject(LocalDate.now(), "a2", "feat", "message", project)
+            new CheckInProject(LocalDateTime.now(), "a2", "feat", "message", project)
         );
         var checkInProject3 = checkInProjectRepository.save(
-            new CheckInProject(LocalDate.now(), "a3", "feat", "message", project)
+            new CheckInProject(LocalDateTime.now(), "a3", "feat", "message", project)
         );
         var checkInProject4 = checkInProjectRepository.save(
-            new CheckInProject(LocalDate.now(), "a4", "feat", "message", project)
+            new CheckInProject(LocalDateTime.now(), "a4", "feat", "message", project)
         );
 
 
