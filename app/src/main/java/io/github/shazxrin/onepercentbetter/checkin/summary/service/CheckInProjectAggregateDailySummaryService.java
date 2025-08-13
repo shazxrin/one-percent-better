@@ -1,25 +1,29 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
+import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CheckInProjectAggregateDailySummaryService {
     private final CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository;
-    private final CheckInProjectRepository checkInProjectRepository;
+    private final CheckInProjectService checkInProjectService;
 
     public CheckInProjectAggregateDailySummaryService(
         CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository,
-        CheckInProjectRepository checkInProjectRepository
+        CheckInProjectService checkInProjectService
     ) {
         this.checkInProjectAggregateDailySummaryRepository = checkInProjectAggregateDailySummaryRepository;
-        this.checkInProjectRepository = checkInProjectRepository;
+        this.checkInProjectService = checkInProjectService;
     }
 
     public CheckInProjectAggregateDailySummary getAggregateSummary(LocalDate date) {
@@ -42,8 +46,20 @@ public class CheckInProjectAggregateDailySummaryService {
         // If with count enabled, the check ins for the date will be fetched
         // Else it will use the existing count
         int noOfCheckIns = currentDateAggregateSummary.getNoOfCheckIns();
+        Map<String, Integer> typeDistribution = currentDateAggregateSummary.getTypeDistribution();
         if (withCount) {
-            noOfCheckIns = checkInProjectRepository.countByDate(date);
+            List<CheckInProject> checkIns = checkInProjectService.getAllCheckIns(date);
+
+            // Calculate check in count
+            noOfCheckIns = checkIns.size();
+
+            // Calculate type distribution
+            typeDistribution = checkIns.stream()
+                .map(c -> c.getType() == null ? "unknown" : c.getType())
+                .collect(Collectors.groupingBy(
+                    Function.identity(),
+                    Collectors.summingInt(_ -> 1)
+                ));
         }
 
         int currentStreak = 0;
@@ -53,6 +69,7 @@ public class CheckInProjectAggregateDailySummaryService {
 
         currentDateAggregateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateAggregateSummary.setStreak(currentStreak);
+        currentDateAggregateSummary.setTypeDistribution(typeDistribution);
 
         checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
     }
@@ -66,7 +83,8 @@ public class CheckInProjectAggregateDailySummaryService {
             .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the previous date."));
         var currentDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
             .findByDateWithLock(date)
-            .orElseThrow(() -> new IllegalStateException("No aggregate summary found for the given date. Cannot lock and update."));
+            .orElseThrow(() -> new IllegalStateException(
+                "No aggregate summary found for the given date. Cannot lock and update."));
 
         int noOfCheckIns = currentDateAggregateSummary.getNoOfCheckIns() + 1;
         int currentStreak = previousDateAggregateSummary.getStreak() + 1;

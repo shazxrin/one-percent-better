@@ -13,4 +13,6 @@ public interface CheckInProjectRepository extends ListCrudRepository<CheckInProj
     int countByDate(LocalDate date);
 
     List<CheckInProject> findByProjectIdAndDate(long projectId, LocalDate date);
+
+    List<CheckInProject> findByDate(LocalDate date);
 }

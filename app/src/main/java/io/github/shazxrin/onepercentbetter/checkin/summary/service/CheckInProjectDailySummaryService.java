@@ -5,16 +5,15 @@ import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,6 @@ public class CheckInProjectDailySummaryService {
 
     public CheckInProjectDailySummaryService(
         CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository,
-        CheckInProjectRepository checkInProjectRepository,
         ProjectService projectService,
         CheckInProjectService checkInProjectService
     ) {
@@ -39,7 +37,7 @@ public class CheckInProjectDailySummaryService {
     }
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
-        var project = projectService.getProjectById(projectId)
+        projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
         return checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)
@@ -66,16 +64,16 @@ public class CheckInProjectDailySummaryService {
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns();
         Map<String, Integer> typeDistribution = currentDateSummary.getTypeDistribution();
         if (withCount) {
-            List<CheckInProject> checkIns = checkInProjectService.getAllCheckIns(projectId, date);
+            List<CheckInProject> checkIns = checkInProjectService.getAllCheckInsForProject(projectId, date);
 
             // Calculate check in count
             noOfCheckIns = checkIns.size();
 
             // Calculate type distribution
             typeDistribution = checkIns.stream()
-                .filter(c -> c.getType() != null)
+                .map(c -> c.getType() == null ? "unknown" : c.getType())
                 .collect(Collectors.groupingBy(
-                    CheckInProject::getType,
+                    Function.identity(),
                     Collectors.summingInt(_ -> 1)
                 ));
         }

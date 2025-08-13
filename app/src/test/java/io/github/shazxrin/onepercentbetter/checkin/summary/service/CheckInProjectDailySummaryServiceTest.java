@@ -4,7 +4,6 @@ import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
@@ -100,7 +99,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProject checkInProject1 = new CheckInProject(date, "a1", "feat", "message", project);
         CheckInProject checkInProject2 = new CheckInProject(date, "a2", "feat", "message", project);
         CheckInProject checkInProject3 = new CheckInProject(date, "a3", "feat", "message", project);
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of(checkInProject1,  checkInProject2, checkInProject3));
+        when(checkInProjectService.getAllCheckInsForProject(projectId, date)).thenReturn(List.of(checkInProject1, checkInProject2, checkInProject3));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 
@@ -127,7 +126,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of());
+        when(checkInProjectService.getAllCheckInsForProject(projectId, date)).thenReturn(List.of());
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 
@@ -156,7 +155,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         CheckInProject checkInProject1 = new CheckInProject(date, "a1", "feat", "message", project);
         CheckInProject checkInProject2 = new CheckInProject(date, "a2", "feat", "message", project);
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of(checkInProject1,  checkInProject2));
+        when(checkInProjectService.getAllCheckInsForProject(projectId, date)).thenReturn(List.of(checkInProject1, checkInProject2));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 
@@ -183,7 +182,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of());
+        when(checkInProjectService.getAllCheckInsForProject(projectId, date)).thenReturn(List.of());
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 

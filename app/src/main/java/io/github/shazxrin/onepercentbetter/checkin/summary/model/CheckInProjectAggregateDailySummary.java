@@ -1,5 +1,6 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.model;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -8,6 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -28,6 +32,10 @@ public class CheckInProjectAggregateDailySummary {
 
     @Column(nullable = false)
     private int streak;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Integer> typeDistribution = new LinkedHashMap<>();
 
     @CreatedDate
     private LocalDate createdAt;
@@ -74,6 +82,14 @@ public class CheckInProjectAggregateDailySummary {
 
     public void setStreak(int streak) {
         this.streak = streak;
+    }
+
+    public Map<String, Integer> getTypeDistribution() {
+        return typeDistribution;
+    }
+
+    public void setTypeDistribution(Map<String, Integer> typeDistribution) {
+        this.typeDistribution = typeDistribution;
     }
 
     public LocalDate getCreatedAt() {

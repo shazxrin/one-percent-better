@@ -1,8 +1,11 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
+import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
+import io.github.shazxrin.onepercentbetter.project.model.Project;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +27,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     private CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository;
 
     @Mock
-    private CheckInProjectRepository checkInProjectRepository;
+    private CheckInProjectService checkInProjectService;
     
     @InjectMocks
     private CheckInProjectAggregateDailySummaryService checkInProjectAggregateDailySummaryService;
@@ -70,8 +73,14 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectRepository.countByDate(currentDate))
-            .thenReturn(3);
+        Project project = new Project("Project 1");
+        project.setId(1L);
+
+        CheckInProject checkIn1 = new CheckInProject(currentDate, "a1", "feat", "message", project);
+        CheckInProject checkIn2 = new CheckInProject(currentDate, "a2", "feat", "message", project);
+        CheckInProject checkIn3 = new CheckInProject(currentDate, "a3", "feat", "message", project);
+        when(checkInProjectService.getAllCheckIns(currentDate))
+            .thenReturn(List.of(checkIn1, checkIn2, checkIn3));
 
         // When
         checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
@@ -100,9 +109,9 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
-        
-        when(checkInProjectRepository.countByDate(currentDate))
-            .thenReturn(0);
+
+        when(checkInProjectService.getAllCheckIns(currentDate))
+            .thenReturn(List.of());
         
         // When
         checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
@@ -131,9 +140,15 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
-        
-        when(checkInProjectRepository.countByDate(currentDate))
-            .thenReturn(3);
+
+        Project project = new Project("Project 1");
+        project.setId(1L);
+
+        CheckInProject checkIn1 = new CheckInProject(currentDate, "a1", "feat", "message", project);
+        CheckInProject checkIn2 = new CheckInProject(currentDate, "a2", "feat", "message", project);
+        CheckInProject checkIn3 = new CheckInProject(currentDate, "a3", "feat", "message", project);
+        when(checkInProjectService.getAllCheckIns(currentDate))
+            .thenReturn(List.of(checkIn1, checkIn2, checkIn3));
         
         // When
         checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
@@ -162,9 +177,9 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
             .thenReturn(Optional.of(currentSummary));
-        
-        when(checkInProjectRepository.countByDate(currentDate))
-            .thenReturn(0);
+
+        when(checkInProjectService.getAllCheckIns(currentDate))
+            .thenReturn(List.of());
         
         // When
         checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);

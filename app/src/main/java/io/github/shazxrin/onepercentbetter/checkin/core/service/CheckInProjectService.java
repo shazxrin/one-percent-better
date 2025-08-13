@@ -140,7 +140,11 @@ public class CheckInProjectService {
         return checkInProjectRepository.findById(id);
     }
 
-    public List<CheckInProject> getAllCheckIns(long projectId, LocalDate date) {
+    public List<CheckInProject> getAllCheckInsForProject(long projectId, LocalDate date) {
         return checkInProjectRepository.findByProjectIdAndDate(projectId, date);
+    }
+
+    public List<CheckInProject> getAllCheckIns(LocalDate date) {
+        return checkInProjectRepository.findByDate(date);
     }
 }
