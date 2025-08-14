@@ -14,7 +14,7 @@ public class GitHubConfiguration {
     }
 
     @Bean
-    public RestClient gitHubRestClient(RestClient.Builder restClientBuilder) throws IOException {
+    public RestClient gitHubRestClient(RestClient.Builder restClientBuilder) {
         return restClientBuilder
             .baseUrl("https://api.github.com")
             .defaultHeaders(httpHeaders -> {
