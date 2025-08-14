@@ -5,14 +5,12 @@ import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +27,6 @@ public class CheckInProjectDailySummaryService {
 
     public CheckInProjectDailySummaryService(
         CheckInProjectDailySummaryRepository checkInProjectDailySummaryRepository,
-        CheckInProjectRepository checkInProjectRepository,
         ProjectService projectService,
         CheckInProjectService checkInProjectService
     ) {
@@ -39,7 +36,7 @@ public class CheckInProjectDailySummaryService {
     }
 
     public CheckInProjectDailySummary getSummary(long projectId, LocalDate date) {
-        var project = projectService.getProjectById(projectId)
+        projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
         return checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, date)
