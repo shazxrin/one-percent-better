@@ -2,7 +2,6 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
-import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectAggregateDailySummaryService;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;

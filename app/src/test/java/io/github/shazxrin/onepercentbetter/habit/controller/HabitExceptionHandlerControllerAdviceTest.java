@@ -1,7 +1,6 @@
 package io.github.shazxrin.onepercentbetter.habit.controller;
 
 import io.github.shazxrin.onepercentbetter.habit.exception.HabitNotFoundException;
-import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
