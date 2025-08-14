@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class DataSourceMicrometerConfiguration {
     @Bean
     public ProxyDataSourceBuilderCustomizer myCustomizer() {
-        return (builder, dataSource, beanName, dataSourceName) -> {
+        return (builder, _, _, _) -> {
             builder.name("postgres");
         };
     }
