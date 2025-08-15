@@ -112,6 +112,7 @@ public class CheckInProjectDailySummaryServiceTest {
         assertEquals(3, savedSummary.getNoOfCheckIns());
         assertEquals(previousSummary.getStreak() + 1, savedSummary.getStreak());
         assertEquals(3, savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(3, savedSummary.getHourDistribution().get(String.valueOf(dateTime.getHour())));
     }
     
     @Test
@@ -169,6 +170,7 @@ public class CheckInProjectDailySummaryServiceTest {
         assertEquals(2, savedSummary.getNoOfCheckIns());
         assertEquals(1, savedSummary.getStreak());
         assertEquals(2, savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(2, savedSummary.getHourDistribution().get(String.valueOf(dateTime.getHour())));
     }
     
     @Test
@@ -368,6 +370,8 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary savedSummary = captor.getValue();
         assertEquals(2, savedSummary.getNoOfCheckIns());
         assertEquals(4, savedSummary.getStreak());
+        assertEquals(1, savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(1, savedSummary.getHourDistribution().get(String.valueOf(now.getHour())));
     }
 
     @Test
@@ -397,8 +401,10 @@ public class CheckInProjectDailySummaryServiceTest {
         verify(checkInProjectDailySummaryRepository).save(captor.capture());
         
         CheckInProjectDailySummary savedSummary = captor.getValue();
-        assertEquals(1, savedSummary.getNoOfCheckIns()); // Incremented from 0 to 1
-        assertEquals(1, savedSummary.getStreak()); // Started new streak at 1
+        assertEquals(1, savedSummary.getNoOfCheckIns());
+        assertEquals(1, savedSummary.getStreak());
+        assertEquals(1, savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(1, savedSummary.getHourDistribution().get(String.valueOf(now.getHour())));
     }
 
     @Test
@@ -446,6 +452,8 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary updatedThreeDaysAgo = savedSummaries.get(0);
         assertEquals(1, updatedThreeDaysAgo.getNoOfCheckIns());
         assertEquals(1, updatedThreeDaysAgo.getStreak());
+        assertEquals(1, updatedThreeDaysAgo.getTypeDistribution().get("feat"));
+        assertEquals(1, updatedThreeDaysAgo.getHourDistribution().get(String.valueOf(threeDaysAgoWithTime.getHour())));
 
         CheckInProjectDailySummary updatedTwoDaysAgo = savedSummaries.get(1);
         assertEquals(1, updatedTwoDaysAgo.getNoOfCheckIns());

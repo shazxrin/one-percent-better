@@ -40,7 +40,11 @@ public class CheckInProjectDailySummary {
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
-    private Map<String, Integer> typeDistribution = new LinkedHashMap<>();
+    private Map<String, Integer> typeDistribution;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Integer> hourDistribution;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
@@ -53,6 +57,7 @@ public class CheckInProjectDailySummary {
     private LocalDateTime updatedAt;
 
     public CheckInProjectDailySummary(LocalDate date, int noOfCheckIns, int streak, Project project) {
+        this();
         this.date = date;
         this.noOfCheckIns = noOfCheckIns;
         this.streak = streak;
@@ -60,6 +65,12 @@ public class CheckInProjectDailySummary {
     }
 
     public CheckInProjectDailySummary() {
+        this.typeDistribution = new LinkedHashMap<>();
+
+        this.hourDistribution = new LinkedHashMap<>();
+        for (var i = 0; i < 24; i++) {
+            this.hourDistribution.put(String.valueOf(i), 0);
+        }
     }
 
     public Long getId() {
@@ -100,6 +111,14 @@ public class CheckInProjectDailySummary {
 
     public void setTypeDistribution(Map<String, Integer> typeDistribution) {
         this.typeDistribution = typeDistribution;
+    }
+
+    public Map<String, Integer> getHourDistribution() {
+        return hourDistribution;
+    }
+
+    public void setHourDistribution(Map<String, Integer> hourDistribution) {
+        this.hourDistribution = hourDistribution;
     }
 
     public Project getProject() {

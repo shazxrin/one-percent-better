@@ -48,6 +48,7 @@ CREATE TABLE check_in_project_daily_summaries
     no_of_check_ins     INTEGER                                 NOT NULL,
     streak              INTEGER                                 NOT NULL,
     type_distribution   JSONB                                   NOT NULL,
+    hour_distribution   JSONB                                   NOT NULL,
     project_id          BIGINT                                  NOT NULL,
     created_at          TIMESTAMP WITHOUT TIME ZONE,
     updated_at          TIMESTAMP WITHOUT TIME ZONE,
@@ -146,7 +147,7 @@ ON CONFLICT (date) DO NOTHING;
 
 -- changeset rin:seed-daily-summaries-2025-2
 -- Seed check_in_project_daily_summaries for the entire year 2025 for all existing projects
-INSERT INTO check_in_project_daily_summaries (date, no_of_check_ins, streak, project_id, created_at, updated_at)
+INSERT INTO check_in_project_daily_summaries (date, no_of_check_ins, streak, type_distribution, hour_distribution, project_id, created_at, updated_at)
 WITH dates AS (
     SELECT generate_series(
                    '2025-01-01'::date,
@@ -161,6 +162,8 @@ SELECT
     d.date,
     0 AS no_of_check_ins,
     0 AS streak,
+    '{}' AS type_distribution,
+    '{ "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0,"21": 0, "22": 0, "23": 0 }' AS hour_distribution,
     p.id AS project_id,
     CURRENT_TIMESTAMP AS created_at,
     CURRENT_TIMESTAMP AS updated_at

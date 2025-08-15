@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +63,7 @@ public class CheckInProjectDailySummaryService {
         // Else it will use the existing count
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns();
         Map<String, Integer> typeDistribution = currentDateSummary.getTypeDistribution();
+        Map<String, Integer> hourDistribution = currentDateSummary.getHourDistribution();
         if (withCount) {
             List<CheckInProject> checkIns = checkInProjectService.getAllCheckIns(projectId, date);
 
@@ -75,6 +77,15 @@ public class CheckInProjectDailySummaryService {
                     CheckInProject::getType,
                     Collectors.summingInt(_ -> 1)
                 ));
+
+            // Calculate hour distribution
+            checkIns.stream()
+                .map(c -> String.valueOf(c.getDateTime().getHour()))
+                .collect(Collectors.groupingBy(
+                    Function.identity(),
+                    Collectors.summingInt(_ -> 1)
+                ))
+                .forEach((key, value) -> hourDistribution.merge(key, value, Integer::sum));
         }
 
         int currentStreak = 0;
@@ -85,6 +96,7 @@ public class CheckInProjectDailySummaryService {
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
         currentDateSummary.setTypeDistribution(typeDistribution);
+        currentDateSummary.setHourDistribution(hourDistribution);
 
         checkInProjectDailySummaryRepository.save(currentDateSummary);
     }
@@ -109,10 +121,12 @@ public class CheckInProjectDailySummaryService {
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns() + 1;
         int currentStreak = previousDateSummary.getStreak() + 1;
         int typeCount = currentDateSummary.getTypeDistribution().getOrDefault(checkInProject.getType(), 0) + 1;
+        int hourCount = currentDateSummary.getHourDistribution().getOrDefault(String.valueOf(checkInProject.getDateTime().getHour()), 0) + 1;
 
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
         currentDateSummary.getTypeDistribution().put(checkInProject.getType(), typeCount);
+        currentDateSummary.getHourDistribution().put(String.valueOf(checkInProject.getDateTime().getHour()), hourCount);
 
         checkInProjectDailySummaryRepository.save(currentDateSummary);
 

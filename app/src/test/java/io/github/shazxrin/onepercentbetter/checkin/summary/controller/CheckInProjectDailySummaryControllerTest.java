@@ -39,7 +39,8 @@ public class CheckInProjectDailySummaryControllerTest {
         
         CheckInProjectDailySummary summary = new CheckInProjectDailySummary(date, 5, 3, project);
         summary.getTypeDistribution().put("feat", 2);
-        
+        summary.getHourDistribution().put("1", 2);
+
         when(checkInProjectDailySummaryService.getSummary(projectId, date)).thenReturn(summary);
         
         // Act & Assert
@@ -48,7 +49,8 @@ public class CheckInProjectDailySummaryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.noOfCheckIns").value(5))
                 .andExpect(jsonPath("$.streak").value(3))
-                .andExpect(jsonPath("$.typeDistribution.feat").value(2));
+                .andExpect(jsonPath("$.typeDistribution.feat").value(2))
+                .andExpect(jsonPath("$.hourDistribution['1']").value(2));
 
         verify(checkInProjectDailySummaryService, times(1)).getSummary(projectId, date);
     }
