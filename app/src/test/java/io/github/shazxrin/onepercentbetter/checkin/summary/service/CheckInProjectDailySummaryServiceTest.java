@@ -102,7 +102,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProject checkInProject1 = new CheckInProject(dateTime, "a1", "feat", "message", project);
         CheckInProject checkInProject2 = new CheckInProject(dateTime, "a2", "feat", "message", project);
         CheckInProject checkInProject3 = new CheckInProject(dateTime, "a3", "feat", "message", project);
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of(checkInProject1,  checkInProject2, checkInProject3));
+        when(checkInProjectService.getAllCheckInsByProject(projectId, date)).thenReturn(List.of(checkInProject1, checkInProject2, checkInProject3));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 
@@ -130,7 +130,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of());
+        when(checkInProjectService.getAllCheckInsByProject(projectId, date)).thenReturn(List.of());
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 
@@ -160,7 +160,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         CheckInProject checkInProject1 = new CheckInProject(dateTime, "a1", "feat", "message", project);
         CheckInProject checkInProject2 = new CheckInProject(dateTime, "a2", "feat", "message", project);
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of(checkInProject1,  checkInProject2));
+        when(checkInProjectService.getAllCheckInsByProject(projectId, date)).thenReturn(List.of(checkInProject1, checkInProject2));
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 
@@ -188,7 +188,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, date)).thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectService.getAllCheckIns(projectId, date)).thenReturn(List.of());
+        when(checkInProjectService.getAllCheckInsByProject(projectId, date)).thenReturn(List.of());
 
         checkInProjectDailySummaryService.calculateSummaryForDate(projectId, date, true);
 

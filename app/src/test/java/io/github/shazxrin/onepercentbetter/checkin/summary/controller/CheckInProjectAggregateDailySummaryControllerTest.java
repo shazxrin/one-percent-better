@@ -32,7 +32,9 @@ public class CheckInProjectAggregateDailySummaryControllerTest {
         LocalDate date = LocalDate.of(2025, 7, 31);
         
         CheckInProjectAggregateDailySummary summary = new CheckInProjectAggregateDailySummary(date, 10, 5);
-        
+        summary.getTypeDistribution().put("feat", 1);
+        summary.getHourDistribution().put("12", 1);
+
         when(checkInProjectAggregateDailySummaryService.getAggregateSummary(date)).thenReturn(summary);
         
         // Act & Assert
@@ -40,7 +42,9 @@ public class CheckInProjectAggregateDailySummaryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.noOfCheckIns").value(10))
-                .andExpect(jsonPath("$.streak").value(5));
+                .andExpect(jsonPath("$.streak").value(5))
+                .andExpect(jsonPath("$.typeDistribution.feat").value(1))
+                .andExpect(jsonPath("$.hourDistribution['12']").value(1));
         
         verify(checkInProjectAggregateDailySummaryService, times(1)).getAggregateSummary(date);
     }

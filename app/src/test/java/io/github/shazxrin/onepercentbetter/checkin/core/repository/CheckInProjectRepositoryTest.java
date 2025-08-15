@@ -75,17 +75,14 @@ public class CheckInProjectRepositoryTest {
     }
 
     @Test
-    void testCountByDateTimeBetween_whenHaveCheckIns_shouldReturnCount() {
+    void testFindByDateTimeBetween_whenHaveCheckIns_shouldReturnCount() {
         LocalDateTime dateTime = LocalDateTime.of(2024, 6, 1, 12, 0);
 
         Project project1 = new Project("Project 1");
-        entityManager.persist(project1);
+        project1 = entityManager.persist(project1);
 
         Project project2 = new Project("Project 2");
-        entityManager.persist(project2);
-
-        Project project3 = new Project("Project 3");
-        entityManager.persist(project3);
+        project2 = entityManager.persist(project2);
 
         CheckInProject checkInProject1 = new CheckInProject();
         checkInProject1.setProject(project1);
@@ -94,38 +91,21 @@ public class CheckInProjectRepositoryTest {
         entityManager.persist(checkInProject1);
 
         CheckInProject checkInProject2 = new CheckInProject();
-        checkInProject2.setProject(project2);
+        checkInProject2.setProject(project1);
         checkInProject2.setHash("hash2");
         checkInProject2.setDateTime(dateTime);
         entityManager.persist(checkInProject2);
 
         CheckInProject checkInProject3 = new CheckInProject();
-        checkInProject3.setProject(project3);
+        checkInProject3.setProject(project2);
         checkInProject3.setHash("hash3");
-        checkInProject3.setDateTime(LocalDateTime.of(2024, 6, 2, 12, 0));
+        checkInProject3.setDateTime(dateTime);
         entityManager.persist(checkInProject3);
 
         entityManager.flush();
 
-        int count = checkInProjectRepository.countByDateTimeBetween(dateTime.with(LocalTime.MIN), dateTime.with(LocalTime.MAX));
-        assertEquals(2, count);
-    }
-
-    @Test
-    void testCountByDateTimeBetween_whenHaveNone_shouldReturnZero() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 6, 1, 12, 0);
-
-        Project project = new Project("Project 1");
-        entityManager.persistAndFlush(project);
-
-        CheckInProject checkInProject = new CheckInProject();
-        checkInProject.setProject(project);
-        checkInProject.setHash("hash1");
-        checkInProject.setDateTime(LocalDateTime.of(2024, 6, 2, 12, 0));
-        entityManager.persistAndFlush(checkInProject);
-
-        int count = checkInProjectRepository.countByDateTimeBetween(dateTime.with(LocalTime.MIN), dateTime.with(LocalTime.MAX));
-        assertEquals(0, count);
+        List<CheckInProject> checkInProjects = checkInProjectRepository.findByProjectIdAndDateTimeBetween(project1.getId(), dateTime.with(LocalTime.MIN), dateTime.with(LocalTime.MAX));
+        assertEquals(2, checkInProjects.size());
     }
 
     @Test

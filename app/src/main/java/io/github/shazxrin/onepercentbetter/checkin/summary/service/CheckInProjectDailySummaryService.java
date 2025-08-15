@@ -65,7 +65,7 @@ public class CheckInProjectDailySummaryService {
         Map<String, Integer> typeDistribution = currentDateSummary.getTypeDistribution();
         Map<String, Integer> hourDistribution = currentDateSummary.getHourDistribution();
         if (withCount) {
-            List<CheckInProject> checkIns = checkInProjectService.getAllCheckIns(projectId, date);
+            List<CheckInProject> checkIns = checkInProjectService.getAllCheckInsByProject(projectId, date);
 
             // Calculate check in count
             noOfCheckIns = checkIns.size();

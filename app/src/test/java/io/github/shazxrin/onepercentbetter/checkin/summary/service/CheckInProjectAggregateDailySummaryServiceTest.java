@@ -1,10 +1,12 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.service;
 
-import io.github.shazxrin.onepercentbetter.checkin.core.repository.CheckInProjectRepository;
+import io.github.shazxrin.onepercentbetter.checkin.core.model.CheckInProject;
+import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
+import io.github.shazxrin.onepercentbetter.project.model.Project;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,11 +25,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CheckInProjectAggregateDailySummaryServiceTest {
     @Mock
-    private CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository;
+    private CheckInProjectService checkInProjectService;
 
     @Mock
-    private CheckInProjectRepository checkInProjectRepository;
-    
+    private CheckInProjectAggregateDailySummaryRepository checkInProjectAggregateDailySummaryRepository;
+
     @InjectMocks
     private CheckInProjectAggregateDailySummaryService checkInProjectAggregateDailySummaryService;
 
@@ -60,22 +63,28 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     @Test
     void testCalculateAggregateSummary_whenPreviousHasStreakAndCurrentHasCheckIns_shouldContinueStreak() {
         // Given
-        LocalDate currentDate = LocalDate.of(2025, 7, 30);
-        LocalDate previousDate = currentDate.minusDays(1);
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
+        LocalDateTime previousDate = currentDateTime.minusDays(1);
         
-        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDate, 2, 3);
-        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDate))
+        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDate.toLocalDate(), 2, 3);
+        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDate.toLocalDate()))
             .thenReturn(Optional.of(previousSummary));
         
-        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
-        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
+        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDateTime.toLocalDate(), 0, 0);
+        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDateTime.toLocalDate()))
             .thenReturn(Optional.of(currentSummary));
 
-        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
-            .thenReturn(3);
+        Project project = new Project("Project");
+        project.setId(1L);
+
+        CheckInProject checkInProject1 = new CheckInProject(currentDateTime, "a1", "feat", "message", project);
+        CheckInProject checkInProject2 = new CheckInProject(currentDateTime, "a2", "feat", "message", project);
+        CheckInProject checkInProject3 = new CheckInProject(currentDateTime, "a3", "feat", "message", project);
+        when(checkInProjectService.getAllCheckIns(currentDateTime.toLocalDate()))
+            .thenReturn(List.of(checkInProject1, checkInProject2, checkInProject3));
 
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -83,30 +92,32 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         verify(checkInProjectAggregateDailySummaryRepository).save(summaryCaptor.capture());
         
         CheckInProjectAggregateDailySummary savedSummary = summaryCaptor.getValue();
-        assertEquals(currentDate, savedSummary.getDate());
+        assertEquals(currentDateTime.toLocalDate(), savedSummary.getDate());
         assertEquals(3, savedSummary.getNoOfCheckIns());
         assertEquals(4, savedSummary.getStreak());
+        assertEquals(3, savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(3, savedSummary.getHourDistribution().get(String.valueOf(currentDateTime.getHour())));
     }
 
     @Test
     void testCalculateAggregateSummary_whenPreviousHasStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
         // Given
-        LocalDate currentDate = LocalDate.of(2025, 7, 30);
-        LocalDate previousDate = currentDate.minusDays(1);
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
+        LocalDateTime previousDateTime = currentDateTime.minusDays(1);
         
-        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDate, 2, 3);
-        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDate))
+        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDateTime.toLocalDate(), 2, 3);
+        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDateTime.toLocalDate()))
             .thenReturn(Optional.of(previousSummary));
         
-        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
-        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
+        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDateTime.toLocalDate(), 0, 0);
+        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDateTime.toLocalDate()))
             .thenReturn(Optional.of(currentSummary));
-        
-        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
-            .thenReturn(0);
+
+        when(checkInProjectService.getAllCheckIns(currentDateTime.toLocalDate()))
+            .thenReturn(List.of());
         
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -114,30 +125,38 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         verify(checkInProjectAggregateDailySummaryRepository).save(summaryCaptor.capture());
         
         CheckInProjectAggregateDailySummary savedSummary = summaryCaptor.getValue();
-        assertEquals(currentDate, savedSummary.getDate());
+        assertEquals(currentDateTime.toLocalDate(), savedSummary.getDate());
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
+        assertNull(savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(0, savedSummary.getHourDistribution().get(String.valueOf(currentDateTime.getHour())));
     }
     
     @Test
     void testCalculateAggregateSummary_whenPreviousHasNoStreakAndCurrentHasCheckIns_shouldStartStreakForCurrent() {
         // Given
-        LocalDate currentDate = LocalDate.of(2025, 7, 30);
-        LocalDate previousDate = currentDate.minusDays(1);
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
+        LocalDateTime previousDateTime = currentDateTime.minusDays(1);
         
-        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDate, 0, 0);
-        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDate))
+        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDateTime.toLocalDate(), 0, 0);
+        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDateTime.toLocalDate()))
             .thenReturn(Optional.of(previousSummary));
         
-        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
-        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
+        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDateTime.toLocalDate(), 0, 0);
+        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDateTime.toLocalDate()))
             .thenReturn(Optional.of(currentSummary));
-        
-        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
-            .thenReturn(3);
+
+        Project project = new Project("Project");
+        project.setId(1L);
+
+        CheckInProject checkInProject1 = new CheckInProject(currentDateTime, "a1", "feat", "message", project);
+        CheckInProject checkInProject2 = new CheckInProject(currentDateTime, "a2", "feat", "message", project);
+        CheckInProject checkInProject3 = new CheckInProject(currentDateTime, "a3", "feat", "message", project);
+        when(checkInProjectService.getAllCheckIns(currentDateTime.toLocalDate()))
+            .thenReturn(List.of(checkInProject1, checkInProject2, checkInProject3));
         
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -145,30 +164,32 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         verify(checkInProjectAggregateDailySummaryRepository).save(summaryCaptor.capture());
         
         CheckInProjectAggregateDailySummary savedSummary = summaryCaptor.getValue();
-        assertEquals(currentDate, savedSummary.getDate());
+        assertEquals(currentDateTime.toLocalDate(), savedSummary.getDate());
         assertEquals(3, savedSummary.getNoOfCheckIns());
         assertEquals(1, savedSummary.getStreak());
+        assertEquals(3, savedSummary.getTypeDistribution().get("feat"));
+        assertEquals(3, savedSummary.getHourDistribution().get(String.valueOf(currentDateTime.getHour())));
     }
     
     @Test
     void testCalculateAggregateSummary_whenPreviousHasNoStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
         // Given
-        LocalDate currentDate = LocalDate.of(2025, 7, 30);
-        LocalDate previousDate = currentDate.minusDays(1);
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
+        LocalDateTime previousDateTime = currentDateTime.minusDays(1);
         
-        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDate, 0, 0);
-        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDate))
+        CheckInProjectAggregateDailySummary previousSummary = new CheckInProjectAggregateDailySummary(previousDateTime.toLocalDate(), 0, 0);
+        when(checkInProjectAggregateDailySummaryRepository.findByDate(previousDateTime.toLocalDate()))
             .thenReturn(Optional.of(previousSummary));
         
-        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDate, 0, 0);
-        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
+        CheckInProjectAggregateDailySummary currentSummary = new CheckInProjectAggregateDailySummary(currentDateTime.toLocalDate(), 0, 0);
+        when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDateTime.toLocalDate()))
             .thenReturn(Optional.of(currentSummary));
-        
-        when(checkInProjectRepository.countByDateTimeBetween(currentDate.atTime(LocalTime.MIN), currentDate.atTime(LocalTime.MAX)))
-            .thenReturn(0);
+
+        when(checkInProjectService.getAllCheckIns(currentDateTime.toLocalDate()))
+            .thenReturn(List.of());
         
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -176,7 +197,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
         verify(checkInProjectAggregateDailySummaryRepository).save(summaryCaptor.capture());
         
         CheckInProjectAggregateDailySummary savedSummary = summaryCaptor.getValue();
-        assertEquals(currentDate, savedSummary.getDate());
+        assertEquals(currentDateTime.toLocalDate(), savedSummary.getDate());
         assertEquals(0, savedSummary.getNoOfCheckIns());
         assertEquals(0, savedSummary.getStreak());
     }

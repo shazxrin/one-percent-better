@@ -8,7 +8,7 @@ import org.springframework.data.repository.ListCrudRepository;
 public interface CheckInProjectRepository extends ListCrudRepository<CheckInProject, Long> {
     boolean existsByProjectIdAndHash(long projectId, String hash);
 
-    int countByDateTimeBetween(LocalDateTime from, LocalDateTime to);
-
     List<CheckInProject> findByProjectIdAndDateTimeBetween(long projectId, LocalDateTime from, LocalDateTime to);
+
+    List<CheckInProject> findByDateTimeBetween(LocalDateTime from, LocalDateTime to);
 }
