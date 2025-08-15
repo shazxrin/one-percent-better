@@ -102,13 +102,14 @@ public class CheckInProjectDailySummaryService {
     }
 
     @Transactional
-    public void addCheckInToSummary(long projectId, long checkInProjectId, LocalDate date) {
+    public void addCheckInToSummary(long projectId, long checkInProjectId) {
         projectService.getProjectById(projectId)
             .orElseThrow(ProjectNotFoundException::new);
 
         var checkInProject = checkInProjectService.getCheckIn(checkInProjectId)
             .orElseThrow(CheckInProjectNotFoundException::new);
 
+        LocalDate date = checkInProject.getDateTime().toLocalDate();
         LocalDate previousDate = date.minusDays(1);
 
         var previousDateSummary = checkInProjectDailySummaryRepository

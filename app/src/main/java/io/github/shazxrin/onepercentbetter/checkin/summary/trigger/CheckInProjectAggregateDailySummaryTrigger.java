@@ -26,7 +26,7 @@ public class CheckInProjectAggregateDailySummaryTrigger {
     @Async
     @EventListener
     public void runAddCheckInToSummary(CheckInProjectAddedEvent event) {
-        log.info("Running add checkin aggregate daily summary for project {} posted on {}", event.getProjectId(), event.getDate());
+        log.info("Running add checkin aggregate daily summary for project {} sent at {}", event.getProjectId(), event.getDateTime());
 
         checkInProjectAggregateDailySummaryService.addCheckInToAggregateSummary(event.getCheckInProjectId());
     }

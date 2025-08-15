@@ -6,18 +6,18 @@ import org.springframework.context.ApplicationEvent;
 public class CheckInProjectAddedEvent extends ApplicationEvent {
     private final long projectId;
     private final long checkInProjectId;
-    private final LocalDate date;
+    private final LocalDate dateTime;
 
     public CheckInProjectAddedEvent(
         Object eventTriggerSource,
         long projectId,
         long checkInProjectId,
-        LocalDate date
+        LocalDate dateTime
     ) {
         super(eventTriggerSource);
         this.projectId = projectId;
         this.checkInProjectId = checkInProjectId;
-        this.date = date;
+        this.dateTime = dateTime;
     }
 
     public long getProjectId() {
@@ -28,7 +28,7 @@ public class CheckInProjectAddedEvent extends ApplicationEvent {
         return checkInProjectId;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDateTime() {
+        return dateTime;
     }
 }
