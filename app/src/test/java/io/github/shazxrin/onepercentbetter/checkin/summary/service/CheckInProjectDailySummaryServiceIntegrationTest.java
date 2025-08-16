@@ -84,7 +84,7 @@ public class CheckInProjectDailySummaryServiceIntegrationTest {
         checkInProjectDailySummaryService.initSummary(checkInProject.getId());
 
         // When
-        checkInProjectDailySummaryService.addCheckInToSummary(project.getId(), checkInProject.getId(), LocalDate.now());
+        checkInProjectDailySummaryService.addCheckInToSummary(project.getId(), checkInProject.getId());
 
         // Then
         var summaryOpt = checkInProjectDailySummaryRepository.findByProjectIdAndDate(project.getId(), LocalDate.now());

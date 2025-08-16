@@ -34,7 +34,7 @@ public class CheckInProjectDailySummaryTriggerTest {
         checkInProjectDailySummaryTrigger.runAddCheckInToSummary(event);
         
         // Then
-        verify(checkInProjectDailySummaryService, times(1)).addCheckInToSummary(eq(projectId), eq(checkInProjectId), eq(testDate));
+        verify(checkInProjectDailySummaryService, times(1)).addCheckInToSummary(eq(projectId), eq(checkInProjectId));
     }
 
     @Test

@@ -362,7 +362,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, today)).thenReturn(Optional.of(todaySummary));
         
-        checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId, today);
+        checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId);
         
         ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
         verify(checkInProjectDailySummaryRepository).save(captor.capture());
@@ -395,7 +395,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, today)).thenReturn(Optional.of(todaySummary));
         
-        checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId, today);
+        checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId);
         
         ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
         verify(checkInProjectDailySummaryRepository).save(captor.capture());
@@ -443,7 +443,7 @@ public class CheckInProjectDailySummaryServiceTest {
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, yesterday)).thenReturn(Optional.of(yesterdaySummary));
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDateWithLock(projectId, today)).thenReturn(Optional.of(todaySummary));
 
-        checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId, threeDaysAgo);
+        checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId);
         
         ArgumentCaptor<CheckInProjectDailySummary> captor = ArgumentCaptor.forClass(CheckInProjectDailySummary.class);
         verify(checkInProjectDailySummaryRepository, times(4)).save(captor.capture());
@@ -475,7 +475,7 @@ public class CheckInProjectDailySummaryServiceTest {
 
         long checkInProjectId = 1L;
 
-        assertThrows(ProjectNotFoundException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId, LocalDate.now()));
+        assertThrows(ProjectNotFoundException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId));
     }
 
     @Test
@@ -496,7 +496,7 @@ public class CheckInProjectDailySummaryServiceTest {
         LocalDate previousDate = date.minusDays(1);
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId, date));
+        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId));
     }
 
     @Test
@@ -520,7 +520,7 @@ public class CheckInProjectDailySummaryServiceTest {
         CheckInProjectDailySummary previousSummary = new CheckInProjectDailySummary(previousDate, 0, 0, project);
         when(checkInProjectDailySummaryRepository.findByProjectIdAndDate(projectId, previousDate)).thenReturn(Optional.of(previousSummary));
 
-        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId, date));
+        assertThrows(IllegalStateException.class, () -> checkInProjectDailySummaryService.addCheckInToSummary(projectId, checkInProjectId));
     }
 
     @Test
