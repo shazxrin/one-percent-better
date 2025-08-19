@@ -6,7 +6,6 @@ import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectSe
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectAggregateDailySummary;
 import io.github.shazxrin.onepercentbetter.checkin.summary.repository.CheckInProjectAggregateDailySummaryRepository;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,14 +107,14 @@ public class CheckInProjectAggregateDailySummaryService {
         int typeCount = currentDateAggregateSummary.getTypeDistribution()
             .getOrDefault(Objects.requireNonNullElse(checkInProject.getType(), "unknown"), 0) + 1;
         int hourCount = currentDateAggregateSummary.getHourDistribution()
-            .getOrDefault(String.valueOf(LocalTime.now().getHour()), 0) + 1;
+            .getOrDefault(String.valueOf(checkInProject.getDateTime().getHour()), 0) + 1;
 
         currentDateAggregateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateAggregateSummary.setStreak(currentStreak);
         currentDateAggregateSummary.getTypeDistribution()
             .put(Objects.requireNonNullElse(checkInProject.getType(), "unknown"), typeCount);
         currentDateAggregateSummary.getHourDistribution()
-            .put(String.valueOf(LocalTime.now().getHour()), hourCount);
+            .put(String.valueOf(checkInProject.getDateTime().getHour()), hourCount);
 
         checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
 
