@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -72,9 +73,9 @@ public class CheckInProjectDailySummaryService {
 
             // Calculate type distribution
             typeDistribution = checkIns.stream()
-                .filter(c -> c.getType() != null)
+                .map(c -> Objects.requireNonNullElse(c.getType(), "unknown"))
                 .collect(Collectors.groupingBy(
-                    CheckInProject::getType,
+                    Function.identity(),
                     Collectors.summingInt(_ -> 1)
                 ));
 
@@ -121,8 +122,10 @@ public class CheckInProjectDailySummaryService {
 
         int noOfCheckIns = currentDateSummary.getNoOfCheckIns() + 1;
         int currentStreak = previousDateSummary.getStreak() + 1;
-        int typeCount = currentDateSummary.getTypeDistribution().getOrDefault(checkInProject.getType(), 0) + 1;
-        int hourCount = currentDateSummary.getHourDistribution().getOrDefault(String.valueOf(checkInProject.getDateTime().getHour()), 0) + 1;
+        int typeCount = currentDateSummary.getTypeDistribution()
+            .getOrDefault(Objects.requireNonNullElse(checkInProject.getType(), "unknown"), 0) + 1;
+        int hourCount = currentDateSummary.getHourDistribution()
+            .getOrDefault(String.valueOf(checkInProject.getDateTime().getHour()), 0) + 1;
 
         currentDateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateSummary.setStreak(currentStreak);
