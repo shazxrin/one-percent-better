@@ -41,6 +41,10 @@ public class CheckInProjectAggregateDailySummary {
     @Column(columnDefinition = "jsonb")
     private Map<String, Integer> hourDistribution;
 
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Integer> projectDistribution;
+
     @CreatedDate
     private LocalDate createdAt;
 
@@ -61,6 +65,8 @@ public class CheckInProjectAggregateDailySummary {
         for (var i = 0; i < 24; i++) {
             this.hourDistribution.put(String.valueOf(i), 0);
         }
+
+        this.projectDistribution = new LinkedHashMap<>();
     }
 
     public Long getId() {
@@ -109,6 +115,14 @@ public class CheckInProjectAggregateDailySummary {
 
     public void setHourDistribution(Map<String, Integer> hourDistribution) {
         this.hourDistribution = hourDistribution;
+    }
+
+    public Map<String, Integer> getProjectDistribution() {
+        return projectDistribution;
+    }
+
+    public void setProjectDistribution(Map<String, Integer> projectDistribution) {
+        this.projectDistribution = projectDistribution;
     }
 
     public LocalDate getCreatedAt() {

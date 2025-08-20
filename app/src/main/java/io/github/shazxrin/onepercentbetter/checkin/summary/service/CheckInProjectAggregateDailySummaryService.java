@@ -50,6 +50,7 @@ public class CheckInProjectAggregateDailySummaryService {
         int noOfCheckIns = currentDateAggregateSummary.getNoOfCheckIns();
         Map<String, Integer> typeDistribution = currentDateAggregateSummary.getTypeDistribution();
         Map<String, Integer> hourDistribution = currentDateAggregateSummary.getHourDistribution();
+        Map<String, Integer> projectDistribution = currentDateAggregateSummary.getProjectDistribution();
         if (withCount) {
             List<CheckInProject> checkIns = checkInProjectService.getAllCheckIns(date);
 
@@ -72,6 +73,15 @@ public class CheckInProjectAggregateDailySummaryService {
                     Collectors.summingInt(_ -> 1)
                 ))
                 .forEach((key, value) -> hourDistribution.merge(key, value, Integer::sum));
+
+            // Calculate project distribution
+            checkIns.stream()
+                .map(c -> c.getProject().getName())
+                .collect(Collectors.groupingBy(
+                    Function.identity(),
+                    Collectors.summingInt(_ -> 1)
+                ))
+                .forEach((key, value) -> projectDistribution.merge(key, value, Integer::sum));
         }
 
         int currentStreak = 0;
@@ -83,6 +93,7 @@ public class CheckInProjectAggregateDailySummaryService {
         currentDateAggregateSummary.setStreak(currentStreak);
         currentDateAggregateSummary.setTypeDistribution(typeDistribution);
         currentDateAggregateSummary.setHourDistribution(hourDistribution);
+        currentDateAggregateSummary.setProjectDistribution(projectDistribution);
 
         checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
     }
@@ -108,6 +119,8 @@ public class CheckInProjectAggregateDailySummaryService {
             .getOrDefault(Objects.requireNonNullElse(checkInProject.getType(), "unknown"), 0) + 1;
         int hourCount = currentDateAggregateSummary.getHourDistribution()
             .getOrDefault(String.valueOf(checkInProject.getDateTime().getHour()), 0) + 1;
+        int projectCount = currentDateAggregateSummary.getProjectDistribution()
+            .getOrDefault(checkInProject.getProject().getName(), 0) + 1;
 
         currentDateAggregateSummary.setNoOfCheckIns(noOfCheckIns);
         currentDateAggregateSummary.setStreak(currentStreak);
@@ -115,6 +128,8 @@ public class CheckInProjectAggregateDailySummaryService {
             .put(Objects.requireNonNullElse(checkInProject.getType(), "unknown"), typeCount);
         currentDateAggregateSummary.getHourDistribution()
             .put(String.valueOf(checkInProject.getDateTime().getHour()), hourCount);
+        currentDateAggregateSummary.getProjectDistribution()
+            .put(checkInProject.getProject().getName(), projectCount);
 
         checkInProjectAggregateDailySummaryRepository.save(currentDateAggregateSummary);
 

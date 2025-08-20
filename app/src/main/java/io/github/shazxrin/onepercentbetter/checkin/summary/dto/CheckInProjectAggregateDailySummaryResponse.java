@@ -7,14 +7,16 @@ public record CheckInProjectAggregateDailySummaryResponse(
     int noOfCheckIns,
     int streak,
     Map<String, Integer> typeDistribution,
-    Map<String, Integer> hourDistribution
+    Map<String, Integer> hourDistribution,
+    Map<String, Integer> projectDistribution
 ) {
     public static CheckInProjectAggregateDailySummaryResponse from(CheckInProjectAggregateDailySummary summary) {
         return new CheckInProjectAggregateDailySummaryResponse(
             summary.getNoOfCheckIns(),
             summary.getStreak(),
             summary.getTypeDistribution(),
-            summary.getHourDistribution()
+            summary.getHourDistribution(),
+            summary.getProjectDistribution()
         );
     }
 }
