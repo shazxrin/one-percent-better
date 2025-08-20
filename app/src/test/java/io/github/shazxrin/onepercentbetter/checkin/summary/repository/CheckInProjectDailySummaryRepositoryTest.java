@@ -93,44 +93,4 @@ public class CheckInProjectDailySummaryRepositoryTest {
         // Then
         assertTrue(found.isEmpty());
     }
-
-    @Test
-    void testFindAllByDate_whenHasDate_shouldReturnSummaries() {
-        // Given
-        LocalDate date = LocalDate.of(2024, 6, 5);
-
-        Project project1 = new Project("Test Project 10");
-        entityManager.persist(project1);
-        Project project2 = new Project("Test Project 11");
-        entityManager.persist(project2);
-        Project projectOther = new Project("Test Project 12");
-        entityManager.persist(projectOther);
-
-        entityManager.flush();
-
-        CheckInProjectDailySummary summary1 = new CheckInProjectDailySummary();
-        summary1.setProject(project1);
-        summary1.setDate(date);
-        entityManager.persist(summary1);
-
-        CheckInProjectDailySummary summary2 = new CheckInProjectDailySummary();
-        summary2.setProject(project2);
-        summary2.setDate(date);
-        entityManager.persist(summary2);
-
-        CheckInProjectDailySummary summaryOtherDate = new CheckInProjectDailySummary();
-        summaryOtherDate.setProject(projectOther);
-        summaryOtherDate.setDate(LocalDate.of(2024, 6, 6));
-        entityManager.persist(summaryOtherDate);
-
-        entityManager.flush();
-
-        // When
-        List<CheckInProjectDailySummary> found = checkInProjectDailySummaryRepository.findAllByDate(date);
-
-        // Then
-        assertEquals(2, found.size());
-        assertTrue(found.stream().anyMatch(s -> s.getProject().getId().equals(project1.getId())));
-        assertTrue(found.stream().anyMatch(s -> s.getProject().getId().equals(project2.getId())));
-    }
 }

@@ -3,7 +3,6 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.repository;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectDailySummary;
 import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +14,4 @@ public interface CheckInProjectDailySummaryRepository extends ListCrudRepository
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT c FROM CheckInProjectDailySummary c WHERE c.project.id = :projectId AND c.date = :date")
     Optional<CheckInProjectDailySummary> findByProjectIdAndDateWithLock(long projectId, LocalDate date);
-
-    List<CheckInProjectDailySummary> findAllByDate(LocalDate date);
 }
