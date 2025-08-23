@@ -80,7 +80,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.11")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
