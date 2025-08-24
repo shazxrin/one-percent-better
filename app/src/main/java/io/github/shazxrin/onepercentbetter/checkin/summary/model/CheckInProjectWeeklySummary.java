@@ -1,6 +1,7 @@
 package io.github.shazxrin.onepercentbetter.checkin.summary.model;
 
 import io.github.shazxrin.onepercentbetter.project.model.Project;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -11,8 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -43,6 +48,18 @@ public class CheckInProjectWeeklySummary {
     @Column(nullable = false)
     private int streak;
 
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Integer> typeDistribution;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Integer> hourDistribution;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Integer> dayDistribution;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
@@ -72,6 +89,17 @@ public class CheckInProjectWeeklySummary {
     }
 
     public CheckInProjectWeeklySummary() {
+        this.typeDistribution = new LinkedHashMap<>();
+
+        this.hourDistribution = new LinkedHashMap<>();
+        for (var i = 0; i < 24; i++) {
+            this.hourDistribution.put(String.valueOf(i), 0);
+        }
+
+        this.dayDistribution = new LinkedHashMap<>();
+        for (var i = 0; i < 7; i++) {
+            this.dayDistribution.put(DayOfWeek.values()[i].toString(), 0);
+        }
     }
 
     public Long getId() {
@@ -128,6 +156,30 @@ public class CheckInProjectWeeklySummary {
 
     public void setStreak(int streak) {
         this.streak = streak;
+    }
+
+    public Map<String, Integer> getTypeDistribution() {
+        return typeDistribution;
+    }
+
+    public void setTypeDistribution(Map<String, Integer> typeDistribution) {
+        this.typeDistribution = typeDistribution;
+    }
+
+    public Map<String, Integer> getHourDistribution() {
+        return hourDistribution;
+    }
+
+    public void setHourDistribution(Map<String, Integer> hourDistribution) {
+        this.hourDistribution = hourDistribution;
+    }
+
+    public Map<String, Integer> getDayDistribution() {
+        return dayDistribution;
+    }
+
+    public void setDayDistribution(Map<String, Integer> dayDistribution) {
+        this.dayDistribution = dayDistribution;
     }
 
     public Project getProject() {
