@@ -79,6 +79,7 @@ public class CheckInProjectWeeklySummary {
         int streak,
         Project project
     ) {
+        this();
         this.weekNo = weekNo;
         this.year = year;
         this.startDate = startDate;

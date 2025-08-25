@@ -2,6 +2,7 @@ package io.github.shazxrin.onepercentbetter.checkin.onboard.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectWeeklySummaryService;
 import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
@@ -17,12 +18,16 @@ public class CheckInProjectOnboardTrigger {
     private static final Logger log = LoggerFactory.getLogger(CheckInProjectOnboardTrigger.class);
     private final CheckInProjectService checkInProjectService;
     private final CheckInProjectDailySummaryService checkInProjectDailySummaryService;
+    private final CheckInProjectWeeklySummaryService checkInProjectWeeklySummaryService;
 
-    public CheckInProjectOnboardTrigger(CheckInProjectService checkInProjectService,
-                                        CheckInProjectDailySummaryService checkInProjectDailySummaryService
+    public CheckInProjectOnboardTrigger(
+        CheckInProjectService checkInProjectService,
+        CheckInProjectDailySummaryService checkInProjectDailySummaryService,
+        CheckInProjectWeeklySummaryService checkInProjectWeeklySummaryService
     ) {
         this.checkInProjectService = checkInProjectService;
         this.checkInProjectDailySummaryService = checkInProjectDailySummaryService;
+        this.checkInProjectWeeklySummaryService = checkInProjectWeeklySummaryService;
     }
 
     @Async
@@ -35,6 +40,7 @@ public class CheckInProjectOnboardTrigger {
 
         // Init summaries for first day of year to last day of year for project
         checkInProjectDailySummaryService.initSummary(event.getProjectId());
+        checkInProjectWeeklySummaryService.initSummary(event.getProjectId());
 
         // Check in current project from first day of year to now
         checkInProjectService.checkInInterval(event.getProjectId(), firstDayOfYear, now);

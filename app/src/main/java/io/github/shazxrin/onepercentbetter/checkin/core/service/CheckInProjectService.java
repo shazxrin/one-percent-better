@@ -149,4 +149,12 @@ public class CheckInProjectService {
     public List<CheckInProject> getAllCheckIns(LocalDate date) {
         return checkInProjectRepository.findByDateTimeBetween(date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
     }
+
+    public List<CheckInProject> getAllCheckInsByProjectBetween(long projectId, LocalDate from, LocalDate to) {
+        return checkInProjectRepository.findByProjectIdAndDateTimeBetween(projectId, from.atTime(LocalTime.MIN), to.atTime(LocalTime.MAX));
+    }
+
+    public List<CheckInProject> getAllCheckInsBetween(LocalDate from, LocalDate to) {
+        return checkInProjectRepository.findByDateTimeBetween(from.atTime(LocalTime.MIN), to.atTime(LocalTime.MAX));
+    }
 }

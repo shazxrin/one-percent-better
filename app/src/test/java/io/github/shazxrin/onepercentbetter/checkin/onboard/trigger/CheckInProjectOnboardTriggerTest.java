@@ -2,6 +2,7 @@ package io.github.shazxrin.onepercentbetter.checkin.onboard.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectWeeklySummaryService;
 import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ public class CheckInProjectOnboardTriggerTest {
     @Mock
     private CheckInProjectDailySummaryService checkInProjectDailySummaryService;
 
+    @Mock
+    private CheckInProjectWeeklySummaryService checkInProjectWeeklySummaryService;
+
     @InjectMocks
     private CheckInProjectOnboardTrigger checkInProjectOnboardTrigger;
 
@@ -39,6 +43,7 @@ public class CheckInProjectOnboardTriggerTest {
 
         // Then
         verify(checkInProjectDailySummaryService, times(1)).initSummary(eq(projectId));
+        verify(checkInProjectWeeklySummaryService, times(1)).initSummary(eq(projectId));
         verify(checkInProjectService, times(1)).checkInInterval(eq(projectId), eq(firstDayOfYear), eq(now));
     }
 }
