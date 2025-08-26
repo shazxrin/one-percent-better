@@ -217,7 +217,7 @@ CREATE TABLE check_in_project_aggregate_monthly_summaries
     type_distribution       JSONB                                   NOT NULL,
     hour_distribution       JSONB                                   NOT NULL,
     project_distribution    JSONB                                   NOT NULL,
-    date_distribution       JSONB                                   NOT NULL,
+    day_distribution        JSONB                                   NOT NULL,
     created_at              TIMESTAMP WITHOUT TIME ZONE,
     updated_at              TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_check_in_project_aggregate_monthly_summaries PRIMARY KEY (id)
@@ -236,7 +236,7 @@ INSERT INTO check_in_project_aggregate_monthly_summaries (
     type_distribution,
     hour_distribution,
     project_distribution,
-    date_distribution,
+    day_distribution,
     created_at,
     updated_at
 )
@@ -263,7 +263,7 @@ SELECT
     '{}'::jsonb AS type_distribution,
     '{ "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0,"21": 0, "22": 0, "23": 0 }'::jsonb AS hour_distribution,
     '{}'::jsonb AS project_distribution,
-    '{ "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0 }'::jsonb AS date_distribution,
+    '{ "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0 }'::jsonb AS day_distribution,
     CURRENT_TIMESTAMP AS created_at,
     CURRENT_TIMESTAMP AS updated_at
 FROM monthly_dates md
@@ -281,7 +281,7 @@ CREATE TABLE check_in_project_monthly_summaries
     streak              INTEGER                                 NOT NULL,
     type_distribution   JSONB                                   NOT NULL,
     hour_distribution   JSONB                                   NOT NULL,
-    date_distribution   JSONB                                   NOT NULL,
+    day_distribution    JSONB                                   NOT NULL,
     project_id          BIGINT                                  NOT NULL,
     created_at          TIMESTAMP WITHOUT TIME ZONE,
     updated_at          TIMESTAMP WITHOUT TIME ZONE,
