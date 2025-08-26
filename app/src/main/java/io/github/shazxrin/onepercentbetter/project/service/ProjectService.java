@@ -5,7 +5,7 @@ import io.github.shazxrin.onepercentbetter.project.exception.ProjectInvalidForma
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.repository.ProjectRepository;
-import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
+import io.github.shazxrin.onepercentbetter.utility.ProjectNameUtility;
 import io.micrometer.observation.annotation.Observed;
 import io.micrometer.tracing.annotation.SpanTag;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ProjectService {
             return projectOpt.get().getId();
         }
 
-        if (!ProjectUtil.isProjectNameValid(name)) {
+        if (!ProjectNameUtility.isProjectNameValid(name)) {
             throw new ProjectInvalidFormatException("Invalid project name!");
         }
 

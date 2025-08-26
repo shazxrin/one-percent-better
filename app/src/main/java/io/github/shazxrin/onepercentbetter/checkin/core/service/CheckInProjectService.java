@@ -8,8 +8,8 @@ import io.github.shazxrin.onepercentbetter.github.service.GitHubService;
 import io.github.shazxrin.onepercentbetter.project.exception.ProjectNotFoundException;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
 import io.github.shazxrin.onepercentbetter.project.service.ProjectService;
-import io.github.shazxrin.onepercentbetter.utils.project.ProjectOwnerName;
-import io.github.shazxrin.onepercentbetter.utils.project.ProjectUtil;
+import io.github.shazxrin.onepercentbetter.utility.ProjectOwnerName;
+import io.github.shazxrin.onepercentbetter.utility.ProjectNameUtility;
 import io.micrometer.observation.annotation.Observed;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,7 +47,7 @@ public class CheckInProjectService {
         log.info("Checking in project {} for date {}.", project.getName(), date);
         ProjectOwnerName projectOwnerName;
         try {
-            projectOwnerName = ProjectUtil.parseProjectRepoOwnerName(project.getName());
+            projectOwnerName = ProjectNameUtility.parseProjectRepoOwnerName(project.getName());
         } catch (IllegalArgumentException ex) {
             log.error("Invalid project name {}.", project.getName(), ex);
             return;

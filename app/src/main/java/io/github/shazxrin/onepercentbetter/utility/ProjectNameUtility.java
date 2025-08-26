@@ -1,9 +1,9 @@
-package io.github.shazxrin.onepercentbetter.utils.project;
+package io.github.shazxrin.onepercentbetter.utility;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProjectUtil {
+public class ProjectNameUtility {
     private static final String ALPHANUMERIC_OWNER_NAME_REGEX = "^[a-zA-Z0-9\\-_]+/[a-zA-Z0-9\\-_]+$";
     private static final Pattern PATTERN = Pattern.compile(ALPHANUMERIC_OWNER_NAME_REGEX);
 
