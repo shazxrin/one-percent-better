@@ -48,7 +48,7 @@ public class CheckInProjectAggregateMonthlySummaryService {
         Map<String, Integer> typeDistribution = summary.getTypeDistribution();
         Map<String, Integer> hourDistribution = summary.getHourDistribution();
         Map<String, Integer> projectDistribution = summary.getProjectDistribution();
-        Map<String, Integer> dateDistribution = summary.getDateDistribution();
+        Map<String, Integer> dayDistribution = summary.getDayDistribution();
 
         var startDate = summary.getStartDate();
         var endDate = summary.getEndDate();
@@ -87,21 +87,21 @@ public class CheckInProjectAggregateMonthlySummaryService {
             ))
             .forEach((key, value) -> projectDistribution.merge(key, value, Integer::sum));
 
-        // Calculate date distribution
+        // Calculate day distribution
         checkIns.stream()
             .map(c -> String.valueOf(c.getDateTime().getDayOfMonth()))
             .collect(Collectors.groupingBy(
                 Function.identity(),
                 Collectors.summingInt(_ -> 1)
             ))
-            .forEach((key, value) -> dateDistribution.merge(key, value, Integer::sum));
+            .forEach((key, value) -> dayDistribution.merge(key, value, Integer::sum));
 
         summary.setNoOfCheckIns(noOfCheckIns);
         summary.setStreak(streak);
         summary.setTypeDistribution(typeDistribution);
         summary.setHourDistribution(hourDistribution);
         summary.setProjectDistribution(projectDistribution);
-        summary.setDateDistribution(dateDistribution);
+        summary.setDayDistribution(dayDistribution);
 
         checkInProjectAggregateMonthlySummaryRepository.save(summary);
     }
@@ -120,7 +120,7 @@ public class CheckInProjectAggregateMonthlySummaryService {
         var typeKey = Objects.requireNonNullElse(checkInProject.getType(), "unknown");
         var hourKey = String.valueOf(checkInProject.getDateTime().getHour());
         var projectKey = checkInProject.getProject().getName();
-        var dateKey = String.valueOf(checkInProject.getDateTime().getDayOfMonth());
+        var dayKey = String.valueOf(checkInProject.getDateTime().getDayOfMonth());
 
         int noOfCheckIns = summary.getNoOfCheckIns() + 1;
         int typeCount = summary.getTypeDistribution()
@@ -129,16 +129,16 @@ public class CheckInProjectAggregateMonthlySummaryService {
             .getOrDefault(hourKey, 0) + 1;
         int projectCount = summary.getProjectDistribution()
             .getOrDefault(projectKey, 0) + 1;
-        int dateCount = summary.getDateDistribution()
-            .getOrDefault(dateKey, 0) + 1;
+        int dayCount = summary.getDayDistribution()
+            .getOrDefault(dayKey, 0) + 1;
 
         summary.setNoOfCheckIns(noOfCheckIns);
         summary.getTypeDistribution().put(typeKey, typeCount);
         summary.getHourDistribution().put(hourKey, hourCount);
         summary.getProjectDistribution().put(projectKey, projectCount);
-        summary.getDateDistribution().put(dateKey, dateCount);
+        summary.getDayDistribution().put(dayKey, dayCount);
 
-        int streak = StreakUtility.calculateMaxStreakFromDayDistribution(summary.getDateDistribution());
+        int streak = StreakUtility.calculateMaxStreakFromDayDistribution(summary.getDayDistribution());
         summary.setStreak(streak);
 
         checkInProjectAggregateMonthlySummaryRepository.save(summary);

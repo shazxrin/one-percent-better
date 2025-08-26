@@ -54,7 +54,7 @@ public class CheckInProjectMonthlySummaryService {
 
         Map<String, Integer> typeDistribution = summary.getTypeDistribution();
         Map<String, Integer> hourDistribution = summary.getHourDistribution();
-        Map<String, Integer> dateDistribution = summary.getDateDistribution();
+        Map<String, Integer> dayDistribution = summary.getDayDistribution();
 
         LocalDate startDate = summary.getStartDate();
         LocalDate endDate = summary.getEndDate();
@@ -76,13 +76,13 @@ public class CheckInProjectMonthlySummaryService {
         checkIns.stream()
             .map(c -> String.valueOf(c.getDateTime().getDayOfMonth()))
             .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(_ -> 1)))
-            .forEach((k, v) -> dateDistribution.merge(k, v, Integer::sum));
+            .forEach((k, v) -> dayDistribution.merge(k, v, Integer::sum));
 
         summary.setNoOfCheckIns(noOfCheckIns);
         summary.setStreak(streak);
         summary.setTypeDistribution(typeDistribution);
         summary.setHourDistribution(hourDistribution);
-        summary.setDateDistribution(dateDistribution);
+        summary.setDayDistribution(dayDistribution);
 
         repository.save(summary);
     }
@@ -101,14 +101,14 @@ public class CheckInProjectMonthlySummaryService {
 
         var typeKey = Objects.requireNonNullElse(checkIn.getType(), "unknown");
         var hourKey = String.valueOf(checkIn.getDateTime().getHour());
-        var dateKey = String.valueOf(checkIn.getDateTime().getDayOfMonth());
+        var dayKey = String.valueOf(checkIn.getDateTime().getDayOfMonth());
 
         summary.setNoOfCheckIns(summary.getNoOfCheckIns() + 1);
         summary.getTypeDistribution().put(typeKey, summary.getTypeDistribution().getOrDefault(typeKey, 0) + 1);
         summary.getHourDistribution().put(hourKey, summary.getHourDistribution().getOrDefault(hourKey, 0) + 1);
-        summary.getDateDistribution().put(dateKey, summary.getDateDistribution().getOrDefault(dateKey, 0) + 1);
+        summary.getDayDistribution().put(dayKey, summary.getDayDistribution().getOrDefault(dayKey, 0) + 1);
 
-        int streak = StreakUtility.calculateMaxStreakFromDayDistribution(summary.getDateDistribution());
+        int streak = StreakUtility.calculateMaxStreakFromDayDistribution(summary.getDayDistribution());
         summary.setStreak(streak);
 
         repository.save(summary);

@@ -41,7 +41,7 @@ public class CheckInProjectAggregateMonthlySummaryControllerTest {
         summary.getTypeDistribution().put("feat", 2);
         summary.getHourDistribution().put("12", 2);
         summary.getProjectDistribution().put("projA", 2);
-        summary.getDateDistribution().put("15", 1);
+        summary.getDayDistribution().put("15", 1);
 
         when(checkInProjectAggregateMonthlySummaryService.getAggregateSummary(year, monthNo)).thenReturn(summary);
 

@@ -42,10 +42,10 @@ public class CheckInProjectMonthlySummaryControllerTest {
         CheckInProjectMonthlySummary summary = new CheckInProjectMonthlySummary(year, monthNo, start, end, 5, 3, project);
         summary.setTypeDistribution(new LinkedHashMap<>());
         summary.setHourDistribution(new LinkedHashMap<>());
-        summary.setDateDistribution(new LinkedHashMap<>());
+        summary.setDayDistribution(new LinkedHashMap<>());
         summary.getTypeDistribution().put("feat", 2);
         summary.getHourDistribution().put("1", 2);
-        summary.getDateDistribution().put("1", 1);
+        summary.getDayDistribution().put("1", 1);
 
         when(checkInProjectMonthlySummaryService.getSummary(projectId, year, monthNo)).thenReturn(summary);
 

@@ -104,8 +104,8 @@ public class CheckInProjectAggregateMonthlySummaryServiceTest {
         assertEquals(1, saved.getTypeDistribution().getOrDefault("unknown", 0));
         assertEquals(2, saved.getHourDistribution().getOrDefault("12", 0));
         assertEquals(2, saved.getProjectDistribution().getOrDefault("Alpha", 0));
-        assertEquals(1, saved.getDateDistribution().getOrDefault("10", 0));
-        assertEquals(1, saved.getDateDistribution().getOrDefault("11", 0));
+        assertEquals(1, saved.getDayDistribution().getOrDefault("10", 0));
+        assertEquals(1, saved.getDayDistribution().getOrDefault("11", 0));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class CheckInProjectAggregateMonthlySummaryServiceTest {
         assertEquals(1, saved.getTypeDistribution().getOrDefault("chore", 0));
         assertEquals(1, saved.getHourDistribution().getOrDefault("10", 0));
         assertEquals(1, saved.getProjectDistribution().getOrDefault("Beta", 0));
-        assertEquals(1, saved.getDateDistribution().getOrDefault("15", 0));
+        assertEquals(1, saved.getDayDistribution().getOrDefault("15", 0));
         assertTrue(saved.getStreak() >= 1);
     }
 }

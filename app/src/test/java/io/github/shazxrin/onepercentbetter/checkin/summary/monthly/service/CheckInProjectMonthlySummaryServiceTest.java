@@ -101,7 +101,7 @@ public class CheckInProjectMonthlySummaryServiceTest {
         assertEquals(2, summary.getHourDistribution().get("12"));
         assertEquals(2, summary.getHourDistribution().get("1"));
         // Day distribution should have counts for whatever days those dates are; we check total adds up
-        int totalDays = summary.getDateDistribution().values().stream().mapToInt(Integer::intValue).sum();
+        int totalDays = summary.getDayDistribution().values().stream().mapToInt(Integer::intValue).sum();
         assertEquals(4, totalDays);
         verify(repository, times(1)).save(summary);
     }
@@ -129,7 +129,7 @@ public class CheckInProjectMonthlySummaryServiceTest {
         assertEquals(1, summary.getNoOfCheckIns());
         assertEquals(1, summary.getTypeDistribution().get("unknown"));
         assertEquals(1, summary.getHourDistribution().get("9"));
-        int totalDays = summary.getDateDistribution().values().stream().mapToInt(Integer::intValue).sum();
+        int totalDays = summary.getDayDistribution().values().stream().mapToInt(Integer::intValue).sum();
         assertEquals(1, totalDays);
         assertEquals(1, summary.getStreak());
         verify(repository, times(1)).save(summary);

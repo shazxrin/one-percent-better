@@ -57,7 +57,7 @@ public class CheckInProjectAggregateMonthlySummary {
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
-    private Map<String, Integer> dateDistribution;
+    private Map<String, Integer> dayDistribution;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -92,9 +92,9 @@ public class CheckInProjectAggregateMonthlySummary {
 
         this.projectDistribution = new LinkedHashMap<>();
 
-        this.dateDistribution = new LinkedHashMap<>();
+        this.dayDistribution = new LinkedHashMap<>();
         for (var i = 1; i <= 31; i++) {
-            this.dateDistribution.put(String.valueOf(i), 0);
+            this.dayDistribution.put(String.valueOf(i), 0);
         }
     }
 
@@ -178,12 +178,12 @@ public class CheckInProjectAggregateMonthlySummary {
         this.projectDistribution = projectDistribution;
     }
 
-    public Map<String, Integer> getDateDistribution() {
-        return dateDistribution;
+    public Map<String, Integer> getDayDistribution() {
+        return dayDistribution;
     }
 
-    public void setDateDistribution(Map<String, Integer> dateDistribution) {
-        this.dateDistribution = dateDistribution;
+    public void setDayDistribution(Map<String, Integer> dateDistribution) {
+        this.dayDistribution = dateDistribution;
     }
 
     public LocalDateTime getCreatedAt() {

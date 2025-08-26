@@ -57,7 +57,7 @@ public class CheckInProjectMonthlySummary {
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
-    private Map<String, Integer> dateDistribution;
+    private Map<String, Integer> dayDistribution;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
@@ -96,9 +96,9 @@ public class CheckInProjectMonthlySummary {
             this.hourDistribution.put(String.valueOf(i), 0);
         }
 
-        this.dateDistribution = new LinkedHashMap<>();
+        this.dayDistribution = new LinkedHashMap<>();
         for (var i = 1; i <= 31; i++) {
-            this.dateDistribution.put(String.valueOf(i), 0);
+            this.dayDistribution.put(String.valueOf(i), 0);
         }
     }
 
@@ -174,12 +174,12 @@ public class CheckInProjectMonthlySummary {
         this.hourDistribution = hourDistribution;
     }
 
-    public Map<String, Integer> getDateDistribution() {
-        return dateDistribution;
+    public Map<String, Integer> getDayDistribution() {
+        return dayDistribution;
     }
 
-    public void setDateDistribution(Map<String, Integer> dayDistribution) {
-        this.dateDistribution = dayDistribution;
+    public void setDayDistribution(Map<String, Integer> dayDistribution) {
+        this.dayDistribution = dayDistribution;
     }
 
     public Project getProject() {

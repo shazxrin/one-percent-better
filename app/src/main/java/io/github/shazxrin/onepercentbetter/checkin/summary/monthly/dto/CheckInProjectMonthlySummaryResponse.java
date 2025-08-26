@@ -22,7 +22,7 @@ public record CheckInProjectMonthlySummaryResponse(
             summary.getStreak(),
             summary.getTypeDistribution(),
             summary.getHourDistribution(),
-            summary.getDateDistribution()
+            summary.getDayDistribution()
         );
     }
 }

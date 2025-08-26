@@ -10,8 +10,8 @@ public class StreakUtility {
         int maxStreak = 0;
         int currentStreak = 0;
         for (int i = 1; i <= dayDistribution.size(); i++) {
-            String date = String.valueOf(i);
-            if (dayDistribution.get(date) > 0) {
+            String day = String.valueOf(i);
+            if (dayDistribution.get(day) > 0) {
                 currentStreak++;
             } else {
                 currentStreak = 0;
