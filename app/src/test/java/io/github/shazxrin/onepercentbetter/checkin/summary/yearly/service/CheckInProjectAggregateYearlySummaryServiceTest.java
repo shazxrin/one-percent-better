@@ -25,13 +25,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CheckInProjectAggregateYearlySummaryServiceTest {
     @Mock
-    private CheckInProjectAggregateYearlySummaryRepository repository;
+    private CheckInProjectAggregateYearlySummaryRepository checkInProjectAggregateYearlySummaryRepository;
 
     @Mock
     private CheckInProjectService checkInProjectService;
 
     @InjectMocks
-    private CheckInProjectAggregateYearlySummaryService service;
+    private CheckInProjectAggregateYearlySummaryService checkInProjectAggregateYearlySummaryService;
 
     @Test
     void testGetAggregateSummary_whenPresent_shouldReturnSummary() {
@@ -44,23 +44,23 @@ public class CheckInProjectAggregateYearlySummaryServiceTest {
             0,
             0
         );
-        when(repository.findByYear(year)).thenReturn(Optional.of(summary));
+        when(checkInProjectAggregateYearlySummaryRepository.findByYear(year)).thenReturn(Optional.of(summary));
 
         // Act
-        var result = service.getAggregateSummary(year);
+        var result = checkInProjectAggregateYearlySummaryService.getAggregateSummary(year);
 
         // Assert
         assertEquals(summary, result);
-        verify(repository).findByYear(year);
+        verify(checkInProjectAggregateYearlySummaryRepository).findByYear(year);
     }
 
     @Test
     void testGetAggregateSummary_whenNotPresent_shouldThrowException() {
         // Arrange
-        when(repository.findByYear(2025)).thenReturn(Optional.empty());
+        when(checkInProjectAggregateYearlySummaryRepository.findByYear(2025)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> service.getAggregateSummary(2025));
+        assertThrows(IllegalStateException.class, () -> checkInProjectAggregateYearlySummaryService.getAggregateSummary(2025));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class CheckInProjectAggregateYearlySummaryServiceTest {
         LocalDate start = LocalDate.of(2025, Month.JANUARY, 1);
         LocalDate end = LocalDate.of(2025, Month.DECEMBER, 31);
         var summary = new CheckInProjectAggregateYearlySummary(year, start, end, 0, 0);
-        when(repository.findByYearWithLock(year)).thenReturn(Optional.of(summary));
+        when(checkInProjectAggregateYearlySummaryRepository.findByYearWithLock(year)).thenReturn(Optional.of(summary));
 
         var p1 = new CheckInProject();
         var p1dt = LocalDateTime.of(2025, 1, 15, 12, 0);
@@ -89,11 +89,11 @@ public class CheckInProjectAggregateYearlySummaryServiceTest {
         when(checkInProjectService.getAllCheckInsBetween(start, end)).thenReturn(List.of(p1, p2));
 
         // Act
-        service.calculateAggregateSummaryForYear(year);
+        checkInProjectAggregateYearlySummaryService.calculateAggregateSummaryForYear(year);
 
         // Assert
         ArgumentCaptor<CheckInProjectAggregateYearlySummary> captor = ArgumentCaptor.forClass(CheckInProjectAggregateYearlySummary.class);
-        verify(repository).save(captor.capture());
+        verify(checkInProjectAggregateYearlySummaryRepository).save(captor.capture());
         var saved = captor.getValue();
 
         assertEquals(2, saved.getNoOfCheckIns());
@@ -126,15 +126,15 @@ public class CheckInProjectAggregateYearlySummaryServiceTest {
         var end = LocalDate.of(year, 12, 31);
         var existing = new CheckInProjectAggregateYearlySummary(year, start, end, 0, 0);
 
-        when(repository.findByYear(year)).thenReturn(Optional.of(existing));
+        when(checkInProjectAggregateYearlySummaryRepository.findByYearWithLock(year)).thenReturn(Optional.of(existing));
         when(checkInProjectService.getAllCheckInsBetween(start, end)).thenReturn(List.of(checkIn));
 
         // Act
-        service.addCheckInToAggregateSummary(123L);
+        checkInProjectAggregateYearlySummaryService.addCheckInToAggregateSummary(123L);
 
         // Assert
         ArgumentCaptor<CheckInProjectAggregateYearlySummary> captor = ArgumentCaptor.forClass(CheckInProjectAggregateYearlySummary.class);
-        verify(repository).save(captor.capture());
+        verify(checkInProjectAggregateYearlySummaryRepository).save(captor.capture());
         var saved = captor.getValue();
 
         assertEquals(1, saved.getNoOfCheckIns());
@@ -151,11 +151,11 @@ public class CheckInProjectAggregateYearlySummaryServiceTest {
         int year = 2025;
 
         // Act
-        service.initAggregateSummary(year);
+        checkInProjectAggregateYearlySummaryService.initAggregateSummary(year);
 
         // Assert
         ArgumentCaptor<CheckInProjectAggregateYearlySummary> captor = ArgumentCaptor.forClass(CheckInProjectAggregateYearlySummary.class);
-        verify(repository).save(captor.capture());
+        verify(checkInProjectAggregateYearlySummaryRepository).save(captor.capture());
         var saved = captor.getValue();
 
         assertEquals(year, saved.getYear());
