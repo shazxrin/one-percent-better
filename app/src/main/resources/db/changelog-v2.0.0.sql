@@ -173,7 +173,7 @@ SELECT
     '{}'::jsonb AS type_distribution,
     '{ "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0,"21": 0, "22": 0, "23": 0 }'::jsonb AS hour_distribution,
     '{}'::jsonb AS project_distribution,
-    '{ "MONDAY": 0, "TUESDAY": 0, "WEDNESDAY": 0, "THURSDAY": 0, "FRIDAY": 0, "SATURDAY": 0, "SUNDAY": 0 }'::jsonb AS day_distribution,
+    '{ "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0 }'::jsonb AS day_distribution,
     CURRENT_TIMESTAMP AS created_at,
     CURRENT_TIMESTAMP AS updated_at
 FROM weekly_dates wd
