@@ -101,9 +101,9 @@ public class CheckInProjectWeeklySummaryServiceTest {
         assertEquals(1, summary.getTypeDistribution().get("unknown"));
         assertEquals(2, summary.getHourDistribution().get("12"));
         assertEquals(2, summary.getHourDistribution().get("1"));
-        assertEquals(1, summary.getDayDistribution().get("MONDAY"));
-        assertEquals(1, summary.getDayDistribution().get("TUESDAY"));
-        assertEquals(2, summary.getDayDistribution().get("WEDNESDAY"));
+        assertEquals(1, summary.getDayDistribution().get("1"));
+        assertEquals(1, summary.getDayDistribution().get("2"));
+        assertEquals(2, summary.getDayDistribution().get("3"));
         verify(repository, times(1)).save(summary);
     }
 
@@ -130,7 +130,7 @@ public class CheckInProjectWeeklySummaryServiceTest {
         assertEquals(1, summary.getNoOfCheckIns());
         assertEquals(1, summary.getTypeDistribution().get("unknown"));
         assertEquals(1, summary.getHourDistribution().get("9"));
-        assertEquals(1, summary.getDayDistribution().get("THURSDAY"));
+        assertEquals(1, summary.getDayDistribution().get("4"));
         // streak computed from day distribution; only one day => 1
         assertEquals(1, summary.getStreak());
         verify(repository, times(1)).save(summary);

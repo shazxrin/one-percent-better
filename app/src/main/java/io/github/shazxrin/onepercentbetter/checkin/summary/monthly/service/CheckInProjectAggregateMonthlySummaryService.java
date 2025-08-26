@@ -138,7 +138,7 @@ public class CheckInProjectAggregateMonthlySummaryService {
         summary.getProjectDistribution().put(projectKey, projectCount);
         summary.getDateDistribution().put(dateKey, dateCount);
 
-        int streak = StreakUtility.calculateMaxStreakFromDateDistribution(summary.getDateDistribution());
+        int streak = StreakUtility.calculateMaxStreakFromDayDistribution(summary.getDateDistribution());
         summary.setStreak(streak);
 
         checkInProjectAggregateMonthlySummaryRepository.save(summary);

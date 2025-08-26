@@ -96,8 +96,8 @@ public class CheckInProjectAggregateWeeklySummaryServiceTest {
         assertEquals(1, saved.getTypeDistribution().getOrDefault("unknown", 0));
         assertEquals(2, saved.getHourDistribution().getOrDefault("12", 0));
         assertEquals(2, saved.getProjectDistribution().getOrDefault("Alpha", 0));
-        assertEquals(1, saved.getDayDistribution().getOrDefault(DayOfWeek.MONDAY.toString(), 0));
-        assertEquals(1, saved.getDayDistribution().getOrDefault(DayOfWeek.TUESDAY.toString(), 0));
+        assertEquals(1, saved.getDayDistribution().getOrDefault(String.valueOf(DayOfWeek.MONDAY.getValue()), 0));
+        assertEquals(1, saved.getDayDistribution().getOrDefault(String.valueOf(DayOfWeek.TUESDAY.getValue()), 0));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class CheckInProjectAggregateWeeklySummaryServiceTest {
         assertEquals(1, saved.getTypeDistribution().getOrDefault("chore", 0));
         assertEquals(1, saved.getHourDistribution().getOrDefault("10", 0));
         assertEquals(1, saved.getProjectDistribution().getOrDefault("Beta", 0));
-        assertEquals(1, saved.getDayDistribution().getOrDefault(dt.getDayOfWeek().toString(), 0));
+        assertEquals(1, saved.getDayDistribution().getOrDefault(String.valueOf(dt.getDayOfWeek().getValue()), 0));
         assertTrue(saved.getStreak() >= 1);
     }
 }

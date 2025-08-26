@@ -109,7 +109,7 @@ public class CheckInProjectYearlySummaryService {
         summary.getHourDistribution().put(hourKey, summary.getHourDistribution().getOrDefault(hourKey, 0) + 1);
         summary.getDayDistribution().put(dayKey, summary.getDayDistribution().getOrDefault(dayKey, 0) + 1);
 
-        int streak = StreakUtility.calculateMaxStreakFromDateDistribution(summary.getDayDistribution());
+        int streak = StreakUtility.calculateMaxStreakFromDayDistribution(summary.getDayDistribution());
         summary.setStreak(streak);
 
         repository.save(summary);

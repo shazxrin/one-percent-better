@@ -91,7 +91,7 @@ public class CheckInProjectAggregateWeeklySummaryService {
 
         // Calculate day distribution
         checkIns.stream()
-            .map(c -> c.getDateTime().getDayOfWeek().toString())
+            .map(c -> String.valueOf(c.getDateTime().getDayOfWeek().getValue()))
             .collect(Collectors.groupingBy(
                 Function.identity(),
                 Collectors.summingInt(_ -> 1)
@@ -122,7 +122,7 @@ public class CheckInProjectAggregateWeeklySummaryService {
         var typeKey = Objects.requireNonNullElse(checkInProject.getType(), "unknown");
         var hourKey = String.valueOf(checkInProject.getDateTime().getHour());
         var projectKey = checkInProject.getProject().getName();
-        var dayKey = checkInProject.getDateTime().getDayOfWeek().toString();
+        var dayKey = String.valueOf(checkInProject.getDateTime().getDayOfWeek().getValue());
 
         int noOfCheckIns = summary.getNoOfCheckIns() + 1;
         int typeCount = summary.getTypeDistribution()

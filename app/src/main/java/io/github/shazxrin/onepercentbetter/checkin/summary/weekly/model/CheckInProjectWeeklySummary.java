@@ -98,8 +98,8 @@ public class CheckInProjectWeeklySummary {
         }
 
         this.dayDistribution = new LinkedHashMap<>();
-        for (var i = 0; i < 7; i++) {
-            this.dayDistribution.put(DayOfWeek.values()[i].toString(), 0);
+        for (var i = 1; i <= 7; i++) {
+            this.dayDistribution.put(String.valueOf(i), 0);
         }
     }
 
