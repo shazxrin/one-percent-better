@@ -3,6 +3,7 @@ package io.github.shazxrin.onepercentbetter.checkin.summary.repository;
 import io.github.shazxrin.onepercentbetter.checkin.summary.model.CheckInProjectWeeklySummary;
 import io.github.shazxrin.onepercentbetter.configuration.RepositoryTestConfiguration;
 import io.github.shazxrin.onepercentbetter.project.model.Project;
+import java.util.LinkedHashMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -35,10 +36,10 @@ public class CheckInProjectWeeklySummaryRepositoryTest {
         int weekNo = start.get(java.time.temporal.WeekFields.of(DayOfWeek.MONDAY, 4).weekOfYear());
         LocalDate end = start.plusDays(6);
 
-        CheckInProjectWeeklySummary summary = new CheckInProjectWeeklySummary(weekNo, year, start, end, 0, 0, project);
-        summary.setTypeDistribution(new java.util.LinkedHashMap<>());
-        summary.setHourDistribution(new java.util.LinkedHashMap<>());
-        summary.setDayDistribution(new java.util.LinkedHashMap<>());
+        CheckInProjectWeeklySummary summary = new CheckInProjectWeeklySummary(year, weekNo, start, end, 0, 0, project);
+        summary.setTypeDistribution(new LinkedHashMap<>());
+        summary.setHourDistribution(new LinkedHashMap<>());
+        summary.setDayDistribution(new LinkedHashMap<>());
         entityManager.persistAndFlush(summary);
 
         // When
