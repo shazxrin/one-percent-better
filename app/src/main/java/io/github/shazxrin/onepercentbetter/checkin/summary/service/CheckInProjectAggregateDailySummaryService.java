@@ -35,7 +35,7 @@ public class CheckInProjectAggregateDailySummaryService {
     }
 
     @Transactional
-    public void calculateAggregateSummary(LocalDate date, boolean withCount) {
+    public void calculateAggregateSummaryForDate(LocalDate date, boolean withCount) {
         LocalDate previousDate = date.minusDays(1);
 
         var previousDateAggregateSummary = checkInProjectAggregateDailySummaryRepository
@@ -138,7 +138,7 @@ public class CheckInProjectAggregateDailySummaryService {
         var today = LocalDate.now();
         var currentDate = date.plusDays(1);
         while (!currentDate.isAfter(today)) {
-            calculateAggregateSummary(currentDate, false);
+            calculateAggregateSummaryForDate(currentDate, false);
 
             currentDate = currentDate.plusDays(1);
         }

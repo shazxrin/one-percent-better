@@ -61,7 +61,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     }
 
     @Test
-    void testCalculateAggregateSummary_whenPreviousHasStreakAndCurrentHasCheckIns_shouldContinueStreak() {
+    void testCalculateAggregateSummaryForDate_whenPreviousHasStreakAndCurrentHasCheckIns_shouldContinueStreak() {
         // Given
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
         LocalDateTime previousDate = currentDateTime.minusDays(1);
@@ -84,7 +84,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
             .thenReturn(List.of(checkInProject1, checkInProject2, checkInProject3));
 
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummaryForDate(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -100,7 +100,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     }
 
     @Test
-    void testCalculateAggregateSummary_whenPreviousHasStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
+    void testCalculateAggregateSummaryForDate_whenPreviousHasStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
         // Given
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
         LocalDateTime previousDateTime = currentDateTime.minusDays(1);
@@ -117,7 +117,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
             .thenReturn(List.of());
         
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummaryForDate(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -133,7 +133,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     }
     
     @Test
-    void testCalculateAggregateSummary_whenPreviousHasNoStreakAndCurrentHasCheckIns_shouldStartStreakForCurrent() {
+    void testCalculateAggregateSummaryForDate_whenPreviousHasNoStreakAndCurrentHasCheckIns_shouldStartStreakForCurrent() {
         // Given
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
         LocalDateTime previousDateTime = currentDateTime.minusDays(1);
@@ -156,7 +156,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
             .thenReturn(List.of(checkInProject1, checkInProject2, checkInProject3));
         
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummaryForDate(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -172,7 +172,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     }
     
     @Test
-    void testCalculateAggregateSummary_whenPreviousHasNoStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
+    void testCalculateAggregateSummaryForDate_whenPreviousHasNoStreakAndCurrentHasNoCheckIns_shouldHaveZeroStreakForCurrent() {
         // Given
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 7, 30, 12, 0);
         LocalDateTime previousDateTime = currentDateTime.minusDays(1);
@@ -189,7 +189,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
             .thenReturn(List.of());
         
         // When
-        checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDateTime.toLocalDate(), true);
+        checkInProjectAggregateDailySummaryService.calculateAggregateSummaryForDate(currentDateTime.toLocalDate(), true);
         
         // Then
         ArgumentCaptor<CheckInProjectAggregateDailySummary> summaryCaptor = 
@@ -203,7 +203,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
     }
 
     @Test
-    void testCalculateAggregateSummary_whenPreviousNotPresent_shouldThrowException() {
+    void testCalculateAggregateSummaryForDate_whenPreviousNotPresent_shouldThrowException() {
         // Given
         LocalDate currentDate = LocalDate.of(2025, 7, 30);
         LocalDate previousDate = currentDate.minusDays(1);
@@ -211,11 +211,11 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
             .thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(IllegalStateException.class, () -> checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true));
+        assertThrows(IllegalStateException.class, () -> checkInProjectAggregateDailySummaryService.calculateAggregateSummaryForDate(currentDate, true));
     }
 
     @Test
-    void testCalculateAggregateSummary_whenCurrentNotPresent_shouldThrowException() {
+    void testCalculateAggregateSummaryForDate_whenCurrentNotPresent_shouldThrowException() {
         // Given
         LocalDate currentDate = LocalDate.of(2025, 7, 30);
         when(checkInProjectAggregateDailySummaryRepository.findByDateWithLock(currentDate))
@@ -227,7 +227,7 @@ public class CheckInProjectAggregateDailySummaryServiceTest {
             .thenReturn(Optional.of(previousSummary));
 
         // When & Then
-        assertThrows(IllegalStateException.class, () -> checkInProjectAggregateDailySummaryService.calculateAggregateSummary(currentDate, true));
+        assertThrows(IllegalStateException.class, () -> checkInProjectAggregateDailySummaryService.calculateAggregateSummaryForDate(currentDate, true));
     }
 
 
