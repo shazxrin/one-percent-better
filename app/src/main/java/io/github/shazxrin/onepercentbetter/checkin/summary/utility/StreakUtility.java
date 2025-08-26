@@ -25,7 +25,7 @@ public class StreakUtility {
     public static int calculateMaxStreakFromDateDistribution(Map<String, Integer> dateDistribution) {
         int maxStreak = 0;
         int currentStreak = 0;
-        for (int i = 1; i <= 31; i++) {
+        for (int i = 1; i <= dateDistribution.size(); i++) {
             String date = String.valueOf(i);
             if (dateDistribution.get(date) > 0) {
                 currentStreak++;
