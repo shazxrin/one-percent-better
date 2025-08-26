@@ -112,7 +112,7 @@ public class CheckInProjectAggregateYearlySummaryService {
 
         int year = checkInProject.getDateTime().getYear();
 
-        var summary = checkInProjectAggregateYearlySummaryRepository.findByYear(year)
+        var summary = checkInProjectAggregateYearlySummaryRepository.findByYearWithLock(year)
             .orElseThrow(() -> new IllegalStateException("No summary found for the given year. Cannot update."));
 
         var typeKey = Objects.requireNonNullElse(checkInProject.getType(), "unknown");
