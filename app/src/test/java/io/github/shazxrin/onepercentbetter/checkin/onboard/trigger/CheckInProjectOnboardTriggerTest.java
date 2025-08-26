@@ -4,6 +4,7 @@ import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectSe
 import io.github.shazxrin.onepercentbetter.checkin.summary.daily.service.CheckInProjectDailySummaryService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.monthly.service.CheckInProjectMonthlySummaryService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.weekly.service.CheckInProjectWeeklySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.yearly.service.CheckInProjectYearlySummaryService;
 import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,9 @@ public class CheckInProjectOnboardTriggerTest {
     @Mock
     private CheckInProjectMonthlySummaryService checkInProjectMonthlySummaryService;
 
+    @Mock
+    private CheckInProjectYearlySummaryService checkInProjectYearlySummaryService;
+
     @InjectMocks
     private CheckInProjectOnboardTrigger checkInProjectOnboardTrigger;
 
@@ -49,6 +53,7 @@ public class CheckInProjectOnboardTriggerTest {
         verify(checkInProjectDailySummaryService, times(1)).initSummary(eq(projectId));
         verify(checkInProjectWeeklySummaryService, times(1)).initSummary(eq(projectId));
         verify(checkInProjectMonthlySummaryService, times(1)).initSummary(eq(projectId));
+        verify(checkInProjectYearlySummaryService, times(1)).initSummary(eq(projectId));
         verify(checkInProjectService, times(1)).checkInInterval(eq(projectId), eq(firstDayOfYear), eq(now));
     }
 }
