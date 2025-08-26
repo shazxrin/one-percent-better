@@ -2,7 +2,7 @@ package io.github.shazxrin.onepercentbetter.coach.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectAggregateDailySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.daily.service.CheckInProjectAggregateDailySummaryService;
 import io.github.shazxrin.onepercentbetter.coach.exception.CoachException;
 import io.github.shazxrin.onepercentbetter.coach.model.CoachReminder;
 import io.github.shazxrin.onepercentbetter.notification.service.NotificationService;

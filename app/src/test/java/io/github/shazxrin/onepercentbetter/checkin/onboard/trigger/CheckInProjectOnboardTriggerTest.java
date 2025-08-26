@@ -1,8 +1,8 @@
 package io.github.shazxrin.onepercentbetter.checkin.onboard.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
-import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectDailySummaryService;
-import io.github.shazxrin.onepercentbetter.checkin.summary.service.CheckInProjectWeeklySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.daily.service.CheckInProjectDailySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.weekly.service.CheckInProjectWeeklySummaryService;
 import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
