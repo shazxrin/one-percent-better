@@ -2,6 +2,7 @@ package io.github.shazxrin.onepercentbetter.checkin.onboard.trigger;
 
 import io.github.shazxrin.onepercentbetter.checkin.core.service.CheckInProjectService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.daily.service.CheckInProjectDailySummaryService;
+import io.github.shazxrin.onepercentbetter.checkin.summary.monthly.service.CheckInProjectMonthlySummaryService;
 import io.github.shazxrin.onepercentbetter.checkin.summary.weekly.service.CheckInProjectWeeklySummaryService;
 import io.github.shazxrin.onepercentbetter.project.event.ProjectAddedEvent;
 import io.micrometer.observation.annotation.Observed;
@@ -19,15 +20,18 @@ public class CheckInProjectOnboardTrigger {
     private final CheckInProjectService checkInProjectService;
     private final CheckInProjectDailySummaryService checkInProjectDailySummaryService;
     private final CheckInProjectWeeklySummaryService checkInProjectWeeklySummaryService;
+    private final CheckInProjectMonthlySummaryService checkInProjectMonthlySummaryService;
 
     public CheckInProjectOnboardTrigger(
         CheckInProjectService checkInProjectService,
         CheckInProjectDailySummaryService checkInProjectDailySummaryService,
-        CheckInProjectWeeklySummaryService checkInProjectWeeklySummaryService
+        CheckInProjectWeeklySummaryService checkInProjectWeeklySummaryService,
+        CheckInProjectMonthlySummaryService checkInProjectMonthlySummaryService
     ) {
         this.checkInProjectService = checkInProjectService;
         this.checkInProjectDailySummaryService = checkInProjectDailySummaryService;
         this.checkInProjectWeeklySummaryService = checkInProjectWeeklySummaryService;
+        this.checkInProjectMonthlySummaryService = checkInProjectMonthlySummaryService;
     }
 
     @Async
@@ -41,6 +45,7 @@ public class CheckInProjectOnboardTrigger {
         // Init summaries for first day of year to last day of year for project
         checkInProjectDailySummaryService.initSummary(event.getProjectId());
         checkInProjectWeeklySummaryService.initSummary(event.getProjectId());
+        checkInProjectMonthlySummaryService.initSummary(event.getProjectId());
 
         // Check in current project from first day of year to now
         checkInProjectService.checkInInterval(event.getProjectId(), firstDayOfYear, now);

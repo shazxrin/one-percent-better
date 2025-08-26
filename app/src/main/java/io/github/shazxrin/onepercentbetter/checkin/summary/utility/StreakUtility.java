@@ -22,6 +22,21 @@ public class StreakUtility {
         return maxStreak;
     }
 
+    public static int calculateMaxStreakFromDateDistribution(Map<String, Integer> dateDistribution) {
+        int maxStreak = 0;
+        int currentStreak = 0;
+        for (int i = 1; i <= 31; i++) {
+            String date = String.valueOf(i);
+            if (dateDistribution.get(date) > 0) {
+                currentStreak++;
+            } else {
+                currentStreak = 0;
+            }
+            maxStreak = Math.max(maxStreak, currentStreak);
+        }
+        return maxStreak;
+    }
+
     public static int calculateMaxStreakFromCheckIns(List<CheckInProject> checkInProjects) {
         List<LocalDate> dates = checkInProjects.stream()
             .map(c -> c.getDateTime().toLocalDate())
