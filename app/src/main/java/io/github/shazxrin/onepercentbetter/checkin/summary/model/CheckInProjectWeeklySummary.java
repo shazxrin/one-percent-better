@@ -31,10 +31,10 @@ public class CheckInProjectWeeklySummary {
     private Long id;
 
     @Column(nullable = false)
-    private int weekNo;
+    private int year;
 
     @Column(nullable = false)
-    private int year;
+    private int weekNo;
 
     @Column(nullable = false)
     private LocalDate startDate;
@@ -71,8 +71,8 @@ public class CheckInProjectWeeklySummary {
     private LocalDateTime updatedAt;
 
     public CheckInProjectWeeklySummary(
-        int weekNo,
         int year,
+        int weekNo,
         LocalDate startDate,
         LocalDate endDate,
         int noOfCheckIns,
@@ -80,8 +80,8 @@ public class CheckInProjectWeeklySummary {
         Project project
     ) {
         this();
-        this.weekNo = weekNo;
         this.year = year;
+        this.weekNo = weekNo;
         this.startDate = startDate;
         this.endDate = endDate;
         this.noOfCheckIns = noOfCheckIns;
