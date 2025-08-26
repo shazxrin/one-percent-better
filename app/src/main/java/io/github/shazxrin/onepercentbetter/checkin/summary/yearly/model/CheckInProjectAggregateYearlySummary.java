@@ -88,7 +88,7 @@ public class CheckInProjectAggregateYearlySummary {
         this.projectDistribution = new LinkedHashMap<>();
 
         this.dayDistribution = new LinkedHashMap<>();
-        for (var i = 1; i <= 12; i++) {
+        for (var i = 1; i <= 366; i++) {
             this.dayDistribution.put(String.valueOf(i), 0);
         }
     }
