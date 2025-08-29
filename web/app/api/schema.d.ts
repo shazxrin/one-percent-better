@@ -4,6 +4,24 @@
  */
 
 export interface paths {
+    "/api/check-ins/habits/{checkInId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update check in habit */
+        put: operations["putUpdateCheckInHabit"];
+        post?: never;
+        /** Remove check in habit */
+        delete: operations["deleteRemoveCheckInHabit"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/projects": {
         parameters: {
             query?: never;
@@ -16,6 +34,269 @@ export interface paths {
         put?: never;
         /** Add a new project */
         post: operations["postAddProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/habits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all habits */
+        get: operations["getAllHabits"];
+        put?: never;
+        /** Add a new habit */
+        post: operations["postAddHabit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check in for a projects on date */
+        post: operations["postCheckInProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/yearly-summaries/{projectId}/{year}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get yearly summary of check-ins for a project. */
+        get: operations["getCheckInProjectYearlySummary"];
+        put?: never;
+        /** Calculate yearly summary of check-ins for a project. */
+        post: operations["postCalculatesCheckInProjectYearlySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/yearly-summaries/aggregate/{year}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get check-in project aggregate yearly summary for year */
+        get: operations["getCheckInProjectAggregateYearlySummary"];
+        put?: never;
+        /** Calculate check-in project aggregate yearly summary for year */
+        post: operations["postCalculateCheckInProjectAggregateYearlySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/weekly-summaries/{projectId}/{year}/{weekNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get weekly summary of check-ins for a project. */
+        get: operations["getCheckInProjectWeeklySummary"];
+        put?: never;
+        /** Calculate weekly summary of check-ins for a project. */
+        post: operations["postCalculatesCheckInProjectWeeklySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/weekly-summaries/aggregate/{year}/{weekNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get check-in project aggregate weekly summary for year and week */
+        get: operations["getCheckInProjectAggregateWeeklySummary"];
+        put?: never;
+        /** Calculate check-in project aggregate weekly summary for year and week */
+        post: operations["postCalculatesCheckInProjectAggregateWeeklySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/monthly-summaries/{projectId}/{year}/{monthNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get monthly summary of check-ins for a project. */
+        get: operations["getCheckInProjectMonthlySummary"];
+        put?: never;
+        /** Calculate monthly summary of check-ins for a project. */
+        post: operations["postCalculatesCheckInProjectMonthlySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/monthly-summaries/aggregate/{year}/{monthNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get check-in project aggregate monthly summary for year and month */
+        get: operations["getCheckInProjectAggregateMonthlySummary"];
+        put?: never;
+        /** Calculate check-in project aggregate monthly summary for year and month */
+        post: operations["postCalculateCheckInProjectAggregateMonthlySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/interval/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check in for a projects between date interval */
+        post: operations["postCheckInProjectInterval"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/interval/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check in for all projects between date interval */
+        post: operations["postCheckInProjectAllInterval"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/daily-summaries/{projectId}/{date}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get check-in project daily summary for date */
+        get: operations["getCheckInProjectDailySummary"];
+        put?: never;
+        /** Calculate check-in project daily summary for date */
+        post: operations["postCalculatesCheckInProjectDailySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/daily-summaries/aggregate/{date}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get check-in project aggregate daily summary for date */
+        get: operations["getCheckInProjectAggregateDailySummary"];
+        put?: never;
+        /** Calculate check-in project aggregate daily summary for date */
+        post: operations["postCalculatesCheckInProjectAggregateDailySummary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/projects/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check in for all projects on date */
+        post: operations["postCheckInProjectAll"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/check-ins/habits/{habitId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check in habit */
+        post: operations["postAddCheckInHabit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
         /** Delete a project */
         delete: operations["deleteProject"];
         options?: never;
@@ -23,19 +304,18 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/check-ins/today": {
+    "/api/habits/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get info about today's check in */
-        get: operations["getCheckInToday"];
+        get?: never;
         put?: never;
-        /** Check in today */
-        post: operations["postCheckInToday"];
-        delete?: never;
+        post?: never;
+        /** Delete a habit */
+        delete: operations["deleteRemoveHabit"];
         options?: never;
         head?: never;
         patch?: never;
@@ -58,25 +338,187 @@ export interface components {
                 [key: string]: unknown;
             };
         };
-        AddProject: {
-            owner?: string;
-            name?: string;
-        };
-        ListItemProject: {
-            owner?: string;
-            name?: string;
-        };
-        TodaysCheckIn: {
+        CheckInHabitUpdateRequest: {
+            /** Format: date */
+            date?: string;
             /** Format: int32 */
-            count?: number;
+            amount?: number;
+            notes?: string;
+        };
+        AddProjectRequest: {
+            name?: string;
+        };
+        AddProjectResponse: {
+            /** Format: int64 */
+            id?: number;
+        };
+        AddHabitRequest: {
+            name: string;
+            description: string;
+        };
+        CheckInHabitAddRequest: {
+            /** Format: date */
+            date?: string;
+            /** Format: int32 */
+            amount?: number;
+            notes?: string;
+        };
+        GetAllProjectsResponse: components["schemas"]["ListItem"][];
+        ListItem: {
+            /** Format: int64 */
+            id?: number;
+            name?: string;
+        };
+        GetAllHabitsResponse: components["schemas"]["ListItem"][];
+        CheckInProjectYearlySummaryResponse: {
+            /** Format: date */
+            startDate?: string;
+            /** Format: date */
+            endDate?: string;
+            /** Format: int32 */
+            noOfCheckIns?: number;
             /** Format: int32 */
             streak?: number;
-            /** Format: date-time */
-            updatedAt?: string;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            dayDistribution?: {
+                [key: string]: number;
+            };
         };
-        DeleteProject: {
-            owner?: string;
-            name?: string;
+        CheckInProjectAggregateYearlySummaryResponse: {
+            /** Format: date */
+            startDate?: string;
+            /** Format: date */
+            endDate?: string;
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            projectDistribution?: {
+                [key: string]: number;
+            };
+            dayDistribution?: {
+                [key: string]: number;
+            };
+        };
+        CheckInProjectWeeklySummaryResponse: {
+            /** Format: date */
+            startDate?: string;
+            /** Format: date */
+            endDate?: string;
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            dayDistribution?: {
+                [key: string]: number;
+            };
+        };
+        CheckInProjectAggregateWeeklySummaryResponse: {
+            /** Format: date */
+            startDate?: string;
+            /** Format: date */
+            endDate?: string;
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            projectDistribution?: {
+                [key: string]: number;
+            };
+            dayDistribution?: {
+                [key: string]: number;
+            };
+        };
+        CheckInProjectMonthlySummaryResponse: {
+            /** Format: date */
+            startDate?: string;
+            /** Format: date */
+            endDate?: string;
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            dateDistribution?: {
+                [key: string]: number;
+            };
+        };
+        CheckInProjectAggregateMonthlySummaryResponse: {
+            /** Format: date */
+            startDate?: string;
+            /** Format: date */
+            endDate?: string;
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            projectDistribution?: {
+                [key: string]: number;
+            };
+            dateDistribution?: {
+                [key: string]: number;
+            };
+        };
+        CheckInProjectDailySummaryResponse: {
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+        };
+        CheckInProjectAggregateDailySummaryResponse: {
+            /** Format: int32 */
+            noOfCheckIns?: number;
+            /** Format: int32 */
+            streak?: number;
+            typeDistribution?: {
+                [key: string]: number;
+            };
+            hourDistribution?: {
+                [key: string]: number;
+            };
+            projectDistribution?: {
+                [key: string]: number;
+            };
         };
     };
     responses: never;
@@ -87,6 +529,68 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    putUpdateCheckInHabit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                checkInId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckInHabitUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Updated check in habit successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    deleteRemoveCheckInHabit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                checkInId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed check in habit successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
     getAllProjects: {
         parameters: {
             query?: never;
@@ -102,7 +606,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ListItemProject"][];
+                    "*/*": components["schemas"]["GetAllProjectsResponse"];
                 };
             };
             /** @description Bad Request */
@@ -125,11 +629,73 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AddProject"];
+                "application/json": components["schemas"]["AddProjectRequest"];
             };
         };
         responses: {
             /** @description Add a new project successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AddProjectResponse"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getAllHabits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get all habits successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GetAllHabitsResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postAddHabit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddHabitRequest"];
+            };
+        };
+        responses: {
+            /** @description Add a new habit successfully */
             201: {
                 headers: {
                     [name: string]: unknown;
@@ -147,18 +713,667 @@ export interface operations {
             };
         };
     };
-    deleteProject: {
+    postCheckInProject: {
+        parameters: {
+            query: {
+                date: string;
+            };
+            header?: never;
+            path: {
+                projectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check in for project on date successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectYearlySummary: {
         parameters: {
             query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                year: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get yearly summary of check-ins for a project successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectYearlySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculatesCheckInProjectYearlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                year: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculate yearly summary of check-ins for a project successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectAggregateYearlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get check-in project aggregate yearly summary for year successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectAggregateYearlySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculateCheckInProjectAggregateYearlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculate check-in project aggregate yearly summary for year successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectWeeklySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                year: number;
+                weekNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get weekly summary of check-ins for a project successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectWeeklySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculatesCheckInProjectWeeklySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                year: number;
+                weekNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculate weekly summary of check-ins for a project successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectAggregateWeeklySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+                weekNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get check-in project aggregate weekly summary for year and week successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectAggregateWeeklySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculatesCheckInProjectAggregateWeeklySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+                weekNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculate check-in project aggregate weekly summary for year and week successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectMonthlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                year: number;
+                monthNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get monthly summary of check-ins for a project successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectMonthlySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculatesCheckInProjectMonthlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                year: number;
+                monthNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculate monthly summary of check-ins for a project successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectAggregateMonthlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+                monthNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get check-in project aggregate monthly summary for year and month successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectAggregateMonthlySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculateCheckInProjectAggregateMonthlySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+                monthNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculate check-in project aggregate monthly summary for year and month successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCheckInProjectInterval: {
+        parameters: {
+            query: {
+                fromDate: string;
+                toDate: string;
+            };
+            header?: never;
+            path: {
+                projectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check in for project between date interval successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCheckInProjectAllInterval: {
+        parameters: {
+            query: {
+                fromDate: string;
+                toDate: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteProject"];
+        requestBody?: never;
+        responses: {
+            /** @description Check in for all projects between date interval successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
             };
         };
+    };
+    getCheckInProjectDailySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get check-in project summary for date successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectDailySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculatesCheckInProjectDailySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculated check-in project summary for date successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCheckInProjectAggregateDailySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Get check-in project aggregate daily summary for date successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CheckInProjectAggregateDailySummaryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCalculatesCheckInProjectAggregateDailySummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Calculated check-in project aggregate daily summary for date successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postCheckInProjectAll: {
+        parameters: {
+            query: {
+                date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check in for all projects on date successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    postAddCheckInHabit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                habitId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckInHabitAddRequest"];
+            };
+        };
+        responses: {
+            /** @description Check in habit successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    deleteProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Delete a project successfully */
             200: {
@@ -185,52 +1400,25 @@ export interface operations {
             };
         };
     };
-    getCheckInToday: {
+    deleteRemoveHabit: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Get info about today's check in successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["TodaysCheckIn"];
-                };
-            };
-            /** @description Bad Request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-        };
-    };
-    postCheckInToday: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Check in today successfully */
+            /** @description Delete a habit successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description Bad Request */
+            /** @description Bad request */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -238,6 +1426,13 @@ export interface operations {
                 content: {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
+            };
+            /** @description Habit not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

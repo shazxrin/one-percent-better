@@ -1,15 +1,15 @@
 import { ActionIcon, Anchor, Button, Divider, Group, Modal, Stack, Table, TextInput, Title } from "@mantine/core"
 import { IconExclamationCircle, IconPlus, IconTrash } from "@tabler/icons-react"
 import { z } from "zod/v4"
-import { type ActionFunction, Form, type LoaderFunction, useLoaderData } from "react-router"
+import { type ActionFunction, Form, type LoaderFunction, useActionData, useLoaderData } from "react-router"
 import apiClient from "~/api/api-client"
 import { notifications } from "@mantine/notifications"
 import { useDisclosure } from "@mantine/hooks"
+import React, { useEffect } from "react";
 
 type LoaderData = {
     projects: {
-        owner?: string | undefined,
-        name?: string | undefined
+        name: string
     }[]
 }
 
@@ -20,81 +20,125 @@ export const loader: LoaderFunction = async ({ }): Promise<LoaderData> => {
     }
 
     const projects = getProjectsResponse.data
+        .map((project) => ({ name: project.name ?? "unknown/unknown" }))
 
     return {
         projects: projects
     }
 }
 
-const actionFormDataSchema = z.object({
-    intent: z.enum(["delete", "add"]),
-    owner: z.string().min(1, "Owner is required"),
+type ActionData = {
+    intent: "delete" | "add"
+    success: boolean
+}
+
+const deleteFormDataSchema = z.object({
+    intent: z.literal("delete"),
+    id: z.int().min(1, "ID is required"),
+})
+const addFormDataSchema = z.object({
+    intent: z.literal("add"),
     name: z.string().min(1, "Name is required"),
 })
-export const action: ActionFunction = async ({ request }): Promise<void> => {
+const actionFormDataSchema = z.union([deleteFormDataSchema, addFormDataSchema])
+
+export const action: ActionFunction = async ({ request }): Promise<ActionData> => {
     const formData = await request.formData()
     const parsedFormData = actionFormDataSchema.safeParse(Object.fromEntries(formData))
     if (!parsedFormData.success) {
         console.error("Invalid form data", parsedFormData.error)
         throw new Response("Invalid form data", { status: 400 })
     }
-    const { intent, owner, name } = parsedFormData.data
+    const { intent } = parsedFormData.data
     if (intent === "delete") {
-        const deleteProjectResponse = await apiClient.DELETE(`/api/projects`, {
-            body: {
-                owner: owner,
-                name: name,
+        const { id } = parsedFormData.data
+        const deleteProjectResponse = await apiClient.DELETE(`/api/projects/{id}`, {
+            params: {
+                path: {
+                    id: id
+                }
             }
         })
 
         if (deleteProjectResponse.error) {
-            notifications.show({
-                icon: <IconExclamationCircle size={16} />,
-                title: "Failed to delete project",
-                message: "An error occurred while deleting the project.",
-                color: "red"
-            })
-            return
+            return {
+                intent: "delete",
+                success: false
+            }
         }
 
-        notifications.show({
-            icon: <IconTrash size={16} />,
-            title: "Project deleted",
-            message: `${owner}/${name} has been deleted successfully.`,
-            color: "red"
-        })
+        return {
+            intent: "delete",
+            success: true
+        }
     } else if (intent === "add") {
+        const { name } = parsedFormData.data
+
         const addProjectResponse = await apiClient.POST("/api/projects", {
             body: {
-                owner: owner,
                 name: name,
             }
         })
 
         if (addProjectResponse.error) {
-            notifications.show({
-                icon: <IconExclamationCircle size={16} />,
-                title: "Failed to add project",
-                message: "An error occurred while adding the project.",
-                color: "red"
-            })
-
-            return
+            return {
+                intent: "add",
+                success: false
+            }
         }
 
-        notifications.show({
-            icon: <IconPlus size={16} />,
-            title: "Project added",
-            message: `${owner}/${name} has been added successfully.`,
-            color: "green"
-        })
+        return {
+            intent: "add",
+            success: true
+        }
     }
 
-    return
+    throw new Response("Invalid intent", { status: 400 })
 }
 
 const ProjectsPage: React.FC = () => {
     const { projects } = useLoaderData<LoaderData>()
+    const actionData = useActionData<ActionData>()
+
+    useEffect(() => {
+        if (!actionData) {
+            return
+        }
+
+        if (actionData.intent === "delete") {
+            if (actionData.success) {
+                notifications.show({
+                    icon: <IconTrash size={16} />,
+                    title: "Project deleted",
+                    message: "Project has been deleted successfully.",
+                    color: "red"
+                })
+            } else {
+                notifications.show({
+                    icon: <IconExclamationCircle size={16} />,
+                    title: "Failed to delete project",
+                    message: "An error occurred while deleting the project.",
+                    color: "red"
+                })
+            }
+        } else if (actionData.intent === "add") {
+            if (actionData.success) {
+                notifications.show({
+                    icon: <IconPlus size={16} />,
+                    title: "Project added",
+                    message: "Project has been added successfully.",
+                    color: "green"
+                })
+            } else {
+                notifications.show({
+                    icon: <IconExclamationCircle size={16} />,
+                    title: "Failed to add project",
+                    message: "An error occurred while adding the project.",
+                    color: "red"
+                })
+            }
+        }
+    }, [actionData])
 
     const [addProjectModalOpened, { open: openAddProjectModal, close: closeAddProjectModal }] = useDisclosure(false)
 
@@ -120,8 +164,7 @@ const ProjectsPage: React.FC = () => {
                     <input type="hidden" name="intent" value="add" />
 
                     <Stack w={"100%"}>
-                        <TextInput name={"owner"} label={"Owner"} description={"Owner of the project on GitHub."} placeholder={"Enter owner name"} />
-                        <TextInput name={"name"} label={"Name"} description={"Name of the project on GitHub."} placeholder={"Enter project name"} />
+                        <TextInput name={"name"} label={"Name"} description={"Name of the project on GitHub (i.e. 'user/repo')."} placeholder={"Enter project name"} />
                         
                         <Button type={"submit"} fullWidth>Add</Button>
                     </Stack>
@@ -137,18 +180,15 @@ const ProjectsPage: React.FC = () => {
                         </Table.Tr>
 
                         {projects.map((project) => {
-                            const fullName = project.owner + "/" + project.name
-
                             return (
-                                <Table.Tr key={fullName}>
+                                <Table.Tr key={project.name}>
                                     <Table.Td>
-                                        <Anchor href={`https://github.com/${fullName}`}>{fullName}</Anchor>
+                                        <Anchor href={`https://github.com/${project.name}`}>{project.name}</Anchor>
                                     </Table.Td>
                                     <Table.Td>
                                         <Group>
                                             <Form method={"delete"}>
                                                 <input type="hidden" name="intent" value="delete" />
-                                                <input type="hidden" name="owner" value={project.owner} />
                                                 <input type="hidden" name="name" value={project.name} />
                                                 <ActionIcon color={"red"} variant={"light"} type={"submit"}>
                                                     <IconTrash size={16} />

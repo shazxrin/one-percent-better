@@ -6,10 +6,11 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "genApi": "openapi-typescript ../build/openapi.json -o ./app/api/schema.d.ts",
+    "gen-api": "openapi-typescript ../app/build/openapi.json -o ./app/api/schema.d.ts",
     "typeCheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@js-joda/core": "^5.6.5",
     "@mantine/charts": "^8.0.0",
     "@mantine/core": "^8.0.0",
     "@mantine/dates": "^8.0.0",
@@ -21,7 +22,6 @@
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
     "@tabler/icons-react": "^3.31.0",
-    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "isbot": "^5.1.27",
     "openapi-fetch": "^0.14.0",

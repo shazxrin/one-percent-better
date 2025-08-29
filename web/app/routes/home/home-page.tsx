@@ -1,36 +1,46 @@
 import { ActionIcon, Center, Group, Image, Stack, Text } from "@mantine/core"
 import {
     type ActionFunction,
-    Form,
     type LoaderFunction,
+    Form,
     useActionData,
     useLoaderData,
     useNavigation,
 } from "react-router"
 import React, { useEffect } from "react"
 import { IconRefresh } from "@tabler/icons-react"
-import { format } from "date-fns"
 import apiClient from "~/api/api-client"
 import z from "zod/v4"
 import { notifications } from "@mantine/notifications"
+import { LocalDate, LocalDateTime } from "@js-joda/core";
 
 type LoaderData = {
     lastUpdatedDate: string
-    count: number
+    noOfCheckIns: number
     streak: number
 }
 
 export const loader: LoaderFunction = async ({}): Promise<LoaderData> => {
-    const getCheckInsTodayResponse = await apiClient.GET("/api/check-ins/today")
+    const now = LocalDateTime.now()
+    const getCheckInsTodayResponse = await apiClient.GET(
+        "/api/check-ins/projects/daily-summaries/aggregate/{date}",
+        {
+            params: {
+                path: {
+                    date: now.toLocalDate().toString()
+                }
+            }
+        }
+    )
 
     if (getCheckInsTodayResponse.error) {
         throw Response.error()
     }
 
     return {
-        lastUpdatedDate: format(getCheckInsTodayResponse.data.updatedAt!!, "dd/MM HH:mm:ss"),
-        count: getCheckInsTodayResponse.data.count!!,
-        streak: getCheckInsTodayResponse.data.streak!!
+        lastUpdatedDate: now.toString(),
+        noOfCheckIns: getCheckInsTodayResponse.data.noOfCheckIns ?? 0,
+        streak: getCheckInsTodayResponse.data.streak ?? 0
     }
 }
 
@@ -52,7 +62,19 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
     }
     const { intent } = parsedFormData.data
     if (intent === "check-in") {
-        const checkInTodayResponse = await apiClient.POST("/api/check-ins/today")
+        const today = LocalDate.now()
+
+        const checkInTodayResponse = await apiClient.POST(
+            "/api/check-ins/projects/all",
+            {
+                params: {
+                    query: {
+                        date: today.toString()
+                    }
+                }
+            }
+        )
+
         if (checkInTodayResponse.error) {
             console.error("Failed to check-in today", checkInTodayResponse.error)
 
@@ -72,7 +94,7 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
 }
 
 const Home: React.FC = () => {
-    const { lastUpdatedDate, count, streak } = useLoaderData<LoaderData>()
+    const { lastUpdatedDate, noOfCheckIns, streak } = useLoaderData<LoaderData>()
     const actionData = useActionData<ActionData>()
     const navigation = useNavigation()
 
@@ -115,12 +137,12 @@ const Home: React.FC = () => {
             <Center h={"100%"}>
                 <Stack align={"center"} justify="center" gap={"xl"}>
                     <Stack align={"center"} gap={"xs"}>
-                        <Image src={count > 0 ? "/assets/streak.png" : "/assets/streak_empty.png"} h={"128px"} w={"128px"} />
-                        <Text fw={"bold"} size={"4rem"} c={count > 0 ? "orange.6" : "dark.1"}>{streak}</Text>
-                        <Text fw={"bold"} size={"2rem"} c={count > 0 ? "orange.6" : "dark.1"}>days</Text>
+                        <Image src={ noOfCheckIns > 0 ? "/assets/streak.png" : "/assets/streak_empty.png"} h={"128px"} w={"128px"} />
+                        <Text fw={"bold"} size={"4rem"} c={ noOfCheckIns > 0 ? "orange.6" : "dark.1"}>{streak}</Text>
+                        <Text fw={"bold"} size={"2rem"} c={ noOfCheckIns > 0 ? "orange.6" : "dark.1"}>days</Text>
                     </Stack>
 
-                    <Text c={count > 0 ? "orange.4" : "dark.2"}>You have commited {count} times today</Text>
+                    <Text c={ noOfCheckIns > 0 ? "orange.4" : "dark.2"}>You have commited {noOfCheckIns} times today</Text>
                 </Stack>
             </Center>
         </Stack>
