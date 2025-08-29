@@ -18,3 +18,22 @@ spring:
         auto-startup: false
       simple:
         auto-startup: false
+  docker:
+    compose:
+      enabled: false
+management:
+  otlp:
+    logging:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
+  tracing:
+    enabled: false
+  observations:
+    annotations:
+      enabled: false
