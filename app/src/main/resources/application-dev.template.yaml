@@ -12,3 +12,19 @@ app:
   coach:
     reminder:
       schedule-cron: "0 0 */1 * * *"
+management:
+  otlp:
+    logging:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
+  tracing:
+    enabled: false
+  observations:
+    annotations:
+      enabled: false
