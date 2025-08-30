@@ -1,4 +1,4 @@
-import { ActionIcon, Anchor, Button, Divider, Group, Modal, Stack, Table, TextInput, Title } from "@mantine/core"
+import { ActionIcon, Anchor, Button, Divider, Group, Modal, Stack, Table, Text, TextInput, Title } from "@mantine/core"
 import { IconExclamationCircle, IconPlus, IconTrash } from "@tabler/icons-react"
 import { z } from "zod/v4"
 import { type ActionFunction, Form, type LoaderFunction, useActionData, useLoaderData } from "react-router"
@@ -144,20 +144,21 @@ const ProjectsPage: React.FC = () => {
 
     return (
         <Stack>
-            <Title order={2}>Projects</Title>
+            <Group justify={ "space-between" } align={ "center" }>
+                <Title order={2}>Projects</Title>
 
-            <Divider my={"sm"} />
-
-            <Group>
                 <Button 
                     leftSection={<IconPlus size={16} />}
                     variant={"light"}
                     color={"green"}
                     onClick={openAddProjectModal}
+                    size={"xs"}
                 >
-                    Add
+                    New
                 </Button>
             </Group>
+
+            <Divider my={ 2 } opacity={ 0.5 } />
 
             <Modal opened={addProjectModalOpened} onClose={closeAddProjectModal} title={"Add Project"}>
                 <Form method={"post"} action={"/projects"} onSubmit={closeAddProjectModal}>
@@ -175,7 +176,7 @@ const ProjectsPage: React.FC = () => {
                 <Table>
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Project</Table.Th>
+                            <Table.Th>Name</Table.Th>
                             <Table.Th>Actions</Table.Th>
                         </Table.Tr>
 
@@ -183,7 +184,9 @@ const ProjectsPage: React.FC = () => {
                             return (
                                 <Table.Tr key={project.name}>
                                     <Table.Td>
-                                        <Anchor href={`https://github.com/${project.name}`}>{project.name}</Anchor>
+                                        <Text size={"sm"}>
+                                            <Anchor href={`https://github.com/${project.name}`}>{project.name}</Anchor>
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td>
                                         <Group>
