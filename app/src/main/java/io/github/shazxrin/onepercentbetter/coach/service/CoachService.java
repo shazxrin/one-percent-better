@@ -70,9 +70,15 @@ public class CoachService {
             streakToday
         );
 
-        String reminderJson = chatClient.prompt(userPrompt)
-            .call()
-            .content();
+        String reminderJson = null;
+        try {
+            reminderJson = chatClient.prompt(userPrompt)
+                .call()
+                .content();
+        } catch (Exception ex) {
+            log.error("Error while prompting a reminder.", ex);
+            throw new CoachException("Error while prompting a reminder.", ex);
+        }
 
         if (reminderJson == null) {
             log.error("No response from coach.");
@@ -104,10 +110,22 @@ public class CoachService {
         var checkInProjectAggregateSummary = checkInProjectAggregateDailySummaryService
             .getAggregateSummary(LocalDate.now());
 
-        var coachReminder = promptReminder(
-            checkInProjectAggregateSummary.getNoOfCheckIns(),
-            checkInProjectAggregateSummary.getStreak()
-        );
+        CoachReminder coachReminder;
+        try {
+            coachReminder = promptReminder(
+                checkInProjectAggregateSummary.getNoOfCheckIns(),
+                checkInProjectAggregateSummary.getStreak()
+            );
+        } catch (CoachException ex) {
+            coachReminder = new CoachReminder(
+                "Keep going!",
+                String.format(
+                    "You have checked in %d commits today. You have a streak of %d days.",
+                    checkInProjectAggregateSummary.getNoOfCheckIns(),
+                    checkInProjectAggregateSummary.getStreak()
+                )
+            );
+        }
 
         notificationService.sendNotification(coachReminder.title(), coachReminder.body());
     }
