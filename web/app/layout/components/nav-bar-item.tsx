@@ -6,9 +6,10 @@ type NavBarItemProps = {
     text: string;
     path: string;
     icon: React.ReactNode
+    onClick?: () => void;
 }
 
-const NavBarItem: React.FC<NavBarItemProps> = ({ text, path, icon }) => {
+const NavBarItem: React.FC<NavBarItemProps> = ({ text, path, icon, onClick }) => {
     const location = useLocation();
 
     return (
@@ -19,6 +20,7 @@ const NavBarItem: React.FC<NavBarItemProps> = ({ text, path, icon }) => {
             active={ path === location.pathname }
             component={ Link }
             to={ path }
+            onClick={ onClick }
         >
         </NavLink>
     )
