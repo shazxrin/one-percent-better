@@ -60,7 +60,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
-    implementation("io.github.shazxrin.notifier:common:1.2.2")
+    implementation("io.github.shazxrin.notifier:common:1.3.0")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
