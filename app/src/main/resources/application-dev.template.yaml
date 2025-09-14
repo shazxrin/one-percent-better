@@ -2,6 +2,10 @@ spring:
   ai:
     openai:
       api-key: "api-key"
+  docker:
+    compose:
+      file:
+        - "./deploy/svc.compose.yaml"
 github:
   username: "username"
   token: "token"

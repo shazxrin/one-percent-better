@@ -1,4 +1,4 @@
-name: "dev-one-percent-better"
+name: "svc-one-percent-better"
 services:
   rabbitmq:
     image: "rabbitmq:management"
