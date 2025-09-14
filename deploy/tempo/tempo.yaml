@@ -12,9 +12,13 @@ distributor:
 
 storage:
   trace:
-    backend: local
-    local:
-      path: /tmp/tempo/traces
+    backend: s3
+    s3:
+      endpoint: minio.:9000
+      bucket: tempo
+      access_key: user
+      secret_key: password
+      insecure: true
     wal:
       path: /tmp/tempo/wal
 

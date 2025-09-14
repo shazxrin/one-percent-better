@@ -6,14 +6,22 @@ server:
 
 common:
   storage:
-    backend: filesystem
-    filesystem:
-      dir: /data
+    backend: s3
+    s3:
+      endpoint: minio.:9000
+      bucket_name: mimir-alertmanager
+      access_key_id: user
+      secret_access_key: password
+      insecure: true
 
 blocks_storage:
-  backend: filesystem
-  filesystem:
-    dir: /data/blocks
+  backend: s3
+  s3:
+    endpoint: minio.:9000
+    bucket_name: mimir-blocks
+    access_key_id: user
+    secret_access_key: password
+    insecure: true
 
 compactor:
   data_dir: /data/compactor
@@ -30,9 +38,13 @@ ingester:
     replication_factor: 1
 
 ruler_storage:
-  backend: filesystem
-  filesystem:
-    dir: /data/ruler
+  backend: s3
+  s3:
+    endpoint: minio.:9000
+    bucket_name: mimir-ruler
+    access_key_id: user
+    secret_access_key: password
+    insecure: true
 
 store_gateway:
   sharding_ring:

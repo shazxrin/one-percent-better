@@ -1,17 +1,5 @@
 name: "otlp-one-percent-better"
 services:
-  mimir:
-    image: grafana/mimir:latest
-    container_name: mimir
-    ports:
-      - "9090:8080"
-    volumes:
-      - ./mimir/mimir.yaml:/etc/mimir/mimir.yaml
-      - mimir-data:/data
-    command:
-      - '-config.file=/etc/mimir/mimir.yaml'
-      - '-target=all'
-
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
@@ -37,6 +25,18 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana:/etc/grafana/provisioning
+
+  mimir:
+    image: grafana/mimir:latest
+    container_name: mimir
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./mimir/mimir.yaml:/etc/mimir/mimir.yaml
+      - mimir-data:/data
+    command:
+      - '-config.file=/etc/mimir/mimir.yaml'
+      - '-target=all'
 
   tempo:
     image: grafana/tempo:latest
@@ -73,7 +73,7 @@ services:
     volumes:
       - minio-data:/data
     command: server /data --address ":9000" --console-address ":9001"
-  minio-client:
+  minio-init:
     image: minio/mc
     container_name: minio-client
     entrypoint: >
@@ -82,6 +82,18 @@ services:
       mc rm -r --force myminio/loki;
       mc mb myminio/loki;
       mc anonymous set public myminio/loki;
+      mc rm -r --force myminio/mimir-blocks;
+      mc mb myminio/mimir-blocks;
+      mc anonymous set public myminio/mimir-blocks;
+      mc rm -r --force myminio/mimir-ruler;
+      mc mb myminio/mimir-ruler;
+      mc anonymous set public myminio/mimir-ruler;
+      mc rm -r --force myminio/mimir-alertmanager;
+      mc mb myminio/mimir-alertmanager;
+      mc anonymous set public myminio/mimir-alertmanager;
+      mc rm -r --force myminio/tempo;
+      mc mb myminio/tempo;
+      mc anonymous set public myminio/tempo;
       exit 0
       "
     depends_on:
