@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 public class CheckInProjectAggregateMonthlySummaryTriggerIntegrationTest {
     @Container
-    static final ComposeContainer environment = new ComposeContainer(new File("../deploy/dev.compose.yaml"))
+    static final ComposeContainer environment = new ComposeContainer(new File("../deploy/svc.compose.yaml"))
         .withExposedService("postgres", 5432)
         .withExposedService("rabbitmq", 5672);
 
