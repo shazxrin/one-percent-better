@@ -15,3 +15,10 @@ datasources:
       httpMethod: GET
       tracesToMetrics:
         datasourceUid: 'Mimir'
+      tracesToLogs:
+        datasourceUid: 'Loki'
+  
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
