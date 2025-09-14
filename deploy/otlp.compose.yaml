@@ -1,18 +1,16 @@
 name: "otlp-one-percent-better"
 services:
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
+  mimir:
+    image: grafana/mimir:latest
+    container_name: mimir
     ports:
-      - "9090:9090"
+      - "9090:8080"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-data:/prometheus
+      - ./mimir/mimir.yaml:/etc/mimir/mimir.yaml
+      - mimir-data:/data
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=14d'
-      - '--web.enable-remote-write-receiver'
+      - '-config.file=/etc/mimir/mimir.yaml'
+      - '-target=all'
 
   alloy:
     image: grafana/alloy:latest
@@ -91,7 +89,7 @@ services:
 
 volumes:
   grafana-storage: {}
-  prometheus-data: {}
+  mimir-data: {}
   tempo-data: {}
   loki-data: {}
   minio-data: {}

@@ -1,0 +1,63 @@
+target: all
+
+server:
+  http_listen_port: 8080
+  grpc_listen_port: 9095
+
+common:
+  storage:
+    backend: filesystem
+    filesystem:
+      dir: /data
+
+blocks_storage:
+  backend: filesystem
+  filesystem:
+    dir: /data/blocks
+
+compactor:
+  data_dir: /data/compactor
+
+distributor:
+  ring:
+    kvstore:
+      store: memberlist
+
+ingester:
+  ring:
+    kvstore:
+      store: memberlist
+    replication_factor: 1
+
+ruler_storage:
+  backend: filesystem
+  filesystem:
+    dir: /data/ruler
+
+store_gateway:
+  sharding_ring:
+    kvstore:
+      store: memberlist
+
+memberlist:
+  bind_port: 7946
+  join_members: []
+
+limits:
+  # Increase limits for development
+  ingestion_rate: 100000
+  ingestion_burst_size: 1000000
+  max_global_series_per_user: 1000000
+  max_global_series_per_metric: 100000
+
+# Enable API endpoints
+api:
+  prometheus_http_prefix: /prometheus
+  alertmanager_http_prefix: /alertmanager
+
+# Multi-tenancy settings
+multitenancy_enabled: false
+
+# Activity tracker
+activity_tracker:
+  filepath: /data/activity.log
