@@ -7,7 +7,7 @@ services:
       - "4317:4317"
       - "4318:4318"
     volumes:
-      - ./alloy:/etc/alloy
+      - ./otlp/alloy:/etc/alloy
     command:
       - 'run'
       - '/etc/alloy/config.alloy'
@@ -24,7 +24,7 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./grafana:/etc/grafana/provisioning
+      - ./otlp/grafana:/etc/grafana/provisioning
 
   mimir:
     image: grafana/mimir:latest
@@ -32,7 +32,7 @@ services:
     ports:
       - "9090:8080"
     volumes:
-      - ./mimir/mimir.yaml:/etc/mimir/mimir.yaml
+      - ./otlp/mimir/mimir.yaml:/etc/mimir/mimir.yaml
       - mimir-data:/data
     command:
       - '-config.file=/etc/mimir/mimir.yaml'
@@ -45,7 +45,7 @@ services:
     ports:
       - "3200:3200"
     volumes:
-      - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml
+      - ./otlp/tempo/tempo.yaml:/etc/tempo/tempo.yaml
       - tempo-data:/tmp/tempo
     command:
       - '--config.file=/etc/tempo/tempo.yaml'
@@ -56,7 +56,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./loki/loki-config.yaml:/etc/loki/loki.yaml
+      - ./otlp/loki/loki-config.yaml:/etc/loki/loki.yaml
       - loki-data:/loki
     command:
       - '--config.file=/etc/loki/loki.yaml'
